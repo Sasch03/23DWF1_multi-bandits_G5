@@ -35,6 +35,7 @@ Diese Dokumentation beschreibt die Konventionen für Branches, Commits und die D
 - `UI` – Änderungen an der Benutzeroberfläche
 - `DOC` – Dokumentation
 - `TEST` – Tests
+- `CHORE` – organisatorische Änderungen, Setup, Libraries, Dependencies
 
 ---
 
