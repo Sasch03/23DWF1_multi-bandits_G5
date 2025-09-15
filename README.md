@@ -53,7 +53,7 @@ Diese Dokumentation beschreibt die Konventionen für Branches, Commits und die D
 ### Definition of Done (DoD)
 
 Ein Ticket gilt als erledigt, wenn:
-- Mindestens 100 % Testabdeckung erreicht ist
+- Mindestens 80% Testabdeckung erreicht ist
 - Alle Akzeptanzkriterien des Tickets erfüllt sind
 - Nicht selbsterklärende Codeabschnitte ausreichend dokumentiert wurden
 - Die Lösung des Tickets im Ticket in Textform hinterlegt ist
