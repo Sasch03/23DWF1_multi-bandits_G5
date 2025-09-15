@@ -1,4 +1,4 @@
-# .github/workflows/ci.yml
+# .github/workflows/node.js.yml
 name: Node.js CI & Pages Deployment
 
 on:
@@ -49,7 +49,8 @@ jobs:
 
   # Single-version build + deploy to GitHub Pages
   deploy:
-
+    # Only run on pushes to main (not PRs), and only if matrix job passed
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: test
     runs-on: ubuntu-latest
     environment:
