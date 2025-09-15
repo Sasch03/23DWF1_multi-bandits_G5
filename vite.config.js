@@ -7,7 +7,7 @@ import { fileURLToPath } from 'url'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-const repoName = '23DWF1_multi-bandits_G5' // dein GitHub-Repo-Name
+const repoName = '23DWF1_multi-bandits_G5'
 // eslint-disable-next-line no-undef
 const base = process.env.NODE_ENV === 'production' ? `/${repoName}/` : '/'
 
