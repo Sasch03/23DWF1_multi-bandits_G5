@@ -6,11 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "eslint .",
     "preview": "vite preview",
-    "test": "vitest run",
+    "lint": "eslint .",
+    "test": "vitest",
     "coverage": "vitest run --coverage",
-    "test:watch": "vitest"
+    "test:run": "vitest run"
   },
   "dependencies": {
     "@radix-ui/react-separator": "^1.1.7",
