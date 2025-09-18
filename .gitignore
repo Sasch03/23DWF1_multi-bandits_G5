@@ -26,5 +26,6 @@ dist-ssr
 # Vitest / Coverage
 coverage/
 dist/
+docs/
 *.lcov
 
