@@ -10,7 +10,8 @@
     "lint": "eslint .",
     "test": "vitest",
     "coverage": "vitest run --coverage",
-    "test:run": "vitest run"
+    "test:run": "vitest run",
+    "docs": "jsdoc -c jsdoc.json"
   },
   "dependencies": {
     "@radix-ui/react-separator": "^1.1.7",
@@ -36,6 +37,7 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.3.0",
+    "jsdoc": "^4.0.4",
     "jsdom": "^26.1.0",
     "tw-animate-css": "^1.3.8",
     "vite": "^7.1.2",
