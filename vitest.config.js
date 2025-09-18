@@ -9,6 +9,8 @@ export default defineConfig({
         coverage: {
             reporter: ['text', 'html'],
             exclude: [
+                'dist/**',
+                'docs/**',
                 'src/components/ui/**',
                 '**/*.config.js',
                 'src/lib/**',
