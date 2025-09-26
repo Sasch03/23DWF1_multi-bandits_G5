@@ -22,7 +22,6 @@ export default defineConfig({
                 '**/*.config.js',
                 'src/lib/**',
                 'src/main.jsx',
-                'src/App.jsx',
             ],
         },
     },
