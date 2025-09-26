@@ -19,7 +19,7 @@ export default function BanditConfig({
 
             <div className="space-y-3">
                 <label className="text-sm">Bandit-Typ</label>
-                <Select disabled={true} onValueChange={setType} defaultValue={type}>
+                <Select disabled={running} onValueChange={setType} defaultValue={type}>
                     <SelectTrigger className="w-full">
                         <SelectValue placeholder="Wähle Typ" />
                     </SelectTrigger>

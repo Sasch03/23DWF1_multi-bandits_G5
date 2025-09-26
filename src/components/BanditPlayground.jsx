@@ -6,7 +6,9 @@ export default function BanditPlayground({ arms, onPull, disabled }) {
             {arms.map(a => (
                 <button
                     key={a.id}
-                    className="p-4 rounded-xl bg-muted/40 border border-muted/30 w-full text-left hover:bg-muted/60 transition"
+                    className={`p-4 rounded-xl bg-muted/40 border border-muted/30 w-full text-left transition ${
+                        !disabled ? "hover:bg-muted/60" : ""
+                    }`}
                     onClick={() => onPull(a.id)}
                     disabled={disabled}
                 >
