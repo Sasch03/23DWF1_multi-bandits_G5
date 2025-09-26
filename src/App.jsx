@@ -17,16 +17,16 @@ export default function App() {
     } = useBanditGame();
 
     const [running, setRunning] = React.useState(false);
-    const startAuto = () => {
+    const startSimulation = () => {
         setRunning(true);
-        console.log("Start Auto");
+        console.log("Simulation started");
     }
 
 
     const handleReset = () => {
         resetAll();
         setRunning(false);
-        console.log("Stop Auto");
+        console.log("Simulation stopped and reset");
 
     };
 
@@ -41,7 +41,7 @@ export default function App() {
                         iterations={iterations} setIterations={setIterations}
                         resetAll={handleReset}
                         running={running}
-                        startAuto={startAuto}
+                        startSimulation={startSimulation}
                     />
                     <div className="flex-1 flex flex-col gap-4">
                         <BanditPlayground

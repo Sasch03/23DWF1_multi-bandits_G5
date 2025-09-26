@@ -8,7 +8,7 @@ export default function BanditConfig({
                                          type, setType,
                                          arms, setArmCount,
                                          iterations, setIterations,
-                                         startAuto, resetAll, running
+                                         startSimulation, resetAll, running
                                      }) {
     return (
         <Card className="w-1/3 flex flex-col bg-muted/30 gap-4 shadow-xl p-4">
@@ -40,7 +40,7 @@ export default function BanditConfig({
                     {running ? (
                         <Button variant="destructive" disabled={true}>Running</Button>
                     ) : (
-                        <Button onClick={startAuto}>Start</Button>
+                        <Button onClick={startSimulation}>Start</Button>
                     )}
                     <Button onClick={resetAll}>Zurücksetzen</Button>
                 </div>

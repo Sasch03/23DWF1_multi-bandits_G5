@@ -12,7 +12,7 @@ describe("BanditConfig Component", () => {
             setArmCount: vi.fn(),
             iterations: 10,
             setIterations: vi.fn(),
-            startAuto: vi.fn(),
+            startSimulation: vi.fn(),
             resetAll: vi.fn(),
             running: false,
             ...overrides,
@@ -57,13 +57,13 @@ describe("BanditConfig Component", () => {
         expect(props.setIterations).toHaveBeenCalled();
     });
 
-    it("calls startAuto and resetAll buttons", () => {
+    it("calls startSimulation and resetAll buttons", () => {
         const props = setup();
         const startButton = screen.getByText("Start");
         const resetButton = screen.getByText("Zurücksetzen");
 
         fireEvent.click(startButton);
-        expect(props.startAuto).toHaveBeenCalled();
+        expect(props.startSimulation()).toHaveBeenCalled();
 
         fireEvent.click(resetButton);
         expect(props.resetAll).toHaveBeenCalled();
