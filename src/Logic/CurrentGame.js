@@ -1,5 +1,5 @@
-import {DistributionTyp} from '/Enumeration/DistributionTyp.js';
-import {AlgorithmTypes} from '/Enumeration/AlgorithmTyp.js';
+import { DistributionTyp } from './Enumeration/DistributionTyp.js';
+import { AlgorithmTyp } from './Enumeration/AlgorithmTyp.js';
 
 /*
  * This class represents a k-armed bandit game configuration and environment.
@@ -8,7 +8,7 @@ import {AlgorithmTypes} from '/Enumeration/AlgorithmTyp.js';
  * The environment generates reward tables for each arm according to the chosen
  * distribution and stores them for later use.
  */
-class CurrentGame {
+export default class CurrentGame {
     numberOfArms;
     numberOfTries;
     chosenDistribution;
@@ -17,7 +17,7 @@ class CurrentGame {
 
     /**
      * Sets the number of arms for the bandit game.
-     * @param {number} value - Number of arms, must be an integer > 0.
+     * @param {string} value - Number of arms, must be an integer > 0.
      */
     setNumberOfArms(value) {
         if (!Number.isInteger(value) || value <= 0) {
@@ -53,10 +53,10 @@ class CurrentGame {
 
     /**
      * Sets the algorithms to be used in the bandit game.
-     * @param {AlgorithmTypes[]} value - Array of valid algorithm types.
+     * @param {AlgorithmTyp[]} value - Array of valid algorithm types.
      */
     setChosenAlgorithms(value) {
-        if (!Array.isArray(value) || value.some(alg => !Object.values(AlgorithmTypes).includes(alg))) {
+        if (!Array.isArray(value) || value.some(alg => !Object.values(AlgorithmTyp).includes(alg))) {
             throw new Error("ChosenAlgorithms must be an array of valid AlgorithmTypes.");
         }
         this.chosenAlgorithms = value;
