@@ -87,7 +87,7 @@ export function useBanditGame(initialArms = 5, initialIterations = 10) {
 
         // Log schreiben
         const newLog = `Timestep: ${totalPulls + 1}, Arm: ${idx + 1}, Reward: ${reward}`;
-        setLogs((prev) => [...prev, newLog]);
+        setLogs((prev) => [newLog, ...prev]);
 
         console.log(newLog);
     };

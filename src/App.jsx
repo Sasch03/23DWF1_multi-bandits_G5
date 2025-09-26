@@ -31,7 +31,7 @@ export default function App() {
     };
 
     return (
-        <div className="bg-background text-foreground min-h-screen p-6 flex flex-col items-center">
+        <div>
             <Header />
             <div className="w-full max-w-7xl">
                 <div className="p-6 rounded-2xl bg-card text-card-foreground shadow-2xl flex gap-6">

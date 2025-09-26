@@ -8,7 +8,7 @@ export default function BanditConfig({
                                          type, setType,
                                          arms, setArmCount,
                                          iterations, setIterations,
-                                         startAuto, stopAuto, resetAll, running
+                                         startAuto, resetAll, running
                                      }) {
     return (
         <Card className="w-1/3 flex flex-col bg-muted/30 gap-4 shadow-xl p-4">
