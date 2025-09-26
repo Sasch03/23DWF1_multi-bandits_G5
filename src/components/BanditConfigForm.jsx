@@ -30,10 +30,10 @@ export default function BanditConfig({
                 </Select>
 
                 <label className="text-sm">Anzahl Arme</label>
-                <Counter value={arms.length} onChange={setArmCount} min={2} max={50} />
+                <Counter value={arms.length} onChange={setArmCount} min={2} max={50} disabled={running} />
 
                 <label className="text-sm">Anzahl Iterationen</label>
-                <Counter value={iterations} onChange={setIterations} min={1} max={100} />
+                <Counter value={iterations} onChange={setIterations} min={1} max={100} disabled={running} />
 
 
                 <div className="flex gap-2">

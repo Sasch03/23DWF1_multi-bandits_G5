@@ -12,12 +12,12 @@ import { Button } from "@/components/ui/button.jsx";
  * @param {number} [props.min=0] - Minimalwert
  * @param {number} [props.max=100] - Maximalwert
  */
-export default function Counter({ value, onChange, min = 0, max = 100 }) {
+export default function Counter({ value, onChange, min = 0, max = 100, disabled = false }) {
     return (
         <div className="flex items-center gap-2">
-            <Button onClick={() => onChange(Math.max(min, value - 1))}>-</Button>
+            <Button onClick={() => onChange(Math.max(min, value - 1))} disabled={disabled}>-</Button>
             <div className="flex-1 text-center">{value}</div>
-            <Button onClick={() => onChange(Math.min(max, value + 1))}>+</Button>
+            <Button onClick={() => onChange(Math.min(max, value + 1))} disabled={disabled}>+</Button>
         </div>
     );
 }

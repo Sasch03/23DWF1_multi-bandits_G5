@@ -16,6 +16,18 @@ export default function App() {
         resetAll, setArmCount, handlePull
     } = useBanditGame();
 
+    const [running, setRunning] = React.useState(false);
+    const startAuto = () => {
+        setRunning(true);
+        console.log("Start Auto");
+    };
+
+
+    const handleReset = () => {
+        resetAll();
+        setRunning(false);
+    };
+
     return (
         <div className="bg-background text-foreground min-h-screen p-6 flex flex-col items-center">
             <Header />
@@ -25,13 +37,15 @@ export default function App() {
                         type={type} setType={setType}
                         arms={arms} setArmCount={setArmCount}
                         iterations={iterations} setIterations={setIterations}
-                        resetAll={resetAll}
+                        resetAll={handleReset}
+                        running={running}
+                        startAuto={startAuto}
                     />
                     <div className="flex-1 flex flex-col gap-4">
                         <BanditPlayground
                             arms={arms}
                             onPull={handlePull}
-                            disabled={totalPulls >= iterations}
+                            disabled={!running || totalPulls >= iterations}
                         />
                         <BanditResults
                             arms={arms}
