@@ -20,16 +20,14 @@ export default function App() {
     const startAuto = () => {
         setRunning(true);
         console.log("Start Auto");
-    };
-    const stopAuto = () => {
-        setRunning(false);
-        console.log("Stop Auto");
     }
 
 
     const handleReset = () => {
         resetAll();
         setRunning(false);
+        console.log("Stop Auto");
+
     };
 
     return (
@@ -44,7 +42,6 @@ export default function App() {
                         resetAll={handleReset}
                         running={running}
                         startAuto={startAuto}
-                        stopAuto={stopAuto}
                     />
                     <div className="flex-1 flex flex-col gap-4">
                         <BanditPlayground

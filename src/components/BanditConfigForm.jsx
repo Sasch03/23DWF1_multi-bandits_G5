@@ -38,7 +38,7 @@ export default function BanditConfig({
 
                 <div className="flex gap-2">
                     {running ? (
-                        <Button variant="destructive" onClick={stopAuto}>Pause</Button>
+                        <Button variant="destructive" disabled={true}>Running</Button>
                     ) : (
                         <Button onClick={startAuto}>Start</Button>
                     )}
