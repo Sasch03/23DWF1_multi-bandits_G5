@@ -4,6 +4,26 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Button } from "@/components/ui/button.jsx";
 import Counter from "@/components/shared/Counter.jsx";
 
+/**
+ * BanditConfig Component
+ *
+ * A configuration panel for multi-armed bandit simulations.
+ * Allows the user to select the bandit type, the number of arms,
+ * the number of iterations, and to start or reset the simulation.
+ *
+ * @component
+ * @param {Object} props - The properties passed to the component.
+ * @param {"bernoulli"|"gaussian"} props.type - The currently selected bandit type.
+ * @param {function} props.setType - Callback to update the bandit type.
+ * @param {Array} props.arms - Array describing the individual arms.
+ * @param {function} props.setArmCount - Callback to update the number of arms.
+ * @param {number} props.iterations - The number of simulation iterations.
+ * @param {function} props.setIterations - Callback to update the iteration count.
+ * @param {function} props.startSimulation - Callback to start the simulation.
+ * @param {function} props.resetAll - Callback to reset all settings to default.
+ * @param {boolean} props.running - Whether the simulation is currently running.
+ * @returns {JSX.Element} The rendered configuration panel.
+ */
 export default function BanditConfig({
                                          type, setType,
                                          arms, setArmCount,

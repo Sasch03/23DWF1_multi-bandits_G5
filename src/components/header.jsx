@@ -1,5 +1,14 @@
 import React from "react";
 
+/**
+ * Header Component
+ *
+ * Displays the main title and subtitle for the Multi-Armed Bandit Playground.
+ * This component is purely presentational and does not manage any state.
+ *
+ * @component
+ * @returns {JSX.Element} The header section with title and subtitle.
+ */
 export default function Header() {
     return (
         <div className="mb-6 text-center">

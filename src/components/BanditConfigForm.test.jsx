@@ -63,7 +63,7 @@ describe("BanditConfig Component", () => {
         const resetButton = screen.getByText("Zurücksetzen");
 
         fireEvent.click(startButton);
-        expect(props.startSimulation()).toHaveBeenCalled();
+        expect(props.startSimulation).toHaveBeenCalled();
 
         fireEvent.click(resetButton);
         expect(props.resetAll).toHaveBeenCalled();
