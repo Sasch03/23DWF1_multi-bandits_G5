@@ -1,0 +1,116 @@
+import { useState } from "react";
+
+/**
+ * Custom hook to manage the logic of a multi-armed bandit game.
+ * Encapsulates state (arms, iterations, logs, etc.) and functions (pull, reset, change arm count).
+ *
+ * @param {number} [initialArms=5] - Initial number of arms (slots).
+ * @param {number} [initialIterations=10] - Initial number of maximum iterations.
+ * @returns {object} An object containing state variables and functions to control the game.
+ */
+export function useBanditGame(initialArms = 5, initialIterations = 10) {
+    const [type, setType] = useState('bernoulli');
+    const [arms, setArms] = useState(() =>
+        Array.from({ length: initialArms }, (_, i) => ({
+            id: i,
+            pulls: 0,
+            lastReward: 0,
+        }))
+    );
+    const [iterations, setIterations] = useState(initialIterations);
+    const [totalPulls, setTotalPulls] = useState(0);
+    const [totalReward, setTotalReward] = useState(0);
+    const [logs, setLogs] = useState([]);
+
+    /**
+     * Resets all game state variables to their initial values.
+     */
+    const resetAll = () => {
+        console.log("Reset All");
+        setArms(
+            Array.from({ length: initialArms }, (_, i) => ({
+                id: i,
+                pulls: 0,
+                lastReward: 0,
+            }))
+        );
+        setIterations(initialIterations);
+        setTotalPulls(0);
+        setTotalReward(0);
+        setLogs([]);
+    };
+
+    /**
+     * Adjusts the number of arms dynamically.
+     * Adds new arms or removes existing arms based on the given count.
+     *
+     * @param {number} count - The new number of arms.
+     */
+    const setArmCount = (count) => {
+        console.log("Set Arm Count", count);
+        const current = arms.length;
+
+        if (count > current) {
+            // Add extra arms if the new count is higher
+            const extra = Array.from({ length: count - current }, (_, i) => ({
+                id: current + i,
+                pulls: 0,
+                lastReward: 0,
+            }));
+            setArms((prev) => [...prev, ...extra]);
+        } else {
+            // Remove excess arms if the new count is smaller
+            setArms((prev) => prev.slice(0, count));
+        }
+    };
+
+    /**
+     * Performs a pull on the specified arm (like pulling a slot machine lever).
+     * Updates arm state, total pulls, total rewards, and logs the action.
+     *
+     * @param {number} idx - The index of the arm to pull.
+     */
+    const handlePull = (idx) => {
+        // Stop if the maximum number of iterations has been reached
+        if (totalPulls >= iterations) {
+            console.log(`Limit reached: ${iterations} pulls`);
+            return;
+        }
+
+        console.log("Pull Arm", idx);
+
+        // Dummy reward logic (replace with real bandit logic later)
+        const reward = Math.random() > 0.5 ? 1 : 0;
+
+        // Update the arm's state with the new pull and reward
+        setArms((prev) =>
+            prev.map((a, i) =>
+                i === idx ? { ...a, pulls: a.pulls + 1, lastReward: reward } : a
+            )
+        );
+
+        // Update total pulls and total rewards
+        setTotalPulls((tp) => tp + 1);
+        setTotalReward((tr) => tr + reward);
+
+        // Create a new log entry
+        const newLog = `Timestep: ${totalPulls + 1}, Arm: ${idx + 1}, Reward: ${reward}`;
+        setLogs((prev) => [newLog, ...prev]);
+
+        console.log(newLog);
+    };
+
+    return {
+        type,
+        setType,
+        arms,
+        iterations,
+        setIterations,
+        totalPulls,
+        totalReward,
+        logs,
+        resetAll,
+        setArmCount,
+        handlePull,
+    };
+}
