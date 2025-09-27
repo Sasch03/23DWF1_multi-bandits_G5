@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import Algorithm from './Algorithm.js';
+import Algorithm from '../../Logic/Algorithm/Algorithm.js';
 
 class DummyAlg extends Algorithm { selectArm(){ return 0; } }
 
