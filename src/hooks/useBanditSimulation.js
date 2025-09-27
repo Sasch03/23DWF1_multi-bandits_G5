@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import CurrentGame from "@/logic/CurrentGame.js";
+import CurrentGame from "@/Logic/CurrentGame.js";
 import {DistributionTyp} from "@/logic/Enumeration/DistributionTyp.js";
 
 /**
