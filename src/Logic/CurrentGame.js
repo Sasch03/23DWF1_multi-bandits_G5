@@ -17,7 +17,7 @@ export default class CurrentGame {
 
     /**
      * Sets the number of arms for the bandit game.
-     * @param {string} value - Number of arms, must be an integer > 0.
+     * @param {number} value - Number of arms, must be an integer > 0.
      */
     setNumberOfArms(value) {
         if (!Number.isInteger(value) || value <= 0) {

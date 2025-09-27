@@ -44,8 +44,8 @@ export default function BanditConfig({
                         <SelectValue placeholder="Wähle Typ" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="bernoulli">Bernoulli</SelectItem>
-                        <SelectItem value="gaussian">Gaussian</SelectItem>
+                        <SelectItem value="Bernoulli">Bernoulli</SelectItem>
+                        <SelectItem value="Gaussian">Gaussian</SelectItem>
                     </SelectContent>
                 </Select>
 
