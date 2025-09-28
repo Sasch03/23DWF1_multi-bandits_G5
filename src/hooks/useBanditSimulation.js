@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
+import CurrentGame from "@/Logic/CurrentGame.js";
+import {DistributionTyp} from "@/Logic/Enumeration/DistributionTyp.js";
 
 /**
  * Custom hook to manage the logic of a multi-armed bandit game.
@@ -9,35 +11,53 @@ import { useState } from "react";
  * @returns {object} An object containing state variables and functions to control the game.
  */
 export function useBanditGame(initialArms = 5, initialIterations = 10) {
-    const [type, setType] = useState('bernoulli');
-    const [arms, setArms] = useState(() =>
-        Array.from({ length: initialArms }, (_, i) => ({
-            id: i,
-            pulls: 0,
-            lastReward: 0,
-        }))
+    const [type, setType] = useState(DistributionTyp.BERNOULLI);
+    const [arms, setArms] = useState(
+        Array.from({ length: initialArms }, (_, i) => ({ id: i, pulls: 0, lastReward: 0 }))
     );
     const [iterations, setIterations] = useState(initialIterations);
     const [totalPulls, setTotalPulls] = useState(0);
     const [totalReward, setTotalReward] = useState(0);
     const [logs, setLogs] = useState([]);
+    const [running, setRunning] = useState(false);
+    const [rewardTable, setRewardTable] = useState([]);
+
+    const gameRef = useRef(null);
+
+    // === Start Simulation ===
+    const startGame = () => {
+        if (running) return;
+
+        const game = new CurrentGame();
+        game.setNumberOfArms(arms.length);
+        game.setNumberOfTries(iterations);
+        game.setChosenDistribution(type);
+        game.createTable();
+
+        gameRef.current = game;
+        setRewardTable(game.tableOfRewards);
+
+        // Reset Counters
+        setArms(prev => prev.map(a => ({ ...a, pulls: 0, lastReward: 0 })));
+        setTotalPulls(0);
+        setTotalReward(0);
+        setLogs([]);
+
+        setRunning(true);
+    };
 
     /**
      * Resets all game state variables to their initial values.
      */
     const resetAll = () => {
-        console.log("Reset All");
-        setArms(
-            Array.from({ length: initialArms }, (_, i) => ({
-                id: i,
-                pulls: 0,
-                lastReward: 0,
-            }))
-        );
+        setArms(Array.from({ length: initialArms }, (_, i) => ({ id: i, pulls: 0, lastReward: 0 })));
         setIterations(initialIterations);
         setTotalPulls(0);
         setTotalReward(0);
         setLogs([]);
+        setRewardTable([]);
+        gameRef.current = null;
+        setRunning(false);
     };
 
     /**
@@ -47,20 +67,14 @@ export function useBanditGame(initialArms = 5, initialIterations = 10) {
      * @param {number} count - The new number of arms.
      */
     const setArmCount = (count) => {
-        console.log("Set Arm Count", count);
         const current = arms.length;
-
         if (count > current) {
-            // Add extra arms if the new count is higher
             const extra = Array.from({ length: count - current }, (_, i) => ({
-                id: current + i,
-                pulls: 0,
-                lastReward: 0,
+                id: current + i, pulls: 0, lastReward: 0
             }));
-            setArms((prev) => [...prev, ...extra]);
+            setArms(prev => [...prev, ...extra]);
         } else {
-            // Remove excess arms if the new count is smaller
-            setArms((prev) => prev.slice(0, count));
+            setArms(prev => prev.slice(0, count));
         }
     };
 
@@ -71,44 +85,37 @@ export function useBanditGame(initialArms = 5, initialIterations = 10) {
      * @param {number} idx - The index of the arm to pull.
      */
     const handlePull = (idx) => {
-        // Stop if the maximum number of iterations has been reached
+        if (!running || !gameRef.current || rewardTable.length === 0) {
+            console.log("Game not started yet!");
+            return;
+        }
+
         if (totalPulls >= iterations) {
             console.log(`Limit reached: ${iterations} pulls`);
             return;
         }
 
-        console.log("Pull Arm", idx);
+        const armPulls = arms[idx].pulls;
+        if (armPulls >= iterations) return;
 
-        // Dummy reward logic (replace with real bandit logic later)
-        const reward = Math.random() > 0.5 ? 1 : 0;
+        const reward = rewardTable[idx][armPulls];
 
-        // Update the arm's state with the new pull and reward
-        setArms((prev) =>
-            prev.map((a, i) =>
-                i === idx ? { ...a, pulls: a.pulls + 1, lastReward: reward } : a
-            )
-        );
+        setArms(prev => prev.map((a, i) => i === idx ? { ...a, pulls: a.pulls + 1, lastReward: reward } : a));
+        setTotalPulls(tp => tp + 1);
+        setTotalReward(tr => tr + reward);
 
-        // Update total pulls and total rewards
-        setTotalPulls((tp) => tp + 1);
-        setTotalReward((tr) => tr + reward);
-
-        // Create a new log entry
-        const newLog = `Timestep: ${totalPulls + 1}, Arm: ${idx + 1}, Reward: ${reward}`;
-        setLogs((prev) => [newLog, ...prev]);
-
-        console.log(newLog);
+        setLogs(prev => [`Timestep: ${totalPulls + 1}, Arm: ${idx + 1}, Reward: ${reward}`, ...prev]);
     };
 
     return {
-        type,
-        setType,
+        type, setType,
         arms,
-        iterations,
-        setIterations,
+        iterations, setIterations,
         totalPulls,
         totalReward,
         logs,
+        running,
+        startGame,
         resetAll,
         setArmCount,
         handlePull,

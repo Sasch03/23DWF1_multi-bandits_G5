@@ -10,7 +10,7 @@ describe("useBanditGame Hook", () => {
         expect(result.current.totalPulls).toBe(0);
         expect(result.current.totalReward).toBe(0);
         expect(result.current.logs).toEqual([]);
-        expect(result.current.type).toBe("bernoulli");
+        expect(result.current.type).toBe("Bernoulli");
     });
 
     it("can set arm count up", () => {
@@ -36,6 +36,10 @@ describe("useBanditGame Hook", () => {
 
     it("handles pulls correctly and updates logs", () => {
         const { result } = renderHook(() => useBanditGame(2, 2));
+
+        act(() => {
+            result.current.startGame();
+        });
 
         act(() => {
             result.current.handlePull(0);

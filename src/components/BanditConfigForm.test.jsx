@@ -39,7 +39,7 @@ describe("BanditConfig Component", () => {
         const gaussianOption = screen.getByText("Gaussian");
         fireEvent.click(gaussianOption);
 
-        expect(props.setType).toHaveBeenCalledWith("gaussian");
+        expect(props.setType).toHaveBeenCalledWith("Gaussian");
     });
 
 

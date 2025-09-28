@@ -13,21 +13,16 @@ export default function App() {
         iterations, setIterations,
         totalPulls, totalReward,
         logs,
-        resetAll, setArmCount, handlePull
+        running,
+        startGame,
+        resetAll,
+        setArmCount,
+        handlePull
     } = useBanditGame();
-
-    const [running, setRunning] = React.useState(false);
-    const startSimulation = () => {
-        setRunning(true);
-        console.log("Simulation started");
-    }
-
 
     const handleReset = () => {
         resetAll();
-        setRunning(false);
         console.log("Simulation stopped and reset");
-
     };
 
     return (
@@ -41,7 +36,7 @@ export default function App() {
                         iterations={iterations} setIterations={setIterations}
                         resetAll={handleReset}
                         running={running}
-                        startSimulation={startSimulation}
+                        startSimulation={startGame}
                     />
                     <div className="flex-1 flex flex-col gap-4">
                         <BanditPlayground
