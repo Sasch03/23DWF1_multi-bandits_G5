@@ -29,3 +29,5 @@ dist/
 docs/
 *.lcov
 
+# Dev scratch
+src/algorithms/__dev_test__.mjs

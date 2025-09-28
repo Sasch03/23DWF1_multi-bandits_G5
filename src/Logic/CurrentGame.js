@@ -9,8 +9,6 @@ import { AlgorithmTyp } from './Enumeration/AlgorithmTyp.js';
  * distribution and stores them for later use.
  */
 export default class CurrentGame {
-    numberOfArms;
-    numberOfTries;
     chosenDistribution;
     chosenAlgorithms;
     tableOfRewards;
