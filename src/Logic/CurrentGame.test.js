@@ -1,4 +1,3 @@
-// src/Logic/CurrentGame.test.js
 import { describe, it, expect, beforeEach } from 'vitest';
 import { DistributionTyp } from './Enumeration/DistributionTyp.js';
 import { AlgorithmTyp } from './Enumeration/AlgorithmTyp.js';
