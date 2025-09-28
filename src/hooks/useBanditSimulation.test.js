@@ -38,7 +38,7 @@ describe("useBanditGame Hook", () => {
         const { result } = renderHook(() => useBanditGame(2, 2));
 
         act(() => {
-            result.current.startGame(); // ← das fehlte
+            result.current.startGame();
         });
 
         act(() => {
