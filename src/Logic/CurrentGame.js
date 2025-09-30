@@ -99,6 +99,7 @@ export default class CurrentGame {
                 // For Bernoulli bandits: assign each arm a fixed success probability.
                 const bernoulliProbabilities = Array.from({ length: numberOfArms }, () => Math.random());
                 console.log("Bernoulli probabilities:", bernoulliProbabilities);
+                this.bernoulliProbabilities = bernoulliProbabilities;
 
                 // Generate rewards for each arm across all trials.
                 for (let i = 0; i < numberOfArms; i++) {

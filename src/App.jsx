@@ -17,6 +17,7 @@ export default function App() {
         running,
         showPlot, setShowPlot,
         startGame,
+        armProbabilities, setArmProbabilities,
         resetAll,
         setArmCount,
         handlePull
@@ -60,7 +61,10 @@ export default function App() {
             <br />
             {(showPlot) && (
                 <div className="p-6 rounded-2xl bg-card text-card-foreground shadow-2xl flex gap-6">
-                    <BanditResultsChart />
+                    <BanditResultsChart
+                    armProbabilities={armProbabilities}
+                    setArmProbabilities={setArmProbabilities}
+                    />
                 </div>
             )}
 

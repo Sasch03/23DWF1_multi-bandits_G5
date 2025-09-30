@@ -22,6 +22,8 @@ export function useBanditGame(initialArms = 5, initialIterations = 10) {
     const [running, setRunning] = useState(false);
     const [showPlot, setShowPlot] = useState(false);
     const [rewardTable, setRewardTable] = useState([]);
+    const [armProbabilities, setArmProbabilities] = useState([]);
+
 
     const gameRef = useRef(null);
 
@@ -35,6 +37,11 @@ export function useBanditGame(initialArms = 5, initialIterations = 10) {
         game.setChosenDistribution(type);
         game.createTable();
 
+        // set arm probabilities if Bernoulli
+        if (game.chosenDistribution === DistributionTyp.BERNOULLI) {
+            setArmProbabilities(game.bernoulliProbabilities);
+        }
+
         gameRef.current = game;
         setRewardTable(game.tableOfRewards);
 
@@ -43,7 +50,6 @@ export function useBanditGame(initialArms = 5, initialIterations = 10) {
         setTotalPulls(0);
         setTotalReward(0);
         setLogs([]);
-
         setRunning(true);
     };
 
@@ -124,6 +130,7 @@ export function useBanditGame(initialArms = 5, initialIterations = 10) {
         logs,
         running,
         showPlot, setShowPlot,
+        armProbabilities, setArmProbabilities,
         startGame,
         resetAll,
         setArmCount,
