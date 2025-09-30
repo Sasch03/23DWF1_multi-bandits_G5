@@ -5,6 +5,7 @@ import BanditConfig from './components/BanditConfigForm.jsx';
 import BanditPlayground from './components/BanditPlayground.jsx';
 import BanditResults from './components/BanditResults.jsx';
 import { useBanditGame } from "./hooks/useBanditSimulation.js";
+import BanditResultsChart from "@/components/BanditResultsChart.jsx";
 
 export default function App() {
     const {
@@ -50,8 +51,13 @@ export default function App() {
                             totalReward={totalReward}
                             logs={logs}
                         />
+
                     </div>
                 </div>
+            </div>
+            <br />
+            <div className="p-6 rounded-2xl bg-card text-card-foreground shadow-2xl flex gap-6">
+                <BanditResultsChart />
             </div>
         </div>
     );
