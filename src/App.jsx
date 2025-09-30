@@ -15,6 +15,7 @@ export default function App() {
         totalPulls, totalReward,
         logs,
         running,
+        showPlot, setShowPlot,
         startGame,
         resetAll,
         setArmCount,
@@ -37,6 +38,7 @@ export default function App() {
                         iterations={iterations} setIterations={setIterations}
                         resetAll={handleReset}
                         running={running}
+                        showPlot={showPlot} setShowPlot={setShowPlot}
                         startSimulation={startGame}
                     />
                     <div className="flex-1 flex flex-col gap-4">
@@ -56,9 +58,12 @@ export default function App() {
                 </div>
             </div>
             <br />
-            <div className="p-6 rounded-2xl bg-card text-card-foreground shadow-2xl flex gap-6">
-                <BanditResultsChart />
-            </div>
+            {(showPlot) && (
+                <div className="p-6 rounded-2xl bg-card text-card-foreground shadow-2xl flex gap-6">
+                    <BanditResultsChart />
+                </div>
+            )}
+
         </div>
     );
 }

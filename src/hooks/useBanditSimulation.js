@@ -20,6 +20,7 @@ export function useBanditGame(initialArms = 5, initialIterations = 10) {
     const [totalReward, setTotalReward] = useState(0);
     const [logs, setLogs] = useState([]);
     const [running, setRunning] = useState(false);
+    const [showPlot, setShowPlot] = useState(false);
     const [rewardTable, setRewardTable] = useState([]);
 
     const gameRef = useRef(null);
@@ -58,6 +59,7 @@ export function useBanditGame(initialArms = 5, initialIterations = 10) {
         setRewardTable([]);
         gameRef.current = null;
         setRunning(false);
+        setShowPlot(false);
     };
 
     /**
@@ -101,7 +103,13 @@ export function useBanditGame(initialArms = 5, initialIterations = 10) {
         const reward = rewardTable[idx][armPulls];
 
         setArms(prev => prev.map((a, i) => i === idx ? { ...a, pulls: a.pulls + 1, lastReward: reward } : a));
-        setTotalPulls(tp => tp + 1);
+        setTotalPulls(tp => {
+            const newTotal = tp + 1;
+            if (newTotal >= iterations) {
+                setShowPlot(true);
+            }
+            return newTotal;
+        });
         setTotalReward(tr => tr + reward);
 
         setLogs(prev => [`Timestep: ${totalPulls + 1}, Arm: ${idx + 1}, Reward: ${reward}`, ...prev]);
@@ -115,6 +123,7 @@ export function useBanditGame(initialArms = 5, initialIterations = 10) {
         totalReward,
         logs,
         running,
+        showPlot, setShowPlot,
         startGame,
         resetAll,
         setArmCount,
