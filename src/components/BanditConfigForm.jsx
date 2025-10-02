@@ -62,7 +62,9 @@ export default function BanditConfig({
                     ) : (
                         <Button onClick={startSimulation}>Start</Button>
                     )}
-                    <Button disabled={showPlot || !running} onClick={() => setShowPlot(true)}>Plot</Button>
+                    {!showPlot && running && (
+                        <Button onClick={() => setShowPlot(true)}>Plot</Button>
+                    )}
                     <Button onClick={resetAll}>Zurücksetzen</Button>
 
                 </div>
