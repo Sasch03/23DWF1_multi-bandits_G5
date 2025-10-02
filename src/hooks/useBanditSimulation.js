@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
-import CurrentGame from "@/Logic/CurrentGame.js";
-import {DistributionTyp} from "@/Logic/Enumeration/DistributionTyp.js";
+import CurrentGame from "@/logic/CurrentGame.js";
+import {DistributionTyp} from "@/logic/enumeration/DistributionTyp.js";
 
 /**
  * Custom hook to manage the logic of a multi-armed bandit game.
