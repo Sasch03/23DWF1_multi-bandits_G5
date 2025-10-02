@@ -1,5 +1,5 @@
-import { DistributionTyp } from './Enumeration/DistributionTyp.js';
-import { AlgorithmTyp } from './Enumeration/AlgorithmTyp.js';
+import { DistributionTyp } from '@/logic/enumeration/DistributionTyp.js';
+import { AlgorithmTyp } from '@/logic/enumeration/AlgorithmTyp.js';
 
 /*
  * This class represents a k-armed bandit game configuration and environment.
