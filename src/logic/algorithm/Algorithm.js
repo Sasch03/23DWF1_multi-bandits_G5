@@ -1,10 +1,17 @@
-/**
- * Abstract base class for k-armed bandit algorithms.
+/*
+Abstract base class for k-armed bandit algorithms.
  * Purpose: keep a fixed-size history of selected arms per corresponding steps (selectedArms[t] = arm)
  * and define the contract:
  *   - selectArm(): choose the next arm using past observations only
  *   - update(selectedArms[T], t): store the observed number of arm for step t and update t
  * Concrete algorithms (e.g., Greedy, Epsilon-Greedy, (Manual????) ) extend this class.
+ *
+ * Literature:
+ * Richard S. Sutton, Andrew G. Barto.
+ * Reinforcement Learning: An Introduction (2nd Edition, MIT Press, 2018).
+ * Gangan, S., Soni, M., & Patel, D. (2021).
+ * Survey of multi-armed bandit algorithms applied to recommendation systems.
+ * In International Journal of Computer Applications Technology and Research (IJCATR).
  */
 
 
