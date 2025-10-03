@@ -71,4 +71,28 @@ describe('ExpectedRewardsBased', () => {
         expect(() => b.update({ arm: -1, observedReward: 0 })).toThrow(/bad arm/);
         expect(() => b.update({ arm: 2, observedReward: 0 })).toThrow(/bad arm/);
     });
+    it('init: ignores expectedRewardsBegin if null/undefined', () => {
+        const b1 = new DummyERB({
+            numberOfArms: 2,
+            numberOfTries: 3,
+            expectedRewardsBegin: null,
+        });
+        expect(b1.getExpectedRewards()).toEqual([0, 0]);
+
+        const b2 = new DummyERB({
+            numberOfArms: 2,
+            numberOfTries: 3,
+            expectedRewardsBegin: undefined,
+        });
+        expect(b2.getExpectedRewards()).toEqual([0, 0]);
+    });
+
+    it('init: accepts [0,0,...] as valid expectedRewardsBegin', () => {
+        const b = new DummyERB({
+            numberOfArms: 2,
+            numberOfTries: 3,
+            expectedRewardsBegin: [0, 0],
+        });
+        expect(b.getExpectedRewards()).toEqual([0, 0]);
+    });
 });

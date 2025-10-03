@@ -12,7 +12,7 @@ export default class  ExpectedRewardsBased extends Algorithm {
         // Allow overriding the default zero-initialization of Q.
         // Useful for optimistic initialization or UI-provided starting values.
         // Optional
-        if (expectedRewardsBegin) this.setExpectedRewards(expectedRewardsBegin);
+        if (expectedRewardsBegin!= null) this.setExpectedRewards(expectedRewardsBegin);
     }
 
 
@@ -24,8 +24,6 @@ export default class  ExpectedRewardsBased extends Algorithm {
         this.expectedRewards = expectedRewards.map(Number);
     }
 
-
-//!!!compute
 
     getExpectedRewards() {
         return this.expectedRewards.slice();
@@ -47,6 +45,5 @@ export default class  ExpectedRewardsBased extends Algorithm {
     update({arm, observedReward}) {
         super.update({arm, observedReward});
         this.expectedRewards[arm] += (observedReward - this.expectedRewards[arm]) / this.numberOfPulls[arm];
-        // this.expectedRewards[arm] += this.alpha * (observedReward - this.expectedRewards[arm]);
     }
 }
