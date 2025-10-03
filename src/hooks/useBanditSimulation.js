@@ -22,7 +22,8 @@ export function useBanditGame(initialArms = 5, initialIterations = 10) {
     const [running, setRunning] = useState(false);
     const [showPlot, setShowPlot] = useState(false);
     const [rewardTable, setRewardTable] = useState([]);
-    const [armProbabilities, setArmProbabilities] = useState([]);
+    const [game, setGame] = useState(null);
+
 
 
     const gameRef = useRef(null);
@@ -37,12 +38,8 @@ export function useBanditGame(initialArms = 5, initialIterations = 10) {
         game.setChosenDistribution(type);
         game.createTable();
 
-        // set arm probabilities if Bernoulli
-        if (game.chosenDistribution === DistributionTyp.BERNOULLI) {
-            setArmProbabilities(game.bernoulliProbabilities);
-        }
-
         gameRef.current = game;
+        setGame(game); // sorgt dafür, dass React neu rendert
         setRewardTable(game.tableOfRewards);
 
         // Reset Counters
@@ -130,7 +127,7 @@ export function useBanditGame(initialArms = 5, initialIterations = 10) {
         logs,
         running,
         showPlot, setShowPlot,
-        armProbabilities, setArmProbabilities,
+        game,
         startGame,
         resetAll,
         setArmCount,

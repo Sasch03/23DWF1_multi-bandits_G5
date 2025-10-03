@@ -17,10 +17,10 @@ export default function App() {
         running,
         showPlot, setShowPlot,
         startGame,
-        armProbabilities, setArmProbabilities,
         resetAll,
         setArmCount,
-        handlePull
+        handlePull,
+        game,
     } = useBanditGame();
 
     const handleReset = () => {
@@ -59,11 +59,10 @@ export default function App() {
                 </div>
             </div>
             <br />
-            {(showPlot) && (
 
+            {(showPlot) && (
                     <BanditResultsChart
-                    armProbabilities={armProbabilities}
-                    setArmProbabilities={setArmProbabilities}
+                    game={game}
                     />
             )}
 
