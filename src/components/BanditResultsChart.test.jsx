@@ -18,7 +18,7 @@ vi.mock("recharts", async () => {
             </div>
         ),
         LineChart: ({ children }) => <div data-testid="line-chart">{children}</div>,
-        Bar: () => <div />, // leer, wird durch BarChart-Mock ersetzt
+        Bar: () => <div />,
         Line: () => <div />,
         XAxis: () => <div />,
         CartesianGrid: () => <div />,
