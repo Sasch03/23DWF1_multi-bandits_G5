@@ -60,12 +60,11 @@ export default function App() {
             </div>
             <br />
             {(showPlot) && (
-                <div className="p-6 rounded-2xl bg-card text-card-foreground shadow-2xl flex gap-6">
+
                     <BanditResultsChart
                     armProbabilities={armProbabilities}
                     setArmProbabilities={setArmProbabilities}
                     />
-                </div>
             )}
 
         </div>
