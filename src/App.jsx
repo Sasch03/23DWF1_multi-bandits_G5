@@ -5,6 +5,7 @@ import BanditConfig from './components/BanditConfigForm.jsx';
 import BanditPlayground from './components/BanditPlayground.jsx';
 import BanditResults from './components/BanditResults.jsx';
 import { useBanditGame } from "./hooks/useBanditSimulation.js";
+import BanditResultsChart from "@/components/BanditResultsChart.jsx";
 
 export default function App() {
     const {
@@ -14,10 +15,12 @@ export default function App() {
         totalPulls, totalReward,
         logs,
         running,
+        showPlot, setShowPlot,
         startGame,
         resetAll,
         setArmCount,
-        handlePull
+        handlePull,
+        game,
     } = useBanditGame();
 
     const handleReset = () => {
@@ -36,6 +39,7 @@ export default function App() {
                         iterations={iterations} setIterations={setIterations}
                         resetAll={handleReset}
                         running={running}
+                        showPlot={showPlot} setShowPlot={setShowPlot}
                         startSimulation={startGame}
                     />
                     <div className="flex-1 flex flex-col gap-4">
@@ -50,9 +54,18 @@ export default function App() {
                             totalReward={totalReward}
                             logs={logs}
                         />
+
                     </div>
                 </div>
             </div>
+            <br />
+
+            {(showPlot) && (
+                    <BanditResultsChart
+                    game={game}
+                    />
+            )}
+
         </div>
     );
 }

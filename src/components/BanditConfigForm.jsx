@@ -28,7 +28,7 @@ export default function BanditConfig({
                                          type, setType,
                                          arms, setArmCount,
                                          iterations, setIterations,
-                                         startSimulation, resetAll, running
+                                         startSimulation, resetAll, running, showPlot, setShowPlot
                                      }) {
     return (
         <Card className="w-1/3 flex flex-col bg-muted/30 gap-4 shadow-xl p-4">
@@ -62,7 +62,11 @@ export default function BanditConfig({
                     ) : (
                         <Button onClick={startSimulation}>Start</Button>
                     )}
+                    {!showPlot && running && (
+                        <Button onClick={() => setShowPlot(true)}>Plot</Button>
+                    )}
                     <Button onClick={resetAll}>Zurücksetzen</Button>
+
                 </div>
             </div>
         </Card>

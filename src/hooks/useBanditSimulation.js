@@ -20,7 +20,11 @@ export function useBanditGame(initialArms = 5, initialIterations = 10) {
     const [totalReward, setTotalReward] = useState(0);
     const [logs, setLogs] = useState([]);
     const [running, setRunning] = useState(false);
+    const [showPlot, setShowPlot] = useState(false);
     const [rewardTable, setRewardTable] = useState([]);
+    const [game, setGame] = useState(null);
+
+
 
     const gameRef = useRef(null);
 
@@ -35,6 +39,7 @@ export function useBanditGame(initialArms = 5, initialIterations = 10) {
         game.createTable();
 
         gameRef.current = game;
+        setGame(game); // sorgt dafür, dass React neu rendert
         setRewardTable(game.tableOfRewards);
 
         // Reset Counters
@@ -42,7 +47,6 @@ export function useBanditGame(initialArms = 5, initialIterations = 10) {
         setTotalPulls(0);
         setTotalReward(0);
         setLogs([]);
-
         setRunning(true);
     };
 
@@ -58,6 +62,7 @@ export function useBanditGame(initialArms = 5, initialIterations = 10) {
         setRewardTable([]);
         gameRef.current = null;
         setRunning(false);
+        setShowPlot(false);
     };
 
     /**
@@ -101,7 +106,13 @@ export function useBanditGame(initialArms = 5, initialIterations = 10) {
         const reward = rewardTable[idx][armPulls];
 
         setArms(prev => prev.map((a, i) => i === idx ? { ...a, pulls: a.pulls + 1, lastReward: reward } : a));
-        setTotalPulls(tp => tp + 1);
+        setTotalPulls(tp => {
+            const newTotal = tp + 1;
+            if (newTotal >= iterations) {
+                setShowPlot(true);
+            }
+            return newTotal;
+        });
         setTotalReward(tr => tr + reward);
 
         setLogs(prev => [`Timestep: ${totalPulls + 1}, Arm: ${idx + 1}, Reward: ${reward}`, ...prev]);
@@ -115,6 +126,8 @@ export function useBanditGame(initialArms = 5, initialIterations = 10) {
         totalReward,
         logs,
         running,
+        showPlot, setShowPlot,
+        game,
         startGame,
         resetAll,
         setArmCount,
