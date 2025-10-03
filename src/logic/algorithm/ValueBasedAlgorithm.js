@@ -1,4 +1,4 @@
-import Algorithm from "@/Logic/Algorithm/Algorithm.js";
+import Algorithm from "@/logic/algorithm/Algorithm.js";
 // ExpectedRewardsBased — intermediate (abstract) class between Algorithm and concrete strategies.
 // It extends the base Algorithm by computing and storing "expected rewards" (expectedRewards) for each arm.
 // Algorithms that select an arm based on these expectations (e.g., ε-Greedy, UCB, etc.)
