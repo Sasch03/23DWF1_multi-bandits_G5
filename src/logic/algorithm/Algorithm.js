@@ -1,5 +1,4 @@
-/*
-Abstract base class for k-armed bandit algorithms.
+/*Abstract base class for k-armed bandit algorithms.
  * Purpose: keep a fixed-size history of selected arms per corresponding steps (selectedArms[t] = arm)
  * and define the contract:
  *   - selectArm(): choose the next arm using past observations only
