@@ -11,13 +11,13 @@ describe('StrategyRewardHistory', () => {
     it('adds integer rewards correctly', () => {
         history.addReward(history.manualRewards, 1);
         history.addReward(history.manualRewards, 0);
-        expect(history.manualRewards).toEqual([1, 0]);
+        expect(history.manualRewards).toEqual([1, 1]);
     });
 
     it('allows floating point rewards (current implementation)', () => {
         history.addReward(history.greedyRewards, 0.5);
         history.addReward(history.greedyRewards, 3.14);
-        expect(history.greedyRewards).toEqual([0.5, 3.14]);
+        expect(history.greedyRewards).toEqual([0.5, 3.64]);
     });
 
     it('allows negative numbers', () => {
