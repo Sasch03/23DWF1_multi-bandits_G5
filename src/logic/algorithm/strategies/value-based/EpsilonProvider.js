@@ -15,7 +15,7 @@ export class EpsilonProvider {
      * @returns {number} Epsilon value.
      */
 
-    getEpsilon(_step, _totalSteps) {
+    getEpsilon() {
         return this.epsilon;
     }
     setEpsilon(v) {
