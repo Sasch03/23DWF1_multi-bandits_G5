@@ -12,7 +12,6 @@ export default class StrategyRewardHistory {
      *
      * @param {Array} arrRef - reference to the target array (must be one of the three internal arrays)
      * @param {number} reward - the reward value to append
-     * @returns {number} new length of the array after insertion
      */
     addReward(arrRef, reward) {
         if (arrRef !== this.manualRewards && arrRef !== this.greedyRewards && arrRef !== this.epsilonGreedyRewards) {
@@ -22,8 +21,12 @@ export default class StrategyRewardHistory {
             throw new Error('Reward must be a number.');
         }
 
+        const previousTotal = arrRef.length > 0 ? arrRef[arrRef.length - 1] : 0;
+        const newTotal = previousTotal + reward;
+
+        // Append the cumulative value
+        arrRef.push(newTotal);
         console.log(`Reward ${reward} added to array ${arrRef}.`);
-        return arrRef.push(reward);
     }
 
     /**
