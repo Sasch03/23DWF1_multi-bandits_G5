@@ -87,8 +87,8 @@ describe("useBanditGame Hook", () => {
     it("can set type", () => {
         const { result } = renderHook(() => useBanditGame());
         act(() => {
-            result.current.setType("normal");
+            result.current.setType("Bernoulli");
         });
-        expect(result.current.type).toBe("normal");
+        expect(result.current.type).toBe("Bernoulli");
     });
 });
