@@ -1,17 +1,20 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import CurrentGame from "@/logic/CurrentGame.js";
-import {DistributionTyp} from "@/logic/enumeration/DistributionTyp.js";
+import { DistributionTyp } from "@/logic/enumeration/DistributionTyp.js";
+import ManualAlgorithm from "@/logic/algorithm/strategies/rule-based/Manual.js";
+import { DEFAULT_ARMS, DEFAULT_ITERATIONS } from "@/constants.js";
 
 /**
- * Custom hook to manage the logic of a multi-armed bandit game.
- * Encapsulates state (arms, iterations, logs, etc.) and functions (pull, reset, change arm count).
+ * Custom hook to manage a multi-armed bandit simulation.
+ * Handles game state, arm pulls, total reward, logs, and algorithm updates.
  *
- * @param {number} [initialArms=5] - Initial number of arms (slots).
- * @param {number} [initialIterations=10] - Initial number of maximum iterations.
- * @returns {object} An object containing state variables and functions to control the game.
+ * @param {number} [initialArms=DEFAULT_ARMS] - Initial number of arms in the bandit.
+ * @param {number} [initialIterations=DEFAULT_ITERATIONS] - Maximum number of iterations/pulls.
+ * @returns {object} - Returns the current state and actions to control the simulation.
  */
-export function useBanditGame(initialArms = 5, initialIterations = 10) {
-    const [type, setType] = useState(DistributionTyp.BERNOULLI);
+export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DEFAULT_ITERATIONS) {
+
+    // === State variables ===
     const [arms, setArms] = useState(
         Array.from({ length: initialArms }, (_, i) => ({ id: i, pulls: 0, lastReward: 0 }))
     );
@@ -24,113 +27,185 @@ export function useBanditGame(initialArms = 5, initialIterations = 10) {
     const [rewardTable, setRewardTable] = useState([]);
     const [game, setGame] = useState(null);
 
-
-
+    const type = useRef(DistributionTyp.BERNOULLI);
     const gameRef = useRef(null);
 
-    // === Start Simulation ===
-    const startGame = () => {
-        if (running) return;
+    // === Effects ===
+    /**
+     * Automatically shows the plot when total pulls reach or exceed the iteration limit.
+     */
+    useEffect(() => {
+        if (totalPulls >= iterations && running) setShowPlot(true);
+    }, [totalPulls, iterations, running]);
 
-        const game = new CurrentGame();
-        game.setNumberOfArms(arms.length);
-        game.setNumberOfTries(iterations);
-        game.setChosenDistribution(type);
-        game.createTable();
 
-        gameRef.current = game;
-        setGame(game); // sorgt dafür, dass React neu rendert
-        setRewardTable(game.tableOfRewards);
+    // === Helper functions ===
 
-        // Reset Counters
+    /**
+     * Safely update the algorithm with the observed reward for a given arm.
+     * Handles exceptions and returns the timestep.
+     *
+     * @param {object} algo - The algorithm instance (must have update() and getStep()).
+     * @param {number} armIdx - Index of the arm that was pulled.
+     * @param {number} reward - Reward obtained from the arm pull.
+     * @returns {number|object} - Returns the timestep or an error object.
+     */
+    const safeUpdateAlgorithm = (algo, armIdx, reward) => {
+        if (!algo || typeof algo.update !== "function") return null;
+        try {
+            algo.update({ arm: armIdx, observedReward: reward });
+            return algo.getStep();
+        } catch (err) {
+            console.warn("Algorithm update failed:", err);
+            return { error: err };
+        }
+    };
+
+    /**
+     * Add a log entry for a single arm pull.
+     *
+     * @param {number} timestep - Current timestep of the simulation.
+     * @param {number} idx - Index of the arm pulled.
+     * @param {number} reward - Reward obtained from the arm pull.
+     */
+    const addLog = (timestep, idx, reward) => {
+        setLogs(prev => [`Timestep: ${timestep}, Arm: ${idx + 1}, Reward: ${reward}`, ...prev]);
+    };
+
+    /**
+     * Update the state of a single arm after a pull.
+     *
+     * @param {number} idx - Index of the arm.
+     * @param {number} reward - Reward received for the pull.
+     */
+    const updateArm = (idx, reward) => {
+        setArms(prev => prev.map((a, i) =>
+            i === idx ? { ...a, pulls: a.pulls + 1, lastReward: reward } : a
+        ));
+    };
+
+
+    // === Game control functions ===
+
+    /**
+     * Reset all internal state variables for a new simulation
+     * without touching the game instance itself.
+     */
+    const resetState = () => {
         setArms(prev => prev.map(a => ({ ...a, pulls: 0, lastReward: 0 })));
         setTotalPulls(0);
         setTotalReward(0);
         setLogs([]);
-        setRunning(true);
+        setShowPlot(false);
     };
 
     /**
-     * Resets all game state variables to their initial values.
+     * Start a new bandit simulation.
+     * Initializes the game, the reward table, and the manual algorithm.
+     */
+    const startGame = () => {
+        if (running) return;
+
+        // Reset state first
+        resetState();
+
+        // Initialize new game instance
+        const newGame = new CurrentGame();
+        newGame.setNumberOfArms(arms.length);
+        newGame.setNumberOfTries(iterations);
+        newGame.setChosenDistribution(type.current);
+        newGame.createTable();
+
+        // Set up manual algorithm
+        const algo = new ManualAlgorithm({ numberOfArms: arms.length, numberOfTries: iterations });
+        algo.reset();
+        newGame.algorithm = algo;
+
+        // Finalize setup
+        gameRef.current = newGame;
+        setGame(newGame);
+        setRewardTable(newGame.tableOfRewards);
+        setRunning(true);
+    };
+
+
+    /**
+     * Handle a single pull of a given arm.
+     * Updates arm state, total reward, total pulls, and logs.
+     *
+     * @param {number} idx - Index of the arm to pull.
+     */
+    const handlePull = (idx) => {
+        if (!running || !gameRef.current || rewardTable.length === 0) return;
+        if (totalPulls >= iterations || arms[idx].pulls >= iterations) return;
+
+        const reward = rewardTable[idx][arms[idx].pulls];
+        const timestep = safeUpdateAlgorithm(gameRef.current.algorithm, idx, reward) || totalPulls + 1;
+
+        // Update states
+        updateArm(idx, reward);
+        setTotalReward(prev => prev + reward);
+        setTotalPulls(prev => prev + 1);
+        addLog(timestep, idx, reward);
+    };
+
+    /**
+     * Change the number of arms in the simulation.
+     * Can increase or decrease the arm count dynamically.
+     *
+     * @param {number} count - Desired number of arms.
+     */
+    const setArmCount = (count) => {
+        const current = arms.length;
+        let newArms;
+        if (count > current) {
+            const extra = Array.from({ length: count - current }, (_, i) => ({
+                id: current + i,
+                pulls: 0,
+                lastReward: 0
+            }));
+            newArms = [...arms, ...extra];
+        } else {
+            newArms = arms.slice(0, count);
+        }
+        setArms(newArms);
+    };
+
+    /**
+     * Reset all game state to initial defaults.
+     * Resets arms, iterations, total pulls, reward, logs, and plot visibility.
      */
     const resetAll = () => {
+        if (gameRef.current?.algorithm?.reset) gameRef.current.algorithm.reset();
+
         setArms(Array.from({ length: initialArms }, (_, i) => ({ id: i, pulls: 0, lastReward: 0 })));
         setIterations(initialIterations);
         setTotalPulls(0);
         setTotalReward(0);
         setLogs([]);
         setRewardTable([]);
-        gameRef.current = null;
         setRunning(false);
         setShowPlot(false);
-    };
-
-    /**
-     * Adjusts the number of arms dynamically.
-     * Adds new arms or removes existing arms based on the given count.
-     *
-     * @param {number} count - The new number of arms.
-     */
-    const setArmCount = (count) => {
-        const current = arms.length;
-        if (count > current) {
-            const extra = Array.from({ length: count - current }, (_, i) => ({
-                id: current + i, pulls: 0, lastReward: 0
-            }));
-            setArms(prev => [...prev, ...extra]);
-        } else {
-            setArms(prev => prev.slice(0, count));
-        }
-    };
-
-    /**
-     * Performs a pull on the specified arm (like pulling a slot machine lever).
-     * Updates arm state, total pulls, total rewards, and logs the action.
-     *
-     * @param {number} idx - The index of the arm to pull.
-     */
-    const handlePull = (idx) => {
-        if (!running || !gameRef.current || rewardTable.length === 0) {
-            console.log("Game not started yet!");
-            return;
-        }
-
-        if (totalPulls >= iterations) {
-            console.log(`Limit reached: ${iterations} pulls`);
-            return;
-        }
-
-        const armPulls = arms[idx].pulls;
-        if (armPulls >= iterations) return;
-
-        const reward = rewardTable[idx][armPulls];
-
-        setArms(prev => prev.map((a, i) => i === idx ? { ...a, pulls: a.pulls + 1, lastReward: reward } : a));
-        setTotalPulls(tp => {
-            const newTotal = tp + 1;
-            if (newTotal >= iterations) {
-                setShowPlot(true);
-            }
-            return newTotal;
-        });
-        setTotalReward(tr => tr + reward);
-
-        setLogs(prev => [`Timestep: ${totalPulls + 1}, Arm: ${idx + 1}, Reward: ${reward}`, ...prev]);
+        gameRef.current = null;
+        setGame(null);
     };
 
     return {
-        type, setType,
+        type: type.current,
+        setType: (t) => (type.current = t),
         arms,
-        iterations, setIterations,
+        iterations,
+        setIterations,
         totalPulls,
         totalReward,
         logs,
         running,
-        showPlot, setShowPlot,
+        showPlot,
+        setShowPlot,
         game,
         startGame,
-        resetAll,
-        setArmCount,
         handlePull,
+        setArmCount,
+        resetAll,
     };
 }
