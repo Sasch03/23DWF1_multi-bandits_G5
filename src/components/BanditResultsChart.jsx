@@ -12,22 +12,17 @@ const chartConfig = {
     regret: { label: "Regret", color: "var(--chart-5)" },
 }
 
-// Platzhalter für echte Daten
-function makeUserLineData(game) {
-    if (!game || !game.tableOfRewards) return [];
-
-    const { tableOfRewards, numberOfTries } = game;
-
-    const chosenRewards = tableOfRewards[0];
-
-    return Array.from({ length: numberOfTries }, (_, t) => ({
-        try: t + 1,
-        reward: chosenRewards.slice(0, t + 1).reduce((a, b) => a + b, 0),
-    }));
+function makeLineData(cumulativeRewards) {
+const rewards = cumulativeRewards ?? [];
+return [{ try: 0, reward: 0 }, ...rewards.map((val, idx) => ({
+    try: idx + 1,
+    reward: val
+}))];
 }
 
-export default function BanditResultsCharts({ game }) {
+export default function BanditResultsCharts({ game, cumulativeRewards }) {
     console.log(game);
+    console.log("Cumulative rewards:", cumulativeRewards);
 
     const barData = (game.bernoulliProbabilities ?? []).map((p, idx) => ({
         arm: `Arm ${idx + 1}`,
@@ -81,8 +76,7 @@ export default function BanditResultsCharts({ game }) {
                     <CardContent>
                         <ChartContainer config={chartConfig} className="overflow-hidden">
                             <ResponsiveContainer width="100%">
-                                <LineChart data={makeUserLineData(game)}>
-                                    <CartesianGrid vertical={false} />
+                                <LineChart data={makeLineData(cumulativeRewards)}>                                    <CartesianGrid vertical={false} />
                                     <XAxis dataKey="try" axisLine={false} tickLine={false} />
                                     <ChartTooltip content={<ChartTooltipContent />} />
                                     <Line type="monotone" dataKey="reward" stroke="var(--chart-1)" />

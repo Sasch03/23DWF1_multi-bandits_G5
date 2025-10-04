@@ -3,6 +3,7 @@ import CurrentGame from "@/logic/CurrentGame.js";
 import { DistributionTyp } from "@/logic/enumeration/DistributionTyp.js";
 import ManualAlgorithm from "@/logic/algorithm/strategies/rule-based/Manual.js";
 import { DEFAULT_ARMS, DEFAULT_ITERATIONS } from "@/constants.js";
+import StrategyRewardHistory from "@/logic/StrategyRewardHistory.js";
 
 /**
  * Custom hook to manage a multi-armed bandit simulation.
@@ -29,6 +30,9 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
 
     const type = useRef(DistributionTyp.BERNOULLI);
     const gameRef = useRef(null);
+    const historyRef = useRef(new StrategyRewardHistory());
+    const manualObservedRewardsRef = useRef([]);
+
 
     // === Effects ===
     /**
@@ -100,6 +104,13 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
     };
 
     /**
+     * Get a copy of the cumulative rewards recorded for the manual strategy.
+     *
+     * @returns {number[]} - Array of cumulative rewards.
+     */
+    const getCumulativeRewards = () => [...historyRef.current.manualRewards];
+
+    /**
      * Start a new bandit simulation.
      * Initializes the game, the reward table, and the manual algorithm.
      */
@@ -142,12 +153,21 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
         const reward = rewardTable[idx][arms[idx].pulls];
         const timestep = safeUpdateAlgorithm(gameRef.current.algorithm, idx, reward) || totalPulls + 1;
 
-        // Update states
+        // --- State Updates ---
         updateArm(idx, reward);
         setTotalReward(prev => prev + reward);
         setTotalPulls(prev => prev + 1);
         addLog(timestep, idx, reward);
+
+        // save observed reward for history tracking
+        manualObservedRewardsRef.current.push(reward);
+
+        // sync history
+        historyRef.current.addReward(historyRef.current.manualRewards, {
+            observedRewards: manualObservedRewardsRef.current
+        });
     };
+
 
     /**
      * Change the number of arms in the simulation.
@@ -188,6 +208,8 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
         setShowPlot(false);
         gameRef.current = null;
         setGame(null);
+        historyRef.current.reset();
+        manualObservedRewardsRef.current = [];
     };
 
     return {
@@ -203,6 +225,7 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
         showPlot,
         setShowPlot,
         game,
+        getCumulativeRewards,
         startGame,
         handlePull,
         setArmCount,
