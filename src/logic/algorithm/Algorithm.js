@@ -13,7 +13,6 @@
  * In International Journal of Computer Applications Technology and Research (IJCATR).
  */
 
-
 export default class Algorithm {
     constructor({ numberOfArms, numberOfTries }) {
         //parameters:
@@ -26,12 +25,10 @@ export default class Algorithm {
         this.observedRewards = Array(numberOfTries).fill(0);    // history: observed rewards at each step t
     }
 
-
     /* Abstract method, that returns the index of the next selected arm. */
     /*    @returns {number} index in [0, numberOfArms) */
     selectArm()
     { throw new Error('abstract'); }
-
 
     /**
      * Record the selected arm for the current step and update t (make t=t+1).
@@ -44,13 +41,11 @@ export default class Algorithm {
         if (this.step >= this.numberOfTries)     throw new Error('out of tries');
         if (this.selectedArms[this.step] !== null) throw new Error('already recorded');
 
-
         this.selectedArms[this.step] = arm;
         this.observedRewards[this.step] = observedReward;
         this.numberOfPulls[arm] += 1;
         this.step += 1;
     }
-
 
     /** Reset algorithm state: clear history and step for a new game. */
     reset() {
@@ -59,6 +54,23 @@ export default class Algorithm {
         this.observedRewards.fill(null);
         this.numberOfPulls.fill(0);
         //if subclass has extra state — override and call super.reset()
+    }
+
+    // === safe getters ===
+    getSelectedArms() {
+        return this.selectedArms.slice();
+    }
+
+    getObservedRewards() {
+        return this.observedRewards.slice();
+    }
+
+    getNumberOfPulls() {
+        return this.numberOfPulls.slice();
+    }
+
+    getStep() {
+        return this.step;
     }
 }
 
