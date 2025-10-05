@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from "react";
 import CurrentGame from "@/logic/CurrentGame.js";
 import { DistributionTyp } from "@/logic/enumeration/DistributionTyp.js";
 import ManualAlgorithm from "@/logic/algorithm/strategies/rule-based/Manual.js";
+import { Greedy } from "@/logic/algorithm/strategies/value-based/Greedy.js";
+import EpsGreedy from "@/logic/algorithm/strategies/value-based/EpsGreedy.js";
 import { DEFAULT_ARMS, DEFAULT_ITERATIONS } from "@/constants.js";
 import StrategyRewardHistory from "@/logic/StrategyRewardHistory.js";
 
@@ -32,7 +34,7 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
     const gameRef = useRef(null);
     const historyRef = useRef(new StrategyRewardHistory());
     const manualObservedRewardsRef = useRef([]);
-
+    const algorithmsRef = useRef({});
 
     // === Effects ===
     /**
@@ -103,12 +105,11 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
         setShowPlot(false);
     };
 
-    /**
-     * Get a copy of the cumulative rewards recorded for the manual strategy.
-     *
-     * @returns {number[]} - Array of cumulative rewards.
-     */
-    const getCumulativeRewards = () => [...historyRef.current.manualRewards];
+    const getCumulativeRewards = () => ({
+        manualRewards: [...historyRef.current.manualRewards],
+        greedyRewards: [...historyRef.current.greedyRewards],
+        epsilonGreedyRewards: [...historyRef.current.epsilonGreedyRewards],
+    });
 
     /**
      * Start a new bandit simulation.
@@ -127,12 +128,36 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
         newGame.setChosenDistribution(type.current);
         newGame.createTable();
 
-        // Set up manual algorithm
-        const algo = new ManualAlgorithm({ numberOfArms: arms.length, numberOfTries: iterations });
-        algo.reset();
-        newGame.algorithm = algo;
+        // algorithms setup
+        const manualAlgo = new ManualAlgorithm({ numberOfArms: arms.length, numberOfTries: iterations });
+        manualAlgo.reset();
 
-        // Finalize setup
+        const greedyAlgo = new Greedy({ numberOfArms: arms.length, numberOfTries: iterations });
+        greedyAlgo.reset();
+
+        const epsAlgo = new EpsGreedy({ numberOfArms: arms.length, numberOfTries: iterations });
+        epsAlgo.reset();
+
+        algorithmsRef.current = { manual: manualAlgo, greedy: greedyAlgo, epsilon: epsAlgo };
+
+        // algo simulations for history tracking
+        const table = newGame.tableOfRewards;
+        for (let t = 0; t < iterations; t++) {
+            const gArm = greedyAlgo.selectArm();
+            const gReward = table[gArm][t];
+            greedyAlgo.update({ arm: gArm, observedReward: gReward });
+
+            const eArm = epsAlgo.selectArm();
+            const eReward = table[eArm][t];
+            epsAlgo.update({ arm: eArm, observedReward: eReward });
+        }
+
+        // sync history
+        historyRef.current.addReward(historyRef.current.greedyRewards, { observedRewards: greedyAlgo.getObservedRewards() });
+        historyRef.current.addReward(historyRef.current.epsilonGreedyRewards, { observedRewards: epsAlgo.getObservedRewards() });
+
+        // initialize manual observed rewards
+        newGame.algorithm = manualAlgo;
         gameRef.current = newGame;
         setGame(newGame);
         setRewardTable(newGame.tableOfRewards);
@@ -151,7 +176,7 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
         if (totalPulls >= iterations || arms[idx].pulls >= iterations) return;
 
         const reward = rewardTable[idx][arms[idx].pulls];
-        const timestep = safeUpdateAlgorithm(gameRef.current.algorithm, idx, reward) || totalPulls + 1;
+        const timestep = safeUpdateAlgorithm(algorithmsRef.current.manual, idx, reward) || totalPulls + 1;
 
         // --- State Updates ---
         updateArm(idx, reward);
@@ -196,7 +221,7 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
      * Resets arms, iterations, total pulls, reward, logs, and plot visibility.
      */
     const resetAll = () => {
-        if (gameRef.current?.algorithm?.reset) gameRef.current.algorithm.reset();
+        if (algorithmsRef.current.manual?.reset) algorithmsRef.current.manual.reset();
 
         setArms(Array.from({ length: initialArms }, (_, i) => ({ id: i, pulls: 0, lastReward: 0 })));
         setIterations(initialIterations);

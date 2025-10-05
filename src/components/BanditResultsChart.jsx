@@ -1,24 +1,33 @@
 "use client"
 
 import { Bar, BarChart, Line, LineChart, XAxis, CartesianGrid, ResponsiveContainer } from "recharts"
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import {ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent} from "@/components/ui/chart"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.jsx";
 
 const chartConfig = {
-    efficiency: { label: "True Drug Efficiency", color: "var(--chart-1)" },
-    epsilonGreedy: { label: "Epsilon-Greedy", color: "var(--chart-2)" },
-    ucb: { label: "UCB", color: "var(--chart-3)" },
-    thompsonSampling: { label: "Thompson Sampling", color: "var(--chart-4)" },
-    regret: { label: "Regret", color: "var(--chart-5)" },
+    manual: { label: "Manual", color: "var(--chart-1)" },
+    greedy: { label: "Greedy", color: "var(--chart-2)" },
+    epsilonGreedy: { label: "Epsilon-Greedy", color: "var(--chart-3)" },
+};
+
+
+function makeLineData({ manualRewards = [], greedyRewards = [], epsilonGreedyRewards = [] }) {
+    const data = [{ try: 0, manual: 0, greedy: 0, epsilonGreedy: 0 }]; // Start bei 0
+    const maxLength = Math.max(manualRewards.length, greedyRewards.length, epsilonGreedyRewards.length);
+
+    for (let i = 0; i < maxLength; i++) {
+        const entry = { try: i + 1 };
+
+        if (i < manualRewards.length) entry.manual = manualRewards[i];
+        if (i < greedyRewards.length) entry.greedy = greedyRewards[i];
+        if (i < epsilonGreedyRewards.length) entry.epsilonGreedy = epsilonGreedyRewards[i];
+
+        data.push(entry);
+    }
+
+    return data;
 }
 
-function makeLineData(cumulativeRewards) {
-const rewards = cumulativeRewards ?? [];
-return [{ try: 0, reward: 0 }, ...rewards.map((val, idx) => ({
-    try: idx + 1,
-    reward: val
-}))];
-}
 
 export default function BanditResultsCharts({ game, cumulativeRewards }) {
     console.log(game);
@@ -60,7 +69,6 @@ export default function BanditResultsCharts({ game, cumulativeRewards }) {
                                             />
                                         }
                                     />
-
                                     <Bar dataKey="probability" fill="var(--chart-1)" radius={8} />
                                 </BarChart>
                             </ResponsiveContainer>
@@ -76,11 +84,25 @@ export default function BanditResultsCharts({ game, cumulativeRewards }) {
                     <CardContent>
                         <ChartContainer config={chartConfig} className="overflow-hidden">
                             <ResponsiveContainer width="100%">
-                                <LineChart data={makeLineData(cumulativeRewards)}>                                    <CartesianGrid vertical={false} />
+                                <LineChart data={makeLineData(cumulativeRewards)}>
+                                    <CartesianGrid vertical={false} />
                                     <XAxis dataKey="try" axisLine={false} tickLine={false} />
                                     <ChartTooltip content={<ChartTooltipContent />} />
-                                    <Line type="monotone" dataKey="reward" stroke="var(--chart-1)" />
+                                    <ChartLegend content={<ChartLegendContent />} />
+
+                                    {Object.entries(chartConfig).map(([key, cfg]) => (
+                                        <Line
+                                            key={key}
+                                            type="linear"
+                                            dataKey={key}
+                                            stroke={cfg.color}
+                                            strokeWidth={2}
+                                            dot={false}
+                                            name={cfg.label}
+                                        />
+                                    ))}
                                 </LineChart>
+
                             </ResponsiveContainer>
                         </ChartContainer>
                     </CardContent>
