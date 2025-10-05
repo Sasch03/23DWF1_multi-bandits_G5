@@ -1,5 +1,8 @@
 import { DistributionTyp } from '@/logic/enumeration/DistributionTyp.js';
 import { AlgorithmTyp } from '@/logic/enumeration/AlgorithmTyp.js';
+import { GAUSSIAN_STD_DEV } from "@/constants.js";
+import { MEAN_OF_MEANS } from "@/constants.js";
+import { GAUSSIAN_MEAN_SPREAD_STD_DEV } from "@/constants.js";
 
 /*
  * This class represents a k-armed bandit game configuration and environment.
@@ -115,20 +118,32 @@ export default class CurrentGame {
             }
 
             case DistributionTyp.GAUSSIAN: {
-                // For Gaussian bandits: assign each arm a fixed mean µ (between 0 and 10).
-                const gaussianMeans = Array.from({ length: numberOfArms }, () => Math.random() * 10);
-                const gaussianStdDev = 2.0;
-                console.log("Gaussian means:", gaussianMeans, "StdDev:", gaussianStdDev);
+                // Generate a mean for each arm.
+                const gaussianMeans = [];
+                for (let i = 0; i < numberOfArms; i++) {
+                    // Box-Muller for mean sampling.
+                    let u = 0;
+                    let v = 0;
+                    while (u === 0) u = Math.random();
+                    while (v === 0) v = Math.random();
+                    const mag = Math.sqrt(-2.0 * Math.log(u));
+                    const z = mag * Math.cos(2.0 * Math.PI * v);
+                    gaussianMeans.push(z * GAUSSIAN_MEAN_SPREAD_STD_DEV + MEAN_OF_MEANS);
+                }
 
-                // Generate normally distributed rewards for each arm.
+                this.gaussianMeans = gaussianMeans;
+
+                console.log("Gaussian means:", gaussianMeans, "StdDev:", GAUSSIAN_STD_DEV);
+
+                // For each arm, draw "numberOfTries" samples.
                 for (let i = 0; i < numberOfArms; i++) {
                     const rewardsForArm = [];
                     let generated = 0;
 
-                    // Generate rewards until the number of trials is reached.
+                    // Use Box-Muller to generate pairs of normals.
                     while (generated < numberOfTries) {
-                        // Box-Muller transform to generate two independent normal(0,1) values.
-                        let u = 0, v = 0;
+                        let u = 0;
+                        let v = 0;
                         while (u === 0) u = Math.random();
                         while (v === 0) v = Math.random();
 
@@ -136,21 +151,21 @@ export default class CurrentGame {
                         const z1 = mag * Math.cos(2.0 * Math.PI * v);
                         const z2 = mag * Math.sin(2.0 * Math.PI * v);
 
-                        // First normally distributed reward value.
                         if (generated < numberOfTries) {
-                            rewardsForArm.push(z1 * gaussianStdDev + gaussianMeans[i]);
+                            rewardsForArm.push(z1 * GAUSSIAN_STD_DEV + gaussianMeans[i]);
                             generated++;
                         }
-                        // Second normally distributed reward value.
                         if (generated < numberOfTries) {
-                            rewardsForArm.push(z2 * gaussianStdDev + gaussianMeans[i]);
+                            rewardsForArm.push(z2 * GAUSSIAN_STD_DEV + gaussianMeans[i]);
                             generated++;
                         }
                     }
+
                     table.push(rewardsForArm);
                 }
                 break;
             }
+
 
             default:
                 // Throw error if the distribution type is not recognized.
