@@ -87,7 +87,34 @@ export default function BanditResultsCharts({ game, cumulativeRewards }) {
                                 <LineChart data={makeLineData(cumulativeRewards)}>
                                     <CartesianGrid vertical={false} />
                                     <XAxis dataKey="try" axisLine={false} tickLine={false} />
-                                    <ChartTooltip content={<ChartTooltipContent />} />
+                                    <ChartTooltip
+                                        content={
+                                            <ChartTooltipContent
+                                                formatter={(value, name) => {
+                                                    if (game?.chosenDistribution === "Gaussian") {
+                                                        return (
+                                                            <div className="text-muted-foreground flex min-w-[150px] items-center text-xs">
+                                                                {chartConfig[name]?.label || name}
+                                                                <div className="text-foreground ml-auto flex items-baseline gap-0.5 font-mono font-medium tabular-nums">
+                                                                    {value.toFixed(2)} €
+                                                                </div>
+                                                            </div>
+                                                        )
+                                                    }
+
+                                                    return (
+                                                        <div className="text-muted-foreground flex min-w-[100px] items-center text-xs">
+                                                            {chartConfig[name]?.label || name}
+                                                            <div className="text-foreground ml-auto flex items-baseline gap-0.5 font-mono font-medium tabular-nums">
+                                                                {value}
+                                                            </div>
+                                                        </div>
+                                                    )
+                                                }}
+                                            />
+                                        }
+                                    />
+
                                     <ChartLegend content={<ChartLegendContent />} />
 
                                     {Object.entries(chartConfig).map(([key, cfg]) => (

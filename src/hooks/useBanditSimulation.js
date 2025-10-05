@@ -75,8 +75,15 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
      * @param {number} reward - Reward obtained from the arm pull.
      */
     const addLog = (timestep, idx, reward) => {
-        setLogs(prev => [`Timestep: ${timestep}, Arm: ${idx + 1}, Reward: ${reward}`, ...prev]);
+        const roundedReward =
+            game?.chosenDistribution === "Gaussian" ? reward.toFixed(2) : reward;
+
+        setLogs(prev => [
+            `Timestep: ${timestep}, Arm: ${idx + 1}, Reward: ${roundedReward}`,
+            ...prev
+        ]);
     };
+
 
     /**
      * Update the state of a single arm after a pull.
