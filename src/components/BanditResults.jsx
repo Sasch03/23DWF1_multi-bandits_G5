@@ -17,7 +17,7 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 
-export default function BanditResults({ totalPulls, totalReward, logs, game }) {
+export default function BanditResults({ totalPulls, totalReward, logs, type }) {
     const [open, setOpen] = useState(false);
 
     let totalRewardColor =
@@ -51,7 +51,7 @@ export default function BanditResults({ totalPulls, totalReward, logs, game }) {
                     className={`text-right font-mono font-semibold ${rewardColor}`}
                 >
                     {reward}
-                    {game.chosenDistribution === "Gaussian" ? " €" : ""}
+                    {type === "Gaussian" ? " €" : ""}
                 </TableCell>
             </TableRow>
         );
@@ -70,9 +70,12 @@ export default function BanditResults({ totalPulls, totalReward, logs, game }) {
                     <div>
                         <span className="text-sm text-muted-foreground">Total Reward</span>
                         <div className={`text-3xl font-bold ${totalRewardColor}`}>
-                            {totalReward.toFixed(2)} €
+                            {type === "Gaussian"
+                                ? totalReward.toFixed(2) + " €"
+                                : totalReward}
                         </div>
                     </div>
+
                 </div>
 
                 <Separator />
@@ -88,6 +91,7 @@ export default function BanditResults({ totalPulls, totalReward, logs, game }) {
                             size="sm"
                             onClick={() => setOpen(!open)}
                             className="flex items-center gap-1"
+                            disabled={logs.length === 0}
                         >
                             {open ? (
                                 <>
@@ -112,12 +116,21 @@ export default function BanditResults({ totalPulls, totalReward, logs, game }) {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {/* Immer sichtbar: neuester Log */}
-                                    {logs.length > 0 && renderLogRow(logs[0])}
+                                    {logs.length === 0 ? (
+                                        <TableRow>
+                                            <TableCell colSpan={3} className="text-center text-muted-foreground py-3">
+                                                No phishing campaign activity yet
+                                            </TableCell>
+                                        </TableRow>
+                                    ) : (
+                                        <>
+                                            {/* Neuester Log immer sichtbar */}
+                                            {renderLogRow(logs[0])}
 
-                                    {/* Rest: sichtbar nur wenn open */}
-                                    {open &&
-                                        logs.slice(1).map((log) => renderLogRow(log))}
+                                            {/* Rest: sichtbar nur wenn open */}
+                                            {open && logs.slice(1).map((log) => renderLogRow(log))}
+                                        </>
+                                    )}
                                 </TableBody>
                             </Table>
                         </div>

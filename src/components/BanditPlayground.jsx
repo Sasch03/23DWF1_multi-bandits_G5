@@ -15,7 +15,7 @@ import React from "react";
  */
 export default function BanditPlayground({ arms, onPull, disabled }) {
     return (
-        <div className="grid grid-cols-2 gap-4 max-h-[60vh] overflow-auto pr-2">
+        <div className="grid grid-cols-2 gap-4 max-h-[36vh] overflow-auto pr-2">
             {arms.map(a => (
                 <button
                     key={a.id}
