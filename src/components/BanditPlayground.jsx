@@ -26,8 +26,8 @@ export default function BanditPlayground({ arms, onPull, disabled }) {
                     disabled={disabled}
                 >
                     <div className="flex justify-between items-center mb-2">
-                        <div className="font-semibold">Arm #{a.id + 1}</div>
-                        <div className="text-sm text-muted-foreground">Pulls: {a.pulls}</div>
+                        <div className="font-semibold">Campaign #{a.id + 1}</div>
+                        <div className="text-sm text-muted-foreground">Attempts: {a.pulls}</div>
                     </div>
                 </button>
             ))}

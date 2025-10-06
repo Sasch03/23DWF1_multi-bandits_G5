@@ -54,6 +54,7 @@ export default function App() {
                             totalPulls={totalPulls}
                             totalReward={totalReward}
                             logs={logs}
+                            game={game}
                         />
 
                     </div>
