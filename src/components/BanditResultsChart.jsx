@@ -1,33 +1,37 @@
 "use client"
 
 import { Bar, BarChart, Line, LineChart, XAxis, CartesianGrid, ResponsiveContainer } from "recharts"
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import {ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent} from "@/components/ui/chart"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.jsx";
 
 const chartConfig = {
-    efficiency: { label: "True Drug Efficiency", color: "var(--chart-1)" },
-    epsilonGreedy: { label: "Epsilon-Greedy", color: "var(--chart-2)" },
-    ucb: { label: "UCB", color: "var(--chart-3)" },
-    thompsonSampling: { label: "Thompson Sampling", color: "var(--chart-4)" },
-    regret: { label: "Regret", color: "var(--chart-5)" },
+    manual: { label: "Manual", color: "var(--chart-1)" },
+    greedy: { label: "Greedy", color: "var(--chart-2)" },
+    epsilonGreedy: { label: "Epsilon-Greedy", color: "var(--chart-3)" },
+};
+
+
+function makeLineData({ manualRewards = [], greedyRewards = [], epsilonGreedyRewards = [] }) {
+    const data = [{ try: 0, manual: 0, greedy: 0, epsilonGreedy: 0 }]; // Start bei 0
+    const maxLength = Math.max(manualRewards.length, greedyRewards.length, epsilonGreedyRewards.length);
+
+    for (let i = 0; i < maxLength; i++) {
+        const entry = { try: i + 1 };
+
+        if (i < manualRewards.length) entry.manual = manualRewards[i];
+        if (i < greedyRewards.length) entry.greedy = greedyRewards[i];
+        if (i < epsilonGreedyRewards.length) entry.epsilonGreedy = epsilonGreedyRewards[i];
+
+        data.push(entry);
+    }
+
+    return data;
 }
 
-// Platzhalter für echte Daten
-function makeUserLineData(game) {
-    if (!game || !game.tableOfRewards) return [];
 
-    const { tableOfRewards, numberOfTries } = game;
-
-    const chosenRewards = tableOfRewards[0];
-
-    return Array.from({ length: numberOfTries }, (_, t) => ({
-        try: t + 1,
-        reward: chosenRewards.slice(0, t + 1).reduce((a, b) => a + b, 0),
-    }));
-}
-
-export default function BanditResultsCharts({ game }) {
+export default function BanditResultsCharts({ game, cumulativeRewards }) {
     console.log(game);
+    console.log("Cumulative rewards:", cumulativeRewards);
 
     const barData = (game.bernoulliProbabilities ?? []).map((p, idx) => ({
         arm: `Arm ${idx + 1}`,
@@ -65,7 +69,6 @@ export default function BanditResultsCharts({ game }) {
                                             />
                                         }
                                     />
-
                                     <Bar dataKey="probability" fill="var(--chart-1)" radius={8} />
                                 </BarChart>
                             </ResponsiveContainer>
@@ -81,12 +84,52 @@ export default function BanditResultsCharts({ game }) {
                     <CardContent>
                         <ChartContainer config={chartConfig} className="overflow-hidden">
                             <ResponsiveContainer width="100%">
-                                <LineChart data={makeUserLineData(game)}>
+                                <LineChart data={makeLineData(cumulativeRewards)}>
                                     <CartesianGrid vertical={false} />
                                     <XAxis dataKey="try" axisLine={false} tickLine={false} />
-                                    <ChartTooltip content={<ChartTooltipContent />} />
-                                    <Line type="monotone" dataKey="reward" stroke="var(--chart-1)" />
+                                    <ChartTooltip
+                                        content={
+                                            <ChartTooltipContent
+                                                formatter={(value, name) => {
+                                                    if (game?.chosenDistribution === "Gaussian") {
+                                                        return (
+                                                            <div className="text-muted-foreground flex min-w-[150px] items-center text-xs">
+                                                                {chartConfig[name]?.label || name}
+                                                                <div className="text-foreground ml-auto flex items-baseline gap-0.5 font-mono font-medium tabular-nums">
+                                                                    {value.toFixed(2)} €
+                                                                </div>
+                                                            </div>
+                                                        )
+                                                    }
+
+                                                    return (
+                                                        <div className="text-muted-foreground flex min-w-[100px] items-center text-xs">
+                                                            {chartConfig[name]?.label || name}
+                                                            <div className="text-foreground ml-auto flex items-baseline gap-0.5 font-mono font-medium tabular-nums">
+                                                                {value}
+                                                            </div>
+                                                        </div>
+                                                    )
+                                                }}
+                                            />
+                                        }
+                                    />
+
+                                    <ChartLegend content={<ChartLegendContent />} />
+
+                                    {Object.entries(chartConfig).map(([key, cfg]) => (
+                                        <Line
+                                            key={key}
+                                            type="linear"
+                                            dataKey={key}
+                                            stroke={cfg.color}
+                                            strokeWidth={2}
+                                            dot={false}
+                                            name={cfg.label}
+                                        />
+                                    ))}
                                 </LineChart>
+
                             </ResponsiveContainer>
                         </ChartContainer>
                     </CardContent>

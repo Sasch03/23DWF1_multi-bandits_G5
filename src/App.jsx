@@ -21,6 +21,7 @@ export default function App() {
         setArmCount,
         handlePull,
         game,
+        getCumulativeRewards,
     } = useBanditGame();
 
     const handleReset = () => {
@@ -63,6 +64,7 @@ export default function App() {
             {(showPlot) && (
                     <BanditResultsChart
                     game={game}
+                    cumulativeRewards={getCumulativeRewards()}
                     />
             )}
 

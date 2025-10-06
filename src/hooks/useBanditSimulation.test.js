@@ -91,4 +91,28 @@ describe("useBanditGame Hook", () => {
         });
         expect(result.current.type).toBe("Bernoulli");
     });
+
+    it("tracks cumulative rewards correctly", () => {
+        const { result } = renderHook(() => useBanditGame(2, 5));
+
+        act(() => {
+            result.current.startGame();
+        });
+
+        // simulate 2 pulls with manual algorithm
+        act(() => {
+            result.current.handlePull(0);
+            result.current.handlePull(1);
+        });
+
+        const rewards = result.current.getCumulativeRewards();
+
+        expect(Array.isArray(rewards.greedyRewards)).toBe(true);
+        expect(Array.isArray(rewards.epsilonGreedyRewards)).toBe(true);
+
+        expect(rewards.manualRewards.length).toBe(2);
+        expect(rewards.manualRewards[0]).toBeGreaterThanOrEqual(0);
+        expect(rewards.manualRewards[1]).toBeGreaterThanOrEqual(rewards.manualRewards[0]);
+    });
+
 });
