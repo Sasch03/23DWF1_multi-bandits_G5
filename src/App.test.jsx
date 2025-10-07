@@ -30,7 +30,7 @@ describe("App Component Integration Test", () => {
         const resetButton = screen.getByText("Reset");
         fireEvent.click(resetButton);
 
-        // totalPulls sollte auf 0 zurückgesetzt werden
+        // totalPulls should be set back to 0
         const totalResetElements = screen.getAllByText("0");
         expect(totalResetElements[0]).toBeInTheDocument();
     });

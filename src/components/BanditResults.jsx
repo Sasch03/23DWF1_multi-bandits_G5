@@ -16,6 +16,21 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 
+/**
+ * Renders a results dashboard for a multi-armed bandit simulation.
+ *
+ * Displays total attempts, total reward, and a collapsible log of recent activities.
+ * Supports both Bernoulli and Gaussian bandit reward types.
+ *
+ * @component
+ * @param {Object} props - Component props.
+ * @param {number} props.totalPulls - Total number of attempts (pulls) made by the bandit.
+ * @param {number} props.totalReward - The cumulative reward across all attempts.
+ * @param {string[]} props.logs - Array of log strings, each formatted as `"Timestep: X, Arm: Y, Reward: Z"`.
+ * @param {"Bernoulli" | "Gaussian"} props.type - The type of reward distribution used in the simulation.
+ *
+ * @returns {JSX.Element} The rendered BanditResults component.
+ */
 export default function BanditResults({ totalPulls, totalReward, logs, type }) {
     const [open, setOpen] = useState(false);
 
