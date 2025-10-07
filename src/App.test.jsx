@@ -7,11 +7,11 @@ describe("App Component Integration Test", () => {
     it("renders all main components", () => {
         render(<App />);
         expect(screen.getByText("Multi-Armed Bandit Playground")).toBeInTheDocument();
-        expect(screen.getByText("Konfiguration")).toBeInTheDocument();
-        expect(screen.getByText("Total Pulls")).toBeInTheDocument();
+        expect(screen.getByText("Configuration")).toBeInTheDocument();
+        expect(screen.getByText("Total Attempts")).toBeInTheDocument();
 
         // Check that at least one arm button is rendered
-        const armButton = screen.getByText(/Arm #1/i).closest("button");
+        const armButton = screen.getByText(/Campaign #1/i).closest("button");
         expect(armButton).toBeInTheDocument();
     });
 
@@ -21,16 +21,17 @@ describe("App Component Integration Test", () => {
         const startButton = screen.getByText("Start");
         fireEvent.click(startButton);
 
-        const firstArmButton = screen.getByText(/Arm #1/i).closest("button");
+        const firstArmButton = screen.getByText(/Campaign #1/i).closest("button");
         fireEvent.click(firstArmButton);
 
-        // totalPulls should update to 1
-        expect(screen.getByText("1")).toBeInTheDocument();
+        const totalAttemptsElements = screen.getAllByText("1");
+        expect(totalAttemptsElements[0]).toBeInTheDocument();
 
-        const resetButton = screen.getByText("Zurücksetzen");
+        const resetButton = screen.getByText("Reset");
         fireEvent.click(resetButton);
 
-        // totalPulls should reset to 0
-        expect(screen.getByText("0")).toBeInTheDocument();
+        // totalPulls should be set back to 0
+        const totalResetElements = screen.getAllByText("0");
+        expect(totalResetElements[0]).toBeInTheDocument();
     });
 });

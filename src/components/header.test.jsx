@@ -14,7 +14,7 @@ describe("Header Component", () => {
     it("renders the description paragraph", () => {
         render(<Header />);
         const paragraph = screen.getByText(
-            "Simuliere Bernoulli- und Gaussian-Bandits und beobachte die Belohnungen in Echtzeit"
+            "Simulate campaigns using Bernoulli and Gaussian strategies, analyze results, and gain insights into campaign effectiveness."
         );
         expect(paragraph).toBeInTheDocument();
     });

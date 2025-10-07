@@ -3,6 +3,7 @@ import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/ca
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select.jsx'
 import { Button } from "@/components/ui/button.jsx";
 import Counter from "@/components/shared/Counter.jsx";
+import {Spinner} from "@/components/ui/spinner.jsx";
 
 /**
  * BanditConfig Component
@@ -33,12 +34,11 @@ export default function BanditConfig({
     return (
         <Card className="w-1/3 flex flex-col bg-muted/30 gap-4 shadow-xl p-4">
             <CardHeader>
-                <CardTitle className="text-2xl">Konfiguration</CardTitle>
-                <CardDescription>Wähle Bandit-Typ, Anzahl der Arme und der Iterationen</CardDescription>
-            </CardHeader>
+                <CardTitle className="text-2xl">Configuration</CardTitle>
+                <CardDescription>Select a bandit type, number of campaigns and attempts</CardDescription>            </CardHeader>
 
             <div className="space-y-3">
-                <label className="text-sm">Bandit-Typ</label>
+                <label className="text-sm">Bandit-Type</label>
                 <Select disabled={running} onValueChange={setType} defaultValue={type}>
                     <SelectTrigger className="w-full">
                         <SelectValue placeholder="Wähle Typ" />
@@ -49,23 +49,25 @@ export default function BanditConfig({
                     </SelectContent>
                 </Select>
 
-                <label className="text-sm">Anzahl Arme</label>
+                <label className="text-sm">Number of campaigns</label>
                 <Counter value={arms.length} onChange={setArmCount} min={2} max={50} disabled={running} />
 
-                <label className="text-sm">Anzahl Iterationen</label>
+                <label className="text-sm">Number of attempts</label>
                 <Counter value={iterations} onChange={setIterations} min={1} max={100} disabled={running} />
 
 
                 <div className="flex gap-2">
                     {running ? (
-                        <Button variant="destructive" disabled={true}>Running</Button>
+                        <Button variant="secondary" disabled className="flex items-center gap-2">
+                            <Spinner className="size-4 text-white" /> Running
+                        </Button>
                     ) : (
                         <Button onClick={startSimulation}>Start</Button>
                     )}
                     {!showPlot && running && (
-                        <Button onClick={() => setShowPlot(true)}>Plot</Button>
+                        <Button variant="secondary" onClick={() => setShowPlot(true)}>Plot</Button>
                     )}
-                    <Button onClick={resetAll}>Zurücksetzen</Button>
+                    <Button variant="secondary" onClick={resetAll}>Reset</Button>
 
                 </div>
             </div>

@@ -23,11 +23,11 @@ describe("BanditConfig Component", () => {
 
     it("renders all labels and buttons", () => {
         setup();
-        expect(screen.getByText("Bandit-Typ")).toBeInTheDocument();
-        expect(screen.getByText("Anzahl Arme")).toBeInTheDocument();
-        expect(screen.getByText("Anzahl Iterationen")).toBeInTheDocument();
+        expect(screen.getByText("Bandit-Type")).toBeInTheDocument();
+        expect(screen.getByText("Number of campaigns")).toBeInTheDocument();
+        expect(screen.getByText("Number of attempts")).toBeInTheDocument();
         expect(screen.getByText("Start")).toBeInTheDocument();
-        expect(screen.getByText("Zurücksetzen")).toBeInTheDocument();
+        expect(screen.getByText("Reset")).toBeInTheDocument();
     });
 
     it("calls setType when selecting a bandit type", () => {
@@ -60,7 +60,7 @@ describe("BanditConfig Component", () => {
     it("calls startSimulation and resetAll buttons", () => {
         const props = setup();
         const startButton = screen.getByText("Start");
-        const resetButton = screen.getByText("Zurücksetzen");
+        const resetButton = screen.getByText("Reset");
 
         fireEvent.click(startButton);
         expect(props.startSimulation).toHaveBeenCalled();
