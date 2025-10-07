@@ -41,8 +41,8 @@ const mockCumulativeRewards = {
 describe("BanditResultsCharts", () => {
     it("renders both card titles", () => {
         render(<BanditResultsCharts game={mockGame} cumulativeRewards={mockCumulativeRewards} />);
-        expect(screen.getByText("Tatsächliche Wahrscheinlichkeiten")).toBeInTheDocument();
-        expect(screen.getByText("Erfolg")).toBeInTheDocument();
+        expect(screen.getByText("True probabilities")).toBeInTheDocument();
+        expect(screen.getByText("Success")).toBeInTheDocument();
     });
 
     it("renders all arm labels correctly", () => {

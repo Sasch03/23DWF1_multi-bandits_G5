@@ -14,8 +14,8 @@ describe("BanditPlayground Component", () => {
         render(<BanditPlayground arms={arms} onPull={() => {}} disabled={false} />);
 
         arms.forEach(a => {
-            expect(screen.getByText(`Arm #${a.id + 1}`)).toBeInTheDocument();
-            expect(screen.getByText(`Pulls: ${a.pulls}`)).toBeInTheDocument();
+            expect(screen.getByText(`Campaign #${a.id + 1}`)).toBeInTheDocument();
+            expect(screen.getByText(`Attempts: ${a.pulls}`)).toBeInTheDocument();
         });
     });
 
@@ -23,7 +23,7 @@ describe("BanditPlayground Component", () => {
         const onPull = vi.fn();
         render(<BanditPlayground arms={arms} onPull={onPull} disabled={false} />);
 
-        const firstArmButton = screen.getByText("Arm #1").closest("button");
+        const firstArmButton = screen.getByText("Campaign #1").closest("button");
         fireEvent.click(firstArmButton);
 
         expect(onPull).toHaveBeenCalledWith(0);
@@ -33,7 +33,7 @@ describe("BanditPlayground Component", () => {
         render(<BanditPlayground arms={arms} onPull={() => {}} disabled={true} />);
 
         arms.forEach(a => {
-            const button = screen.getByText(`Arm #${a.id + 1}`).closest("button");
+            const button = screen.getByText(`Campaign #${a.id + 1}`).closest("button");
             expect(button).toBeDisabled();
         });
     });
