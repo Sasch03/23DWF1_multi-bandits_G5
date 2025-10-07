@@ -1,7 +1,6 @@
 "use client";
 
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import {
     Table,
@@ -25,19 +24,32 @@ export default function BanditResults({ totalPulls, totalReward, logs, type }) {
             ? "text-emerald-500"
             : totalReward < 0
                 ? "text-red-500"
-                : "text-muted-foreground";
+                : "";
 
     const renderLogRow = (log) => {
         const match = log.match(/Timestep: (\d+), Arm: (\d+), Reward: ([\d.-]+)/);
         if (!match) return null;
         const [, ts, arm, reward] = match;
         const rewardValue = parseFloat(reward);
-        const rewardColor =
-            rewardValue > 0
-                ? "text-emerald-500"
-                : rewardValue < 0
-                    ? "text-red-500"
-                    : "text-muted-foreground";
+
+        let rewardDisplay;
+        let rewardColor;
+
+        if (type === "Gaussian") {
+            rewardDisplay = `${rewardValue.toFixed(2)} €`;
+            rewardColor =
+                rewardValue > 0
+                    ? "text-emerald-500"
+                    : rewardValue < 0
+                        ? "text-red-500"
+                        : "text-muted-foreground";
+        } else {
+            rewardDisplay = rewardValue === 1 ? "Success" : "Fail";
+            rewardColor =
+                rewardValue === 1
+                    ? "text-emerald-500"
+                    : "text-red-500";
+        }
 
         return (
             <TableRow key={ts}>
@@ -50,12 +62,12 @@ export default function BanditResults({ totalPulls, totalReward, logs, type }) {
                 <TableCell
                     className={`text-right font-mono font-semibold ${rewardColor}`}
                 >
-                    {reward}
-                    {type === "Gaussian" ? " €" : ""}
+                    {rewardDisplay}
                 </TableCell>
             </TableRow>
         );
     };
+
 
     return (
         <Card className="mt-auto w-full bg-muted/30">
@@ -124,10 +136,8 @@ export default function BanditResults({ totalPulls, totalReward, logs, type }) {
                                         </TableRow>
                                     ) : (
                                         <>
-                                            {/* Neuester Log immer sichtbar */}
                                             {renderLogRow(logs[0])}
 
-                                            {/* Rest: sichtbar nur wenn open */}
                                             {open && logs.slice(1).map((log) => renderLogRow(log))}
                                         </>
                                     )}

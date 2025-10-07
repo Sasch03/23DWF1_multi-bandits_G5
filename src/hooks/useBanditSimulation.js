@@ -29,8 +29,7 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
     const [showPlot, setShowPlot] = useState(false);
     const [rewardTable, setRewardTable] = useState([]);
     const [game, setGame] = useState(null);
-
-    const type = useRef(DistributionTyp.BERNOULLI);
+    const [type, setType] = useState(DistributionTyp.BERNOULLI);
     const gameRef = useRef(null);
     const historyRef = useRef(new StrategyRewardHistory());
     const manualObservedRewardsRef = useRef([]);
@@ -132,7 +131,7 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
         const newGame = new CurrentGame();
         newGame.setNumberOfArms(arms.length);
         newGame.setNumberOfTries(iterations);
-        newGame.setChosenDistribution(type.current);
+        newGame.setChosenDistribution(type);
         newGame.createTable();
 
         // algorithms setup
@@ -245,8 +244,7 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
     };
 
     return {
-        type: type.current,
-        setType: (t) => (type.current = t),
+        type, setType,
         arms,
         iterations,
         setIterations,

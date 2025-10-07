@@ -3,6 +3,7 @@ import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/ca
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select.jsx'
 import { Button } from "@/components/ui/button.jsx";
 import Counter from "@/components/shared/Counter.jsx";
+import {Spinner} from "@/components/ui/spinner.jsx";
 
 /**
  * BanditConfig Component
@@ -34,7 +35,7 @@ export default function BanditConfig({
         <Card className="w-1/3 flex flex-col bg-muted/30 gap-4 shadow-xl p-4">
             <CardHeader>
                 <CardTitle className="text-2xl">Configuration</CardTitle>
-                <CardDescription>Select a bandit type, number of campaigns, and attempts</CardDescription>            </CardHeader>
+                <CardDescription>Select a bandit type, number of campaigns and attempts</CardDescription>            </CardHeader>
 
             <div className="space-y-3">
                 <label className="text-sm">Bandit-Type</label>
@@ -57,14 +58,16 @@ export default function BanditConfig({
 
                 <div className="flex gap-2">
                     {running ? (
-                        <Button variant="destructive" disabled={true}>Running</Button>
+                        <Button variant="secondary" disabled className="flex items-center gap-2">
+                            <Spinner className="size-4 text-white" /> Running
+                        </Button>
                     ) : (
                         <Button onClick={startSimulation}>Start</Button>
                     )}
                     {!showPlot && running && (
-                        <Button onClick={() => setShowPlot(true)}>Plot</Button>
+                        <Button variant="secondary" onClick={() => setShowPlot(true)}>Plot</Button>
                     )}
-                    <Button onClick={resetAll}>Reset</Button>
+                    <Button variant="secondary" onClick={resetAll}>Reset</Button>
 
                 </div>
             </div>

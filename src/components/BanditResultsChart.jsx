@@ -34,7 +34,7 @@ export default function BanditResultsCharts({ game, cumulativeRewards }) {
     console.log("Cumulative rewards:", cumulativeRewards);
 
     const barData = (game.bernoulliProbabilities ?? []).map((p, idx) => ({
-        arm: `Arm ${idx + 1}`,
+        arm: `No. ${idx + 1}`,
         probability: p
     }));
 
@@ -42,9 +42,9 @@ export default function BanditResultsCharts({ game, cumulativeRewards }) {
         <div className="p-6 rounded-2xl bg-card text-card-foreground shadow-2xl">
             <div className="grid gap-6 grid-cols-1 md:grid-cols-2 w-full">
                 {/* BarChart Card */}
-                <Card className="flex-1 bg-muted/30 border border-muted/30">
+                <Card className="flex-1 bg-muted/30 ">
                     <CardHeader>
-                        <CardTitle>Tatsächliche Wahrscheinlichkeiten</CardTitle>
+                        <CardTitle>True probabilities</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <ChartContainer config={chartConfig} className="overflow-hidden">
@@ -77,9 +77,9 @@ export default function BanditResultsCharts({ game, cumulativeRewards }) {
                 </Card>
 
                 {/* LineChart Card */}
-                <Card className="flex-1 bg-muted/30 border border-muted/30">
+                <Card className="flex-1 bg-muted/30 ">
                     <CardHeader>
-                        <CardTitle>Erfolg</CardTitle>
+                        <CardTitle>Success</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <ChartContainer config={chartConfig} className="overflow-hidden">
