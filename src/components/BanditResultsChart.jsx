@@ -88,6 +88,7 @@ export default function BanditResultsCharts({ game, cumulativeRewards }) {
                                     <CartesianGrid vertical={false} />
                                     <XAxis dataKey="try" axisLine={false} tickLine={false} />
                                     <ChartTooltip
+                                        labelFormatter={() => "Rewards"}
                                         content={
                                             <ChartTooltipContent
                                                 formatter={(value, name) => {
