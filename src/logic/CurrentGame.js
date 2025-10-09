@@ -12,9 +12,36 @@ import { GAUSSIAN_MEAN_SPREAD_STD_DEV } from "@/constants.js";
  * distribution and stores them for later use.
  */
 export default class CurrentGame {
+    /**
+     * Currently selected reward distribution type (e.g., Bernoulli or Gaussian).
+     * Determines how rewards for each arm are generated.
+     * @type {DistributionTyp}
+     */
     chosenDistribution;
+    /**
+     * List of algorithms selected for this run (e.g., Greedy, ε-Greedy, Manual, etc.).
+     * Each algorithm operates on the same reward table but with different selection policies.
+     * @type {AlgorithmTyp[]}
+     */
     chosenAlgorithms;
+    /**
+     * 2D array of generated rewards for all arms and trials.
+     * tableOfRewards[armIndex][trialIndex] = reward value.
+     * @type {number[][]}
+     */
     tableOfRewards;
+    /**
+     * Stores the random success probabilities assigned to each arm in the Bernoulli case.
+     * Only defined when chosenDistribution === DistributionTyp.BERNOULLI.
+     * @type {number[]}
+     */
+    bernoulliProbabilities;
+    /**
+     * Stores the mean (μ) values assigned to each arm in the Gaussian case.
+     * Only defined when chosenDistribution === DistributionTyp.GAUSSIAN.
+     * @type {number[]}
+     */
+    gaussianMeans;
 
     /**
      * Sets the number of arms for the bandit game.
