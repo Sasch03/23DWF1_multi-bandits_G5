@@ -2,8 +2,23 @@
  * Simple container for reward histories of the strategies.
  */
 export default class StrategyRewardHistory {
+    /**
+     * Stores cumulative rewards for the manual strategy.
+     * Each index represents the running total up to that point.
+     * @type {number[]}
+     */
     manualRewards = [];
+    /**
+     * Stores cumulative rewards for the greedy strategy.
+     * Each index represents the running total up to that point.
+     * @type {number[]}
+     */
     greedyRewards = [];
+    /**
+     * Stores cumulative rewards for the epsilon greedy strategy.
+     * Each index represents the running total up to that point.
+     * @type {number[]}
+     */
     epsilonGreedyRewards = [];
 
     /**
