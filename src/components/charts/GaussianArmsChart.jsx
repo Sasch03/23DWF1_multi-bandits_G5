@@ -113,7 +113,7 @@ export default function GaussianArmsChart({ game = {}, points = 300, normalize =
                                 domain={[0, 1]}
                             />
                             <ChartTooltip
-                                labelFormatter={() => "Gaussian Means"}
+                                labelFormatter={() => "Relative Probability Density"}
                                 content={
                                     <ChartTooltipContent
                                         formatter={(value, name) => {

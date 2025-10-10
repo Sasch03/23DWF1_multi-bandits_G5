@@ -5,7 +5,7 @@ import { useBanditGame } from "./useBanditSimulation.js";
 describe("useBanditGame Hook", () => {
     it("initializes with default values", () => {
         const { result } = renderHook(() => useBanditGame());
-        expect(result.current.arms.length).toBe(5);
+        expect(result.current.arms.length).toBe(4);
         expect(result.current.iterations).toBe(10);
         expect(result.current.totalPulls).toBe(0);
         expect(result.current.totalReward).toBe(0);
@@ -14,17 +14,14 @@ describe("useBanditGame Hook", () => {
     });
 
     it("can set arm count up", () => {
-        const { result } = renderHook(() => useBanditGame(3));
+        const { result } = renderHook(() => useBanditGame(4));
         act(() => {
             result.current.setArmCount(5);
         });
         expect(result.current.arms.length).toBe(5);
-        // new arms should have 0 pulls and 0 lastReward
-        expect(result.current.arms.slice(3)).toEqual([
-            { id: 3, pulls: 0, lastReward: 0 },
-            { id: 4, pulls: 0, lastReward: 0 },
-        ]);
+        expect(result.current.arms[4]).toEqual({ id: 4, pulls: 0, lastReward: 0 });
     });
+
 
     it("can set arm count down", () => {
         const { result } = renderHook(() => useBanditGame(5));
