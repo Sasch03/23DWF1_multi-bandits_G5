@@ -85,16 +85,18 @@ export default function GaussianArmsChart({ game = {}, points = 300, normalize =
     }
 
     return (
-        <Card className="bg-muted/30">
+        <Card className="flex-1 bg-muted/30">
             <CardHeader>
                 <CardTitle>Gaussian Arms</CardTitle>
             </CardHeader>
             <CardContent>
-                <ChartContainer config={chartConfig} className="overflow-hidden mt-2">
+                <ChartContainer config={chartConfig} className="overflow-hidden">
                     <ResponsiveContainer width="100%" height={320}>
-                        <LineChart data={data}>
+                        <LineChart
+                            data={data}
+                            margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
+                        >
                             <CartesianGrid vertical={false} />
-
                             <XAxis
                                 dataKey="x"
                                 type="number"
@@ -103,7 +105,6 @@ export default function GaussianArmsChart({ game = {}, points = 300, normalize =
                                 tickLine={false}
                                 tickFormatter={(v) => v.toFixed(0)}
                             />
-
                             <YAxis
                                 allowDecimals
                                 axisLine={false}
@@ -111,7 +112,6 @@ export default function GaussianArmsChart({ game = {}, points = 300, normalize =
                                 tickFormatter={(v) => v.toFixed(2)}
                                 domain={[0, 1]}
                             />
-
                             <ChartTooltip
                                 labelFormatter={() => "Gaussian Means"}
                                 content={
