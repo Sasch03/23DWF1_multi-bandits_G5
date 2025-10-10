@@ -126,4 +126,22 @@ export default class GradientBandit extends Algorithm {
         this.preferences.fill(0);
         this.averageReward = 0;
     }
+
+    /**
+     * Get current action probabilities derived from the softmax of preferences.
+     * Mainly used for analysis, visualization, or testing.
+     * @returns {number[]} Current action probabilities (sum to 1).
+     */
+    getActionProbabilities() {
+        return this.#softmax(this.preferences);
+    }
+
+    /**
+     * Get a shallow copy of the current preference values.
+     * Useful for unit tests and debugging.
+     * @returns {number[]} Copy of preferences array.
+     */
+    getPreferences() {
+        return [...this.preferences];
+    }
 }
