@@ -44,8 +44,7 @@ export default class StrategyRewardHistory {
         const src = obj.observedRewards;
         const dest = arrRef;
 
-        if (dest.length === src.length)
-        {
+        if (dest.length === src.length) {
             console.info("The arrays are already synchronized. No action required.");
             return;
         }
