@@ -4,22 +4,22 @@ import { GAUSSIAN_STD_DEV } from "@/constants.js";
 import { MEAN_OF_MEANS } from "@/constants.js";
 import { GAUSSIAN_MEAN_SPREAD_STD_DEV } from "@/constants.js";
 
-/*
+/**
  * This class represents a k-armed bandit game configuration and environment.
  * It allows to set the number of arms and trials, select a reward distribution
- * (Bernoulli or Gaussian), and chose algorithms to be used for action selection.
+ * and chose algorithms to be used for action selection.
  * The environment generates reward tables for each arm according to the chosen
  * distribution and stores them for later use.
  */
 export default class CurrentGame {
     /**
-     * Currently selected reward distribution type (e.g., Bernoulli or Gaussian).
+     * Currently selected reward distribution type.
      * Determines how rewards for each arm are generated.
      * @type {DistributionTyp}
      */
     chosenDistribution;
     /**
-     * List of algorithms selected for this run (e.g., Greedy, ε-Greedy, Manual, etc.).
+     * List of algorithms selected for this run (e.g., Greedy, epsilon Greedy, Manual, etc.).
      * Each algorithm operates on the same reward table but with different selection policies.
      * @type {AlgorithmTyp[]}
      */
@@ -49,7 +49,7 @@ export default class CurrentGame {
      */
     setNumberOfArms(value) {
         if (!Number.isInteger(value) || value <= 0) {
-            throw new Error("numberOfArms has to be a number > 0.");
+            throw new Error("numberOfArms has to be a integer > 0.");
         }
         this.numberOfArms = value;
         console.log(`Number of arms set to ${value}.`);
@@ -61,7 +61,7 @@ export default class CurrentGame {
      */
     setNumberOfTries(value) {
         if (!Number.isInteger(value) || value <= 0) {
-            throw new Error("numberOfTries has to be a number > 0.");
+            throw new Error("numberOfTries has to be a integer > 0.");
         }
         this.numberOfTries = value;
         console.log(`Number of trials set to ${value}.`);
@@ -69,7 +69,7 @@ export default class CurrentGame {
 
     /**
      * Sets the distribution type for the bandit game.
-     * @param {DistributionTyp} value - Must be a valid distribution type (BERNOULLI or GAUSSIAN).
+     * @param {DistributionTyp} value - Must be a valid distribution type.
      */
     setChosenDistribution(value) {
         if (!Object.values(DistributionTyp).includes(value)) {
@@ -160,7 +160,7 @@ export default class CurrentGame {
 
                 this.gaussianMeans = gaussianMeans;
 
-                console.log("Gaussian means:", gaussianMeans, "StdDev:", GAUSSIAN_STD_DEV);
+                console.log(`Gaussian means:=${gaussianMeans}, StdDev=${GAUSSIAN_STD_DEV}`);
 
                 // For each arm, draw "numberOfTries" samples.
                 for (let i = 0; i < numberOfArms; i++) {
@@ -192,7 +192,6 @@ export default class CurrentGame {
                 }
                 break;
             }
-
 
             default:
                 // Throw error if the distribution type is not recognized.
