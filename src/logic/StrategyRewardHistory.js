@@ -29,23 +29,29 @@ export default class StrategyRewardHistory {
      * @param {Object} obj - Object containing an observedRewards array.
      */
     addReward(arrRef, obj) {
+        console.log(`Starting addReward for ${arrRef} from object ${obj}.`);
+
         // Validate target array.
         if (arrRef !== this.manualRewards && arrRef !== this.greedyRewards && arrRef !== this.epsilonGreedyRewards) {
-            throw new Error('addReward: provided array is not managed by StrategyRewardHistory.');
+            throw new Error("Provided array is not managed by StrategyRewardHistory.");
         }
 
         // Validate source object.
         if (!obj || !Array.isArray(obj.observedRewards)) {
-            throw new Error('addReward: provided object must contain an observedRewards array.');
+            throw new Error("Provided object must contain an observedRewards array.");
         }
 
         const src = obj.observedRewards;
         const dest = arrRef;
 
-        if (dest.length === src.length) return;
+        if (dest.length === src.length)
+        {
+            console.info("The arrays are already synchronized. No action required.");
+            return;
+        }
 
         if (src.length < dest.length) {
-            throw new Error('addReward: observedRewards array is shorter than cumulative array — cannot sync.');
+            throw new Error("ObservedRewards array is shorter than cumulative array — cannot sync.");
         }
 
         // Continue cumulatively from the last known sum.
@@ -56,10 +62,11 @@ export default class StrategyRewardHistory {
             const reward = src[i];
 
             if (typeof reward !== 'number' || !Number.isFinite(reward)) {
-                throw new Error(`addReward: invalid reward value at index ${i}. Must be a finite number.`);
+                throw new Error(`Invalid reward value at index ${i}. Must be a number.`);
             }
 
             runningTotal += reward;
+            console.log(`Successfully added ${runningTotal} as a new reward.`);
             dest.push(runningTotal);
         }
     }
@@ -71,6 +78,6 @@ export default class StrategyRewardHistory {
         this.manualRewards.length = 0;
         this.greedyRewards.length = 0;
         this.epsilonGreedyRewards.length = 0;
-        console.log(`The arrays have been reset.`);
+        console.log("The arrays have been reset.");
     }
 }
