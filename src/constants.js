@@ -23,7 +23,7 @@ export const GAUSSIAN_MEAN_SPREAD_STD_DEV = 50.0;
 export const GAUSSIAN_STD_DEV = 50.0;
 
 // --- Default Game Settings ---
-export const DEFAULT_ARMS = 5;
+export const DEFAULT_ARMS = 4;
 export const DEFAULT_ITERATIONS = 10;
 
 // --- Epsilon / Exploration ---
