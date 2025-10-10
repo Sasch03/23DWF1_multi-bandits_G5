@@ -23,18 +23,18 @@ export default class StrategyRewardHistory {
 
     /**
      * Synchronizes one of the cumulative reward arrays with the observedRewards of a given object.
-     * The arrRef must be exactly one of the instance arrays (manualRewards, greedyRewards, epsilonGreedyRewards).
+     * The arrRef must be exactly one of the instance arrays.
      *
-     * @param {Array} arrRef - reference to the target cumulative array (one of the three internal arrays)
-     * @param {Object} obj - object containing an observedRewards array
+     * @param {Array} arrRef - Reference to the target cumulative array.
+     * @param {Object} obj - Object containing an observedRewards array.
      */
     addReward(arrRef, obj) {
-        // --- Validate target array ---
+        // Validate target array.
         if (arrRef !== this.manualRewards && arrRef !== this.greedyRewards && arrRef !== this.epsilonGreedyRewards) {
             throw new Error('addReward: provided array is not managed by StrategyRewardHistory.');
         }
 
-        // --- Validate source object ---
+        // Validate source object.
         if (!obj || !Array.isArray(obj.observedRewards)) {
             throw new Error('addReward: provided object must contain an observedRewards array.');
         }
@@ -42,18 +42,16 @@ export default class StrategyRewardHistory {
         const src = obj.observedRewards;
         const dest = arrRef;
 
-        // If source and destination already have the same length → nothing to do
         if (dest.length === src.length) return;
 
-        // If source has fewer elements than destination → inconsistent
         if (src.length < dest.length) {
             throw new Error('addReward: observedRewards array is shorter than cumulative array — cannot sync.');
         }
 
-        // Continue cumulatively from the last known sum
+        // Continue cumulatively from the last known sum.
         let runningTotal = dest.length > 0 ? dest[dest.length - 1] : 0;
 
-        // Process new rewards
+        // Process new rewards.
         for (let i = dest.length; i < src.length; i++) {
             const reward = src[i];
 
@@ -67,8 +65,7 @@ export default class StrategyRewardHistory {
     }
 
     /**
-     * Reset all three histories by clearing their contents in-place.
-     * This preserves array identity (useful if other code holds references).
+     * Reset all arrays by clearing their contents.
      */
     reset() {
         this.manualRewards.length = 0;
