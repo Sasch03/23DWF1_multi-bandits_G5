@@ -3,6 +3,7 @@
 import { Bar, BarChart, Line, LineChart, XAxis, CartesianGrid, ResponsiveContainer } from "recharts"
 import {ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent} from "@/components/ui/chart"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.jsx";
+import GaussianArmsChart from "@/components/charts/GaussianArmsChart.jsx";
 
 const chartConfig = {
     manual: { label: "Manual", color: "var(--chart-1)" },
@@ -12,7 +13,7 @@ const chartConfig = {
 
 
 function makeLineData({ manualRewards = [], greedyRewards = [], epsilonGreedyRewards = [] }) {
-    const data = [{ try: 0, manual: 0, greedy: 0, epsilonGreedy: 0 }]; // Start bei 0
+    const data = [{ try: 0, manual: 0, greedy: 0, epsilonGreedy: 0 }];
     const maxLength = Math.max(manualRewards.length, greedyRewards.length, epsilonGreedyRewards.length);
 
     for (let i = 0; i < maxLength; i++) {
@@ -41,6 +42,7 @@ export default function BanditResultsCharts({ game, cumulativeRewards }) {
     return (
         <div className="p-6 rounded-2xl bg-card text-card-foreground shadow-2xl">
             <div className="grid gap-6 grid-cols-1 md:grid-cols-2 w-full">
+                <GaussianArmsChart game={game} points={300} normalize={true} />
                 {/* BarChart Card */}
                 <Card className="flex-1 bg-muted/30 ">
                     <CardHeader>
