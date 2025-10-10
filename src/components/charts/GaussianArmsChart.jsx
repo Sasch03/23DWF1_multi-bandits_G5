@@ -96,24 +96,6 @@ export default function GaussianArmsChart({ game = {}, points = 300, normalize =
                 <CardTitle>Normalverteilungen der Arme (Gaussian)</CardTitle>
             </CardHeader>
             <CardContent>
-                {/* Scrollbare, klickbare Legend */}
-                <div className="flex gap-2 overflow-x-auto py-2">
-                    {keys.map((k, idx) => {
-                        const cfg = chartConfig[k]
-                        return (
-                            <button
-                                key={k}
-                                onClick={() => handleLegendClick(k)}
-                                className="flex items-center gap-1 px-2 py-1 border rounded cursor-pointer whitespace-nowrap"
-                                style={{ opacity: hidden[k] ? 0.3 : 1 }}
-                            >
-                                <span className="w-3 h-3 rounded-full" style={{ backgroundColor: cfg.color }} />
-                                <span className="text-xs">{cfg.label}</span>
-                            </button>
-                        )
-                    })}
-                </div>
-
                 <ChartContainer config={chartConfig} className="overflow-hidden mt-2">
                     <ResponsiveContainer width="100%" height={320}>
                         <LineChart data={data}>
@@ -184,6 +166,24 @@ export default function GaussianArmsChart({ game = {}, points = 300, normalize =
                         </LineChart>
                     </ResponsiveContainer>
                 </ChartContainer>
+
+                {/* Legend unterhalb, in Reihen umbrechbar */}
+                <div className="flex flex-wrap gap-2 mt-2">
+                    {keys.map((k) => {
+                        const cfg = chartConfig[k]
+                        return (
+                            <button
+                                key={k}
+                                onClick={() => handleLegendClick(k)}
+                                className="flex items-center gap-1 px-2 py-1 border rounded cursor-pointer whitespace-nowrap"
+                                style={{ opacity: hidden[k] ? 0.3 : 1 }}
+                            >
+                                <span className="w-3 h-3 rounded-full" style={{ backgroundColor: cfg.color }} />
+                                <span className="text-xs">{cfg.label}</span>
+                            </button>
+                        )
+                    })}
+                </div>
             </CardContent>
         </Card>
     )
