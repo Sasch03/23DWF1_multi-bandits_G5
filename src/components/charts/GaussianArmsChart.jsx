@@ -150,12 +150,6 @@ export default function GaussianArmsChart({ game = {}, points = 300, normalize =
                                     x={m}
                                     stroke={pickColor(idx)}
                                     strokeDasharray="4 4"
-                                    label={{
-                                        position: "top",
-                                        value: `μ=${m.toFixed(2)}`,
-                                        fill: "var(--muted-foreground)",
-                                        fontSize: 11,
-                                    }}
                                 />
                             ))}
                         </LineChart>
