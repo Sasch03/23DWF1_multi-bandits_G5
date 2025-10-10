@@ -61,7 +61,7 @@ export default class StrategyRewardHistory {
         for (let i = dest.length; i < src.length; i++) {
             const reward = src[i];
 
-            if (typeof reward !== 'number' || !Number.isFinite(reward)) {
+            if (typeof reward !== 'number') {
                 throw new Error(`Invalid reward value at index ${i}. Must be a number.`);
             }
 
