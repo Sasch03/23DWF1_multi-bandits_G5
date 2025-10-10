@@ -17,7 +17,6 @@ export default function BanditResultsCharts({ game, cumulativeRewards }) {
                 ) : (
                     <GaussianArmsChart game={game} points={300} normalize={true} />
                 )}
-                {/* LineChart Card */}
                 <CumulativeLineChart cumulativeRewards={cumulativeRewards} chosenDistribution={game?.chosenDistribution} />
 
             </div>

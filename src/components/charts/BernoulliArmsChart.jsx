@@ -19,7 +19,7 @@ export default function BernoulliArmsChart({ probabilities }) {
     return (
         <Card className="flex-1 bg-muted/30">
             <CardHeader>
-                <CardTitle>True probabilities</CardTitle>
+                <CardTitle>True Probabilities</CardTitle>
             </CardHeader>
             <CardContent>
                 <ChartContainer config={chartConfig} className="overflow-hidden">

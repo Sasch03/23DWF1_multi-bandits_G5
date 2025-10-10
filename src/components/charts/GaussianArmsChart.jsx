@@ -7,7 +7,6 @@ import {
     XAxis,
     YAxis,
     CartesianGrid,
-    Tooltip,
     ResponsiveContainer,
     ReferenceLine,
 } from "recharts"
@@ -16,14 +15,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { GAUSSIAN_STD_DEV } from "@/constants"
 
-// === Gaussian PDF ===
 function gaussianPDF(x, mean, sd) {
     const a = 1 / (sd * Math.sqrt(2 * Math.PI))
     const diff = (x - mean) / sd
     return a * Math.exp(-0.5 * diff * diff)
 }
 
-// === Daten generieren ===
 function makeGaussianLineData(means = [], sd = 50, points = 200, normalize = true) {
     if (!means || means.length === 0) return { data: [], keys: [] }
 
@@ -59,7 +56,6 @@ function makeGaussianLineData(means = [], sd = 50, points = 200, normalize = tru
     return { data, keys }
 }
 
-// === Farben ===
 function pickColor(i) {
     const palette = [
         "var(--chart-1)",
@@ -71,7 +67,6 @@ function pickColor(i) {
     return palette[i % palette.length]
 }
 
-// === Chart-Komponente ===
 export default function GaussianArmsChart({ game = {}, points = 300, normalize = true, sd = GAUSSIAN_STD_DEV }) {
     const means = game?.gaussianMeans ?? []
     const { data, keys } = makeGaussianLineData(means, sd, points, normalize)
@@ -79,11 +74,10 @@ export default function GaussianArmsChart({ game = {}, points = 300, normalize =
     const chartConfig = Object.fromEntries(
         means.map((m, i) => [
             `arm_${i}`,
-            { label: `Arm ${i + 1} (μ=${m.toFixed(2)})`, color: pickColor(i) },
+            { label: `No. ${i + 1} (μ=${m.toFixed(2)})`, color: pickColor(i) },
         ])
     )
 
-    // State für sichtbare Linien
     const [hidden, setHidden] = useState({})
 
     const handleLegendClick = (key) => {
@@ -93,7 +87,7 @@ export default function GaussianArmsChart({ game = {}, points = 300, normalize =
     return (
         <Card className="bg-muted/30">
             <CardHeader>
-                <CardTitle>Normalverteilungen der Arme (Gaussian)</CardTitle>
+                <CardTitle>Gaussian Arms</CardTitle>
             </CardHeader>
             <CardContent>
                 <ChartContainer config={chartConfig} className="overflow-hidden mt-2">
@@ -115,10 +109,11 @@ export default function GaussianArmsChart({ game = {}, points = 300, normalize =
                                 axisLine={false}
                                 tickLine={false}
                                 tickFormatter={(v) => v.toFixed(2)}
+                                domain={[0, 1]}
                             />
 
-                            {/* Tooltip nur sichtbare Linien */}
                             <ChartTooltip
+                                labelFormatter={() => "Gaussian Means"}
                                 content={
                                     <ChartTooltipContent
                                         formatter={(value, name) => {
@@ -167,7 +162,6 @@ export default function GaussianArmsChart({ game = {}, points = 300, normalize =
                     </ResponsiveContainer>
                 </ChartContainer>
 
-                {/* Legend unterhalb, in Reihen umbrechbar */}
                 <div className="flex flex-wrap gap-2 mt-2">
                     {keys.map((k) => {
                         const cfg = chartConfig[k]

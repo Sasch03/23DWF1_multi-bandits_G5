@@ -1,7 +1,8 @@
 "use client"
 
+import React, { useState } from "react"
 import { LineChart, Line, XAxis, CartesianGrid, ResponsiveContainer } from "recharts"
-import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.jsx";
 
 const chartConfig = {
@@ -28,10 +29,18 @@ function makeLineData({ manualRewards = [], greedyRewards = [], epsilonGreedyRew
 }
 
 export default function CumulativeLineChart({ cumulativeRewards, chosenDistribution }) {
+
+    const [hidden, setHidden] = useState({})
+
+    const handleLegendClick = (key) => {
+        setHidden((prev) => ({ ...prev, [key]: !prev[key] }))
+    }
+
+
     return (
         <Card className="flex-1 bg-muted/30">
             <CardHeader>
-                <CardTitle>Success</CardTitle>
+                <CardTitle>Cumulative Rewards</CardTitle>
             </CardHeader>
             <CardContent>
                 <ChartContainer config={chartConfig} className="overflow-hidden">
@@ -67,7 +76,6 @@ export default function CumulativeLineChart({ cumulativeRewards, chosenDistribut
                                     />
                                 }
                             />
-                            <ChartLegend content={<ChartLegendContent />} />
                             {Object.entries(chartConfig).map(([key, cfg]) => (
                                 <Line
                                     key={key}
@@ -76,12 +84,27 @@ export default function CumulativeLineChart({ cumulativeRewards, chosenDistribut
                                     stroke={cfg.color}
                                     strokeWidth={2}
                                     dot={false}
+                                    hide={hidden[key] ?? false}
                                     name={cfg.label}
                                 />
                             ))}
                         </LineChart>
                     </ResponsiveContainer>
                 </ChartContainer>
+                <div className="flex flex-wrap gap-2 mt-2">
+                    {Object.entries(chartConfig).map(([key, cfg]) => (
+                        <button
+                            key={key}
+                            onClick={() => handleLegendClick(key)}
+                            className="flex items-center gap-1 px-2 py-1 border rounded cursor-pointer whitespace-nowrap"
+                            style={{ opacity: hidden[key] ? 0.3 : 1 }}
+                        >
+                            <span className="w-3 h-3 rounded-full" style={{ backgroundColor: cfg.color }} />
+                            <span className="text-xs">{cfg.label}</span>
+                        </button>
+                    ))}
+                </div>
+
             </CardContent>
         </Card>
     )
