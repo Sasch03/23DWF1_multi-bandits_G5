@@ -5,4 +5,6 @@
 export const AlgorithmTyp = Object.freeze({
     GREEDY: "Greedy",
     EPSILON_GREEDY: "Epsilon-Greedy",
+    GRADIENT_BANDIT: "Gradient-Bandit",
+    UPPER_CONFIDENCE_BOUND: "Upper-Confidence-Bound"
 });
