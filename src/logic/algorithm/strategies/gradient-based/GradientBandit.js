@@ -70,7 +70,7 @@ export default class GradientBandit extends Algorithm {
 
     /**
      * Select an arm by sampling from the softmax distribution of preferences.
-     * @returns {number} chosen arm index
+     * @returns {number} chosen arm index.
      */
     selectArm() {
         const probs = this.#softmax(this.preferences);
@@ -96,7 +96,7 @@ export default class GradientBandit extends Algorithm {
      */
     update({ arm, observedReward }) {
         if (typeof observedReward !== 'number') {
-            throw new Error('GradientBandit.update: observedReward must be a number');
+            throw new Error('GradientBandit: observedReward must be a number');
         }
 
         const probs = this.#softmax(this.preferences);
