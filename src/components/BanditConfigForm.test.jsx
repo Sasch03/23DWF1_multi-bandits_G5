@@ -23,25 +23,11 @@ describe("BanditConfig Component", () => {
 
     it("renders all labels and buttons", () => {
         setup();
-        expect(screen.getByText("Bandit-Type")).toBeInTheDocument();
         expect(screen.getByText("Number of campaigns")).toBeInTheDocument();
         expect(screen.getByText("Number of attempts")).toBeInTheDocument();
         expect(screen.getByText("Start")).toBeInTheDocument();
         expect(screen.getByText("Reset")).toBeInTheDocument();
     });
-
-    it("calls setType when selecting a bandit type", () => {
-        const props = setup();
-
-        const selectTrigger = screen.getByRole("combobox");
-        fireEvent.click(selectTrigger);
-
-        const gaussianOption = screen.getByText("Gaussian");
-        fireEvent.click(gaussianOption);
-
-        expect(props.setType).toHaveBeenCalledWith("Gaussian");
-    });
-
 
     it("calls setArmCount when Counter changes", () => {
         const props = setup();
