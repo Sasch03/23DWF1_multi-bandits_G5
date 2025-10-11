@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import GradientBandit from '@/logic/algorithm/strategies/rule-based/GradientBandit.js';
+import GradientBandit from '@/logic/algorithm/strategies/gradient-based/GradientBandit.js';
 
 describe('GradientBandit', () => {
     let gb;
