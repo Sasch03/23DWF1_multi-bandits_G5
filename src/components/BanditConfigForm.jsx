@@ -1,6 +1,5 @@
 import React from 'react';
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card.jsx";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select.jsx'
 import { Button } from "@/components/ui/button.jsx";
 import Counter from "@/components/shared/Counter.jsx";
 import {Spinner} from "@/components/ui/spinner.jsx";
@@ -14,8 +13,6 @@ import {Spinner} from "@/components/ui/spinner.jsx";
  *
  * @component
  * @param {Object} props - The properties passed to the component.
- * @param {"bernoulli"|"gaussian"} props.type - The currently selected bandit type.
- * @param {function} props.setType - Callback to update the bandit type.
  * @param {Array} props.arms - Array describing the individual arms.
  * @param {function} props.setArmCount - Callback to update the number of arms.
  * @param {number} props.iterations - The number of simulation iterations.
