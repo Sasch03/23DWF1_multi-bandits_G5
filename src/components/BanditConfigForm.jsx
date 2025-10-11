@@ -1,6 +1,5 @@
 import React from 'react';
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card.jsx";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select.jsx'
 import { Button } from "@/components/ui/button.jsx";
 import Counter from "@/components/shared/Counter.jsx";
 import {Spinner} from "@/components/ui/spinner.jsx";
@@ -14,8 +13,6 @@ import {Spinner} from "@/components/ui/spinner.jsx";
  *
  * @component
  * @param {Object} props - The properties passed to the component.
- * @param {"bernoulli"|"gaussian"} props.type - The currently selected bandit type.
- * @param {function} props.setType - Callback to update the bandit type.
  * @param {Array} props.arms - Array describing the individual arms.
  * @param {function} props.setArmCount - Callback to update the number of arms.
  * @param {number} props.iterations - The number of simulation iterations.
@@ -26,7 +23,6 @@ import {Spinner} from "@/components/ui/spinner.jsx";
  * @returns {JSX.Element} The rendered configuration panel.
  */
 export default function BanditConfig({
-                                         type, setType,
                                          arms, setArmCount,
                                          iterations, setIterations,
                                          startSimulation, resetAll, running, showPlot, setShowPlot
@@ -35,19 +31,8 @@ export default function BanditConfig({
         <Card className="w-1/3 flex flex-col bg-muted/30 gap-4 shadow-xl p-4">
             <CardHeader>
                 <CardTitle className="text-2xl">Configuration</CardTitle>
-                <CardDescription>Select a bandit type, number of campaigns and attempts</CardDescription>            </CardHeader>
-
-            <div className="space-y-3">
-                <label className="text-sm">Bandit-Type</label>
-                <Select disabled={running} onValueChange={setType} defaultValue={type}>
-                    <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Wähle Typ" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="Bernoulli">Bernoulli</SelectItem>
-                        <SelectItem value="Gaussian">Gaussian</SelectItem>
-                    </SelectContent>
-                </Select>
+                <CardDescription>Select a bandit type, number of campaigns and attempts</CardDescription>
+            </CardHeader>
 
                 <label className="text-sm">Number of campaigns</label>
                 <Counter value={arms.length} onChange={setArmCount} min={2} max={50} disabled={running} />
@@ -70,7 +55,6 @@ export default function BanditConfig({
                     <Button variant="secondary" onClick={resetAll}>Reset</Button>
 
                 </div>
-            </div>
         </Card>
     );
 }
