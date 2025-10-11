@@ -2,8 +2,6 @@ import Algorithm from "@/logic/algorithm/Algorithm.js";
 import { ALPHA_DEFAULT } from "@/constants.js";
 
 /**
- * Implements the Gradient Bandit algorithm.
- *
  * This algorithm adjusts the selection probability for each arm based on its
  * performance relative to the average reward.
  *
