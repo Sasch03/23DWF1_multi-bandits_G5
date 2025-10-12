@@ -5,7 +5,7 @@ import Algorithm from "@/logic/algorithm/Algorithm.js";
 // should inherit from this class to avoid duplicating the logic for handling expectedRewards.
 
 
-export default class  ExpectedRewardsBased extends Algorithm {
+export default class ValueBasedAlgorithm extends Algorithm {
     constructor({numberOfArms, numberOfTries, expectedRewardsBegin = null}) {
         super({numberOfArms, numberOfTries});
         this.expectedRewards = Array(this.numberOfArms).fill(0);

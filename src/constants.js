@@ -35,6 +35,15 @@ export const EPSILON_MODES = {
     EXP: "exp",
 };
 
+// --- UCB ---
+/**
+ * Exploration coefficient for UCB1.
+ * Controls how strongly unexplored arms are favored.
+ * Typical values: 1–3.
+ * @type {number}
+ */
+export const UCB_C = 2;
+
 // --- Gradient Bandit ---
 /**
  * The default value for the learning rate (alpha) hyperparameter.
