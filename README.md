@@ -1,61 +1,107 @@
 # 23DWF1_multi-bandits_G5
-Repo für die Gruppe 5 des Moduls Programmierprojekt.
+Repository for the programming project of Group 5. Here, the n-armed bandit problem was presented in the form of a 
+single-page application. It is possible to play the game and compare different algorithms.
 
-## Aktuelle PR-Zuständigkeiten
-| Entwickler | Gibt PR frei |
-|------------|--------------|
-| Kevin      | Aleks        |
-| Samuel     | Daria        |
-| Aleks      | Kevin        |
-| Daria      | Samuel       |
+## How to start the application
+The following describes how to start the application in the terminal.
 
-(rotiert bei Sprintwechsel)
+1. Clone the repository:
+   ```bash
+   git clone
+    ```
+   
+
+2. Navigate to the project directory:
+   ```bash
+   cd 23DWF1_multi-bandits_G5
+   ```
+   
+
+3. Ensure you have Node.js and npm installed. You can check by running:
+   ```bash
+    node -v
+    npm -v
+    ```
+    If not installed, download and install them from [Node.js official website](https://nodejs.org/).
 
 
-## Git-Konventionen
+4. Install the dependencies:
+   ```bash
+    npm install
+    ```
+   
 
-Diese Dokumentation beschreibt die Konventionen für Branches, Commits und die Definition of Done (DoD) im Projekt.
+5. Start the development server:
+    ```bash
+    npm run dev
+    ```
+   
+
+6. Open your web browser and navigate to the URL provided in the terminal (usually `http://localhost:5173`).
+
+
+7. You should now see the application running in your browser.
+
+
+## Git conventions
+
+This documentation describes the conventions for branches, commits, and the definition of done (DoD) in the project.
 
 ---
 
 ### Branches
 
-**Namensschema:**
+**Naming scheme:**
 
-`[type]/[ticketnummer]-[kurzbeschreibung]`
+`[type]/[ticket-number]-[brief-description]`
 
 
-**Typen:**
-- `feature` – neue Funktionalität
-- `bugfix` – Behebung von Fehlern
-- `refactor` – Code-Refactoring
-- `test` – Tests erstellen oder anpassen
-- `orga` – organisatorische Änderungen
+**Typs:**
+- `feature` – New functionality
+- `bugfix` – Correction of bugs
+- `refactor` – Code refactoring
+- `test` – Create or customize tests
+- `orga` – Organizational changes
 
 
 ---
 
 ### Commits
 
-**Namensschema:**
+**Naming scheme:**
 
-`[type]: [kurzbeschreibung]`
+`[type]: [brief-description]`
 
-**Typen:**
-- `LO` – Logikänderung
-- `UI` – Änderungen an der Benutzeroberfläche
-- `DOC` – Dokumentation
+**Typs:**
+- `LO` – Logic change
+- `UI` – Changes to the user interface
+- `DOC` – Documentation
 - `TEST` – Tests
-- `CHORE` – organisatorische Änderungen, Setup, Libraries, Dependencies
+- `CHORE` – Organizational changes, setup, libraries, dependencies
 
 ---
 
 ### Definition of Done (DoD)
 
-Ein Ticket gilt als erledigt, wenn:
-- Mindestens 80% Testabdeckung erreicht ist
-- Alle Akzeptanzkriterien des Tickets erfüllt sind
-- Nicht selbsterklärende Codeabschnitte ausreichend dokumentiert wurden
-- Die Lösung des Tickets im Ticket in Textform hinterlegt ist
-- Die aktuellen Funktionen nicht beeinträchtigt werden
-- Die Änderung funktional getestet wurde
+A ticket is considered closed when:
+- At least 80% test coverage has been achieved
+- All acceptance criteria for the ticket have been met
+- Non-self-explanatory code sections have been sufficiently documented
+- The solution to the ticket has been documented in text form in the ticket
+- Current functions are not impaired
+- The change has been functionally tested
+
+## Used Technologies
+The following technologies were used to develop the application:
+
+| Category                    | Technology   |
+|-----------------------------|--------------|
+| **Programming language**    | JavaScript   |
+| **Runtime**                 | Node.js      |
+| **Package manager**         | npm          |
+| **Build tool / Dev server** | Vite         |
+| **UI library**              | React        |
+| **Component library**       | shadcn/ui    |
+| **CSS framework**           | Tailwind CSS |
+| **Charting library**        | Recharts     |
+| **Test runner**             | Vitest       |
