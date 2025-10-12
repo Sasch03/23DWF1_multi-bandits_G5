@@ -1,4 +1,4 @@
-import { UCB_C } from "@/Constants.js";
+import { UCB_C } from "@/constants.js";
 
 class UcbCProvider {
     getC(step, total) {
