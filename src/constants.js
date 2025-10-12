@@ -34,3 +34,12 @@ export const EPSILON_MODES = {
     LINEAR: "linear",
     EXP: "exp",
 };
+
+// --- Gradient Bandit ---
+/**
+ * The default value for the learning rate (alpha) hyperparameter.
+ *
+ * This value is used in the GradientBandit algorithm when no specific alpha is provided.
+ * @type {number}
+ */
+export const ALPHA_DEFAULT = 0.1;
