@@ -56,7 +56,7 @@ This documentation describes the conventions for branches, commits, and the defi
 `[type]/[ticket-number]-[brief-description]`
 
 
-**Typs:**
+**Types:**
 - `feature` – New functionality
 - `bugfix` – Correction of bugs
 - `refactor` – Code refactoring
@@ -72,7 +72,7 @@ This documentation describes the conventions for branches, commits, and the defi
 
 `[type]: [brief-description]`
 
-**Typs:**
+**Types:**
 - `LO` – Logic change
 - `UI` – Changes to the user interface
 - `DOC` – Documentation
