@@ -6,7 +6,7 @@
  * A value of 0 creates a neutral baseline with both positive (gain) and negative (loss) arms.
  * @type {number}
  */
-export const MEAN_OF_MEANS = 0;
+export const MEAN_OF_MEANS = 10.0;
 /**
  * The standard deviation for generating the true means of each arm (the "signal").
  * This controls how different the arms are from each other. 50 creates a significant spread.
@@ -20,7 +20,7 @@ export const GAUSSIAN_MEAN_SPREAD_STD_DEV = 50.0;
  * hide the underlying signal.
  * @type {number}
  */
-export const GAUSSIAN_STD_DEV = 50.0;
+export const GAUSSIAN_STD_DEV = 60.0;
 
 // --- Default Game Settings ---
 export const DEFAULT_ARMS = 4;
