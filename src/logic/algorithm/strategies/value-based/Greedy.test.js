@@ -2,7 +2,7 @@
 import { describe, it, expect } from "vitest";
 import CurrentGame from "@/logic/CurrentGame.js";
 import { DistributionTyp } from "@/logic/enumeration/DistributionTyp.js";
-import { Greedy } from "@/logic/algorithm/strategies/value-based/Greedy.js";
+import Greedy from "@/logic/algorithm/strategies/value-based/Greedy.js";
 
 function runOnTable({ table, policy }) {
     const k = table.length, T = table[0].length;
