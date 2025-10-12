@@ -122,6 +122,4 @@ describe('StrategyRewardHistory', () => {
         expect(history.UpperConfidenceBoundRewards).toEqual([]); // requires reset() to clear it
         expect(history.GradientBanditRewards).toEqual([]); // requires reset() to clear it
     });
-
-
 });
