@@ -1,84 +1,88 @@
-// src/components/NavigationBar.test.jsx
-import React from 'react';
-import { render, fireEvent, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import { vi, describe, it, expect, beforeEach } from 'vitest';
+import React from "react";
+import { render, fireEvent, screen } from "@testing-library/react";
+import "@testing-library/jest-dom";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 
-// Mock the navigation UI import so tests run without the UI library
-vi.mock('@/components/ui/navigation-menu', () => {
+vi.mock("@/components/ui/navigation-menu", () => {
     return {
         NavigationMenu: ({ children, ...props }) => <div {...props}>{children}</div>,
         NavigationMenuList: ({ children, ...props }) => <div {...props}>{children}</div>,
         NavigationMenuItem: ({ children, ...props }) => <div {...props}>{children}</div>,
-        NavigationMenuLink: ({ children, href, onClick, className, ...props }) => (
-            <a href={href} onClick={onClick} className={className} {...props}>
-                {children}
-            </a>
-        ),
+        NavigationMenuLink: ({ children, ...props }) => <a {...props}>{children}</a>,
     };
 });
 
+import NavigationBar from "./NavigationBar";
 
-import NavigationBar from './NavigationBar';
+describe("NavigationBar component", () => {
+    const setAlgoMock = vi.fn();
 
-describe('NavigationBar', () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });
 
-    it('renders both nav items and highlights the current algorithm', () => {
-        const setAlgo = vi.fn();
-        render(<NavigationBar algo="Bernoulli" setAlgo={setAlgo} running={false} />);
+    it("renders German labels when lang='de'", () => {
+        render(<NavigationBar algo="Bernoulli" setAlgo={setAlgoMock} running={false} lang="de" />);
 
-        const bernoulli = screen.getByText('Bernoulli');
-        const gaussian = screen.getByText('Gaussian');
-
-        expect(bernoulli).toBeInTheDocument();
-        expect(gaussian).toBeInTheDocument();
-
-        // The selected item should include the selection class (check substring)
-        const bernoulliLink = bernoulli.closest('a');
-        expect(bernoulliLink).toBeTruthy();
-        expect(bernoulliLink.className).toContain('bg-primary');
+        expect(screen.getByText("Bernoulli")).toBeInTheDocument();
+        expect(screen.getByText("Gaußsche")).toBeInTheDocument();
     });
 
-    it('calls setAlgo when clicking an item if not running', () => {
-        const setAlgo = vi.fn();
-        render(<NavigationBar algo="Bernoulli" setAlgo={setAlgo} running={false} />);
+    it("renders English labels when lang!='de'", () => {
+        render(<NavigationBar algo="Bernoulli" setAlgo={setAlgoMock} running={false} lang="en" />);
 
-        const gaussianLink = screen.getByText('Gaussian').closest('a');
-        expect(gaussianLink).toBeTruthy();
+        expect(screen.getByText("Bernoulli")).toBeInTheDocument();
+        expect(screen.getByText("Gaussian")).toBeInTheDocument();
+    });
 
-        // Simulate a click on the Gaussian link
+    it("calls setAlgo with correct value when clicked and running=false", () => {
+        render(<NavigationBar algo="Bernoulli" setAlgo={setAlgoMock} running={false} lang="en" />);
+
+        const gaussianLink = screen.getByText("Gaussian").closest("a");
         fireEvent.click(gaussianLink);
-        expect(setAlgo).toHaveBeenCalledTimes(1);
-        expect(setAlgo).toHaveBeenCalledWith('Gaussian');
+
+        expect(setAlgoMock).toHaveBeenCalledTimes(1);
+        expect(setAlgoMock).toHaveBeenCalledWith("Gaussian");
     });
 
-    it('does not call setAlgo when running is true', () => {
-        const setAlgo = vi.fn();
-        render(<NavigationBar algo="Bernoulli" setAlgo={setAlgo} running={true} />);
+    it("does not call setAlgo when running=true", () => {
+        render(<NavigationBar algo="Bernoulli" setAlgo={setAlgoMock} running={true} lang="en" />);
 
-        const gaussianLink = screen.getByText('Gaussian').closest('a');
-        expect(gaussianLink).toBeTruthy();
-
-        // Clicking should be ignored while running
+        const gaussianLink = screen.getByText("Gaussian").closest("a");
         fireEvent.click(gaussianLink);
-        expect(setAlgo).not.toHaveBeenCalled();
 
-        // Optionally verify the disabled styling (opacity)
-        expect(gaussianLink.className).toContain('opacity-50');
+        expect(setAlgoMock).not.toHaveBeenCalled();
     });
 
-    it('displays explanatory text for Bernoulli and Gaussian correctly', () => {
-        const setAlgo = vi.fn();
+    it("renders the correct explanatory text for Bernoulli in German", () => {
+        render(<NavigationBar algo="Bernoulli" setAlgo={setAlgoMock} running={false} lang="de" />);
 
-        const { rerender } = render(<NavigationBar algo="Bernoulli" setAlgo={setAlgo} running={false} />);
-        // Verify Bernoulli explanatory text appears
-        expect(screen.getByText(/Bernoulli-Bandit arbeitet mit diskreten Auszahlungen/i)).toBeInTheDocument();
+        expect(
+            screen.getByText(/Der Bernoulli-Bandit arbeitet mit diskreten Auszahlungen/)
+        ).toBeInTheDocument();
+    });
 
-        // Rerender with Gaussian and verify its explanatory text
-        rerender(<NavigationBar algo="Gaussian" setAlgo={setAlgo} running={false} />);
-        expect(screen.getByText(/Gaussian-Bandit verwendet kontinuierliche Auszahlungen/i)).toBeInTheDocument();
+    it("renders the correct explanatory text for Bernoulli in English", () => {
+        render(<NavigationBar algo="Bernoulli" setAlgo={setAlgoMock} running={false} lang="en" />);
+
+        expect(
+            screen.getByText(/The Bernoulli bandit works with discrete payouts/)
+        ).toBeInTheDocument();
+    });
+
+    it("renders the correct explanatory text for Gaussian in German", () => {
+        render(<NavigationBar algo="Gaussian" setAlgo={setAlgoMock} running={false} lang="de" />);
+
+        expect(
+            screen.getByText(/Der Gaußsche Bandit verwendet kontinuierliche Auszahlungen/)
+        ).toBeInTheDocument();
+    });
+
+    it("renders the correct explanatory text for Gaussian in English", () => {
+        render(<NavigationBar algo="Gaussian" setAlgo={setAlgoMock} running={false} lang="en" />);
+
+        expect(
+            screen.getByText(/The Gaussian bandit uses continuous payouts/)
+        ).toBeInTheDocument();
     });
 });

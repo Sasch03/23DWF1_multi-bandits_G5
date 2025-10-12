@@ -31,23 +31,39 @@ import {
 export default function BanditConfig({
                                          arms, setArmCount,
                                          iterations, setIterations,
-                                         startSimulation, resetAll, running, showPlot, setShowPlot
+                                         startSimulation, resetAll, running, showPlot, setShowPlot, lang
                                      }) {
     return (
         <Card className="w-1/3 flex flex-col bg-muted/30 gap-4 shadow-xl p-4">
             <CardHeader>
-                <CardTitle className="text-2xl">Configuration</CardTitle>
-                <CardDescription>Select a bandit type, number of campaigns and attempts</CardDescription>
+                <CardTitle className="text-2xl">
+                    {lang === "de"
+                        ? "Konfiguration"
+                        : "Configuration"}
+                </CardTitle>
+                <CardDescription>
+                    {lang === "de"
+                        ? "Wähle die Anzahl der Kampagnen und Versuche"
+                        : "Select a number of campaigns and attempts"}
+                </CardDescription>
             </CardHeader>
 
             <TooltipProvider>
                 {/* Number of campaigns with tooltip */}
                 <Tooltip>
                     <TooltipTrigger asChild>
-                        <label className="text-sm font-bold mt-4">Number of campaigns</label>
+                        <label className="text-sm font-bold mt-2">
+                            {lang === "de"
+                                ? "Anzahl Kampagnen"
+                                : "Number of campaigns"}
+                        </label>
                     </TooltipTrigger>
                     <TooltipContent>
-                        <p>Total number of arms/options available in the current bandit game.</p>
+                        <p>
+                            {lang === "de"
+                                ? "Gesamtzahl der verfügbaren Arme im Bandit-Spiel."
+                                : "Total number of arms/options available in the current bandit game."}
+                            </p>
                     </TooltipContent>
                 </Tooltip>
                 <Counter
@@ -62,10 +78,18 @@ export default function BanditConfig({
                 {/* Number of attempts with tooltip */}
                 <Tooltip>
                     <TooltipTrigger asChild>
-                        <label className="text-sm font-bold mt-4">Number of attempts</label>
+                        <label className="text-sm font-bold mt-4">
+                            {lang === "de"
+                                ? "Anzahl Versuche"
+                                : "Number of attempts"}
+                        </label>
                     </TooltipTrigger>
                     <TooltipContent>
-                        <p>Total number of trials the simulation will perform.</p>
+                        <p>
+                            {lang === "de"
+                                ? "Gesamtzahl der Ziehungen in dieser Simulation."
+                                : "Total number of trials the simulation will perform."}
+                        </p>
                     </TooltipContent>
                 </Tooltip>
                 <Counter
@@ -80,15 +104,19 @@ export default function BanditConfig({
             <div className="flex gap-2 mt-8">
                 {running ? (
                     <Button variant="secondary" disabled className="flex items-center gap-2">
-                        <Spinner className="size-4" /> Running
+                        <Spinner className="size-4" /> {lang === "de" ? "Läuft" : "Running"}
                     </Button>
                 ) : (
-                    <Button onClick={startSimulation}>Start</Button>
+                    <Button onClick={startSimulation}>{lang === "de" ? "Start" : "Start"}</Button>
                 )}
                 {!showPlot && running && (
-                    <Button variant="secondary" onClick={() => setShowPlot(true)}>Plot</Button>
+                    <Button variant="secondary" onClick={() => setShowPlot(true)}>
+                        {lang === "de" ? "Diagramm" : "Diagram"}
+                    </Button>
                 )}
-                <Button variant="secondary" onClick={resetAll}>Reset</Button>
+                <Button variant="secondary" onClick={resetAll}>
+                    {lang === "de" ? "Zurücksetzen" : "Reset"}
+                </Button>
             </div>
         </Card>
     );

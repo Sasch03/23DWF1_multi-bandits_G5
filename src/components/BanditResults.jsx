@@ -37,7 +37,7 @@ import {
  *
  * @returns {JSX.Element} The rendered BanditResults component.
  */
-export default function BanditResults({ totalPulls, totalReward, logs, type }) {
+export default function BanditResults({ totalPulls, totalReward, logs, type , lang}) {
     const [open, setOpen] = useState(false);
 
     let totalRewardColor =
@@ -65,7 +65,9 @@ export default function BanditResults({ totalPulls, totalReward, logs, type }) {
                         ? "text-red-500"
                         : "text-muted-foreground";
         } else {
-            rewardDisplay = rewardValue === 1 ? "Success" : "Fail";
+            rewardDisplay = rewardValue === 1
+                ? (lang === "de" ? "Erfolg" : "Success")
+                : (lang === "de" ? "Fehlschlag" : "Fail");
             rewardColor =
                 rewardValue === 1
                     ? "text-emerald-500"
@@ -79,7 +81,8 @@ export default function BanditResults({ totalPulls, totalReward, logs, type }) {
                         #{ts}
                     </Badge>
                 </TableCell>
-                <TableCell className="text-left">Campaign {arm}</TableCell>
+                <TableCell className="text-left">
+                    {lang === "de" ? "Kampagne" : "Campaign"}{arm}</TableCell>
                 <TableCell
                     className={`text-right font-mono font-semibold ${rewardColor}`}
                 >
@@ -100,10 +103,14 @@ export default function BanditResults({ totalPulls, totalReward, logs, type }) {
                         <div>
                             <Tooltip>
                                 <TooltipTrigger asChild>
-                                    <span className="text-sm text-muted-foreground">Total Attempts</span>
+                                    <span className="text-sm text-muted-foreground">
+                                        {lang === "de" ? "Gesamtversuche" : "Total Attempts"}
+                                    </span>
                                 </TooltipTrigger>
                                 <TooltipContent>
-                                    <p>Total number of times the bandit has been pulled in this simulation.</p>
+                                    <p>{lang === "de"
+                                        ? "Gesamtzahl der Ziehungen im Spiel."
+                                        : "Total number of times the bandit has been pulled in this simulation."}</p>
                                 </TooltipContent>
                             </Tooltip>
                             <div className="text-3xl font-bold">{totalPulls}</div>
@@ -111,10 +118,16 @@ export default function BanditResults({ totalPulls, totalReward, logs, type }) {
                         <div>
                             <Tooltip>
                                 <TooltipTrigger asChild>
-                                    <span className="text-sm text-muted-foreground">Total Reward</span>
+                                    <span className="text-sm text-muted-foreground">
+                                        {lang === "de" ? "Gesamtgewinn" : "Total Reward"}
+                                    </span>
                                 </TooltipTrigger>
                                 <TooltipContent>
-                                    <p>Sum of all rewards accumulated from the attempts.</p>
+                                    <p>
+                                        {lang === "de"
+                                            ? "Gesamtzahl der Ziehungen im Spiel."
+                                            : "Total number of times the bandit has been pulled in this simulation."}
+                                    </p>
                                 </TooltipContent>
                             </Tooltip>
                             <div className={`text-3xl font-bold ${totalRewardColor}`}>
@@ -132,7 +145,7 @@ export default function BanditResults({ totalPulls, totalReward, logs, type }) {
                 <div className="flex flex-col gap-2">
                     <div className="flex justify-between items-center">
                         <span className="text-sm text-muted-foreground font-medium">
-                            Recent Activity
+                            {lang === "de" ? "Letzte Aktivität" : "Recent Activity"}
                         </span>
                         <Button
                             variant="outline"
@@ -143,11 +156,11 @@ export default function BanditResults({ totalPulls, totalReward, logs, type }) {
                         >
                             {open ? (
                                 <>
-                                    Hide all <ChevronUp size={16} />
+                                    {lang === "de" ? "Verstecke alle" : "Hide all"} <ChevronUp size={16} />
                                 </>
                             ) : (
                                 <>
-                                    Show all <ChevronDown size={16} />
+                                    {lang === "de" ? "Zeige alle" : "Show all"} <ChevronDown size={16} />
                                 </>
                             )}
                         </Button>
@@ -158,16 +171,24 @@ export default function BanditResults({ totalPulls, totalReward, logs, type }) {
                             <Table className="w-full">
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead className="w-[80px]">Attempt</TableHead>
-                                        <TableHead>Campaign</TableHead>
-                                        <TableHead className="text-right">Reward</TableHead>
+                                        <TableHead className="w-[80px]">
+                                            {lang === "de" ? "Versuch" : "Attempt"}
+                                        </TableHead>
+                                        <TableHead>
+                                            {lang === "de" ? "Kampagne" : "Campaign"}
+                                        </TableHead>
+                                        <TableHead className="text-right">
+                                            {lang === "de" ? "Belohnung" : "Reward"}
+                                        </TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     {logs.length === 0 ? (
                                         <TableRow>
                                             <TableCell colSpan={3} className="text-center text-muted-foreground py-3">
-                                                No phishing campaign activity yet
+                                                {lang === "de"
+                                                    ? "Noch keine Phishing-Kampagnenaktivität"
+                                                    : "No phishing campaign activity yet"}
                                             </TableCell>
                                         </TableRow>
                                     ) : (

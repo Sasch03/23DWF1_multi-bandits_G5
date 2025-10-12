@@ -13,7 +13,7 @@ import React from "react";
  * @param {boolean} props.disabled - If true, disables all arm buttons.
  * @returns {JSX.Element} The rendered grid of bandit arms.
  */
-export default function BanditPlayground({ arms, onPull, disabled }) {
+export default function BanditPlayground({ arms, onPull, disabled, lang }) {
     return (
         <div className="grid grid-cols-2 gap-4 max-h-[36vh] overflow-auto pr-2">
             {arms.map(a => (
@@ -26,8 +26,10 @@ export default function BanditPlayground({ arms, onPull, disabled }) {
                     disabled={disabled}
                 >
                     <div className="flex justify-between items-center mb-2">
-                        <div className="font-semibold">Campaign #{a.id + 1}</div>
-                        <div className="text-sm text-muted-foreground">Attempts: {a.pulls}</div>
+                        <div className="font-semibold">
+                            {lang === "de" ? "Kampagne" : "Campaign"} #{a.id + 1}</div>
+                        <div className="text-sm text-muted-foreground">
+                            {lang === "de" ? "Versuche" : "Attempts"}: {a.pulls}</div>
                     </div>
                 </button>
             ))}
