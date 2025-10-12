@@ -6,10 +6,18 @@ import {
     NavigationMenuLink
 } from "@/components/ui/navigation-menu";
 
-export default function NavigationBar({ algo, setAlgo, running}) {
+export default function NavigationBar({ algo, setAlgo, running, lang }) {
     const navItems = [
-        { value: "Bernoulli", label: "Bernoulli" },
-        { value: "Gaussian", label: "Gaussian" }
+        {
+            value: "Bernoulli",
+            label_de: "Bernoulli",
+            label_en: "Bernoulli"
+        },
+        {
+            value: "Gaussian",
+            label_de: "Gaußsche",
+            label_en: "Gaussian"
+        }
     ];
 
     return (
@@ -22,7 +30,7 @@ export default function NavigationBar({ algo, setAlgo, running}) {
                                 href="#"
                                 onClick={(e) => {
                                     e.preventDefault();
-                                    if (running) return;        // nichts tun, wenn gerade läuft
+                                    if (running) return; // nichts tun, wenn gerade läuft
                                     setAlgo(item.value);
                                 }}
                                 className={`px-3 py-1 rounded font-medium transition-colors 
@@ -31,7 +39,7 @@ export default function NavigationBar({ algo, setAlgo, running}) {
                                     : "hover:bg-primary/20 hover:text-primary"} 
                                     ${running ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
                             >
-                                {item.label}
+                                {lang === "de" ? item.label_de : item.label_en}
                             </NavigationMenuLink>
                         </NavigationMenuItem>
                     ))}
@@ -42,14 +50,16 @@ export default function NavigationBar({ algo, setAlgo, running}) {
             <div className="mt-4 text-sm text-muted-foreground">
                 {algo === "Bernoulli" && (
                     <p>
-                        Der Bernoulli-Bandit arbeitet mit diskreten Auszahlungen (0 oder 1),
-                        basierend auf festen Wahrscheinlichkeiten pro Arm.
+                        {lang === "de"
+                            ? "Der Bernoulli-Bandit arbeitet mit diskreten Auszahlungen (0 oder 1), basierend auf festen Wahrscheinlichkeiten pro Arm."
+                            : "The Bernoulli bandit works with discrete payouts (0 or 1), based on fixed probabilities for each arm."}
                     </p>
                 )}
                 {algo === "Gaussian" && (
                     <p>
-                        Der Gaussian-Bandit verwendet kontinuierliche Auszahlungen,
-                        die aus einer Normalverteilung pro Arm gezogen werden.
+                        {lang === "de"
+                            ? "Der Gaußsche Bandit verwendet kontinuierliche Auszahlungen, aus einer Normalverteilung pro Arm gezogen."
+                            : "The Gaussian bandit uses continuous payouts, drawn from a normal distribution for each arm."}
                     </p>
                 )}
             </div>

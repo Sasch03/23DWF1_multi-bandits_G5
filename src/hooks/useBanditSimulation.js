@@ -4,8 +4,10 @@ import { DistributionTyp } from "@/logic/enumeration/DistributionTyp.js";
 import ManualAlgorithm from "@/logic/algorithm/strategies/rule-based/Manual.js";
 import Greedy from "@/logic/algorithm/strategies/value-based/Greedy.js";
 import EpsGreedy from "@/logic/algorithm/strategies/value-based/EpsGreedy.js";
-import { DEFAULT_ARMS, DEFAULT_ITERATIONS } from "@/constants.js";
+import { DEFAULT_ARMS, DEFAULT_ITERATIONS, ALPHA_DEFAULT } from "@/constants.js";
 import StrategyRewardHistory from "@/logic/StrategyRewardHistory.js";
+import GradientBandit from "@/logic/algorithm/strategies/gradient-based/GradientBandit.js";
+import UCB from "@/logic/algorithm/strategies/value-based/UCB.js";
 
 /**
  * Custom hook to manage a multi-armed bandit simulation.
@@ -115,6 +117,8 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
         manualRewards: [...historyRef.current.manualRewards],
         greedyRewards: [...historyRef.current.greedyRewards],
         epsilonGreedyRewards: [...historyRef.current.epsilonGreedyRewards],
+        UpperConfidenceBoundRewards: [...historyRef.current.UpperConfidenceBoundRewards],
+        GradientBanditRewards: [...historyRef.current.GradientBanditRewards],
     });
 
     /**
@@ -144,7 +148,13 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
         const epsAlgo = new EpsGreedy({ numberOfArms: arms.length, numberOfTries: iterations });
         epsAlgo.reset();
 
-        algorithmsRef.current = { manual: manualAlgo, greedy: greedyAlgo, epsilon: epsAlgo };
+        const gbAlgo = new GradientBandit({ numberOfArms: arms.length, numberOfTries: iterations, alpha: ALPHA_DEFAULT });
+        gbAlgo.reset();
+
+        const ucbAlgo = new UCB({ numberOfArms: arms.length, numberOfTries: iterations });
+        ucbAlgo.reset();
+
+        algorithmsRef.current = { manual: manualAlgo, greedy: greedyAlgo, epsilon: epsAlgo, gradientBandit: gbAlgo, ucb: ucbAlgo };
 
         // algo simulations for history tracking
         const table = newGame.tableOfRewards;
@@ -156,11 +166,22 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
             const eArm = epsAlgo.selectArm();
             const eReward = table[eArm][t];
             epsAlgo.update({ arm: eArm, observedReward: eReward });
+
+            const gbArm = gbAlgo.selectArm();
+            const gbReward = table[gbArm][t];
+            gbAlgo.update({ arm: gbArm, observedReward: gbReward });
+
+            const ucbArm = ucbAlgo.selectArm();
+            const ucbReward = table[ucbArm][t];
+            ucbAlgo.update({ arm: ucbArm, observedReward: ucbReward });
         }
 
         // sync history
         historyRef.current.addReward(historyRef.current.greedyRewards, { observedRewards: greedyAlgo.getObservedRewards() });
         historyRef.current.addReward(historyRef.current.epsilonGreedyRewards, { observedRewards: epsAlgo.getObservedRewards() });
+        historyRef.current.addReward(historyRef.current.GradientBanditRewards, { observedRewards: gbAlgo.getObservedRewards() });
+        historyRef.current.addReward(historyRef.current.UpperConfidenceBoundRewards, { observedRewards: ucbAlgo.getObservedRewards() });
+
 
         // initialize manual observed rewards
         newGame.algorithm = manualAlgo;

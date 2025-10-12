@@ -6,6 +6,8 @@ const mockData = {
     manualRewards: [1, 2, 3],
     greedyRewards: [2, 3, 4],
     epsilonGreedyRewards: [3, 4, 5],
+    UpperConfidenceBoundRewards: [4, 5, 6],
+    GradientBanditRewards: [5, 6, 7],
 }
 
 describe("CumulativeLineChart", () => {
@@ -21,6 +23,8 @@ describe("CumulativeLineChart", () => {
         expect(screen.getByText("Manual")).toBeInTheDocument()
         expect(screen.getByText("Greedy")).toBeInTheDocument()
         expect(screen.getByText("Epsilon-Greedy")).toBeInTheDocument()
+        expect(screen.getByText("Gradient Bandit")).toBeInTheDocument()
+        expect(screen.getByText("UCB")).toBeInTheDocument()
     })
 
     it("toggles line visibility when legend button is clicked", () => {

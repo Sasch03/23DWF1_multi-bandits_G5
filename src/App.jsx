@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import './App.css';
 import ThemeToggle from './components/ThemeToggle.jsx';
+import LanguageToggle from './components/LanguageToggle.jsx';
 import Header from './components/header.jsx';
 import NavigationBar from './components/NavigationBar.jsx';
 import BanditConfig from './components/BanditConfigForm.jsx';
@@ -10,6 +11,8 @@ import { useBanditGame } from "./hooks/useBanditSimulation.js";
 import BanditResultsChart from "@/components/BanditResultsChart.jsx";
 
 export default function App() {
+    const [lang, setLang] = useState("de");
+
     const {
         type, setType,
         arms,
@@ -31,17 +34,20 @@ export default function App() {
         console.log("Simulation stopped and reset");
     };
 
-
-
     return (
         <div>
-            <div className="flex justify-end p-4">
-                <ThemeToggle />
+            <div className="flex justify-end p-4 gap-2">
+                <LanguageToggle lang={lang} setLang={setLang} />
+                <ThemeToggle lang={lang} />
             </div>
-            <Header />
+            <Header lang={lang} />
             {/* Navigation mit aktuellem Typ und Setter */}
-            <NavigationBar algo={type} setAlgo={setType} running={running}/>
-
+            <NavigationBar
+                algo={type}
+                setAlgo={setType}
+                running={running}
+                lang={lang}
+            />
             <div className="w-full max-w-7xl">
                 <div className="p-6 rounded-2xl bg-card text-card-foreground shadow-2xl flex gap-6">
                     <BanditConfig
@@ -52,12 +58,14 @@ export default function App() {
                         running={running}
                         showPlot={showPlot} setShowPlot={setShowPlot}
                         startSimulation={startGame}
+                        lang={lang}
                     />
                     <div className="flex-1 flex flex-col gap-4">
                         <BanditPlayground
                             arms={arms}
                             onPull={handlePull}
                             disabled={!running || totalPulls >= iterations}
+                            lang={lang}
                         />
                         <BanditResults
                             arms={arms}
@@ -65,20 +73,20 @@ export default function App() {
                             totalReward={totalReward}
                             logs={logs}
                             type={type}
+                            lang={lang}
                         />
-
                     </div>
                 </div>
             </div>
             <br />
 
             {(showPlot) && (
-                    <BanditResultsChart
+                <BanditResultsChart
                     game={game}
                     cumulativeRewards={getCumulativeRewards()}
-                    />
+                    lang={lang}
+                />
             )}
-
         </div>
     );
 }

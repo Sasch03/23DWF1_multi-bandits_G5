@@ -1,16 +1,22 @@
-// src/App.test.jsx
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { vi, describe, it, beforeEach, expect } from 'vitest';
 
-// Mock child components used by App
+vi.mock('./components/LanguageToggle.jsx', () => ({
+    default: (props) => (
+        <button onClick={() => props.setLang(props.lang === 'de' ? 'en' : 'de')}>
+            LangToggle:{props.lang}
+        </button>
+    ),
+}));
+
 vi.mock('./components/ThemeToggle.jsx', () => ({
-    default: () => <div>ThemeToggle</div>,
+    default: (props) => <div>ThemeToggle:{props.lang}</div>,
 }));
 
 vi.mock('./components/header.jsx', () => ({
-    default: () => <header><h1>Multi-Armed Bandit Playground</h1></header>,
+    default: (props) => <div>Header:{props.lang}</div>,
 }));
 
 vi.mock('./components/NavigationBar.jsx', () => ({
@@ -20,9 +26,10 @@ vi.mock('./components/NavigationBar.jsx', () => ({
 vi.mock('./components/BanditConfigForm.jsx', () => ({
     default: (props) => (
         <section>
-            <div>Configuration</div>
-            <button onClick={props.startSimulation}>Start</button>
-            <button onClick={props.resetAll}>Reset</button>
+            <button onClick={() => props.startSimulation && props.startSimulation()}>
+                Start
+            </button>
+            <button onClick={() => props.resetAll && props.resetAll()}>Reset</button>
         </section>
     ),
 }));
@@ -30,8 +37,10 @@ vi.mock('./components/BanditConfigForm.jsx', () => ({
 vi.mock('./components/BanditPlayground.jsx', () => ({
     default: (props) => (
         <div>
-            {props.arms && props.arms.map((a, i) => (
-                <button key={i} onClick={() => props.onPull && props.onPull(a)}>{a.label}</button>
+            {props.arms?.map((a) => (
+                <button key={a.id} onClick={() => props.onPull && props.onPull(a)}>
+                    {a.label}
+                </button>
             ))}
         </div>
     ),
@@ -58,12 +67,13 @@ vi.mock('./hooks/useBanditSimulation.js', () => ({
 import App from './App.jsx';
 import { useBanditGame } from './hooks/useBanditSimulation.js';
 
-describe('App (with mocked children & hook)', () => {
+describe('App interactions (Vitest)', () => {
     let defaults;
+    let consoleSpy;
 
     beforeEach(() => {
         vi.clearAllMocks();
-
+        consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
         defaults = {
             type: 'Bernoulli',
             setType: vi.fn(),
@@ -90,18 +100,18 @@ describe('App (with mocked children & hook)', () => {
         useBanditGame.mockReturnValue({ ...defaults });
     });
 
-    it('renders main sections and an arm button', () => {
+    it('updates Header when LanguageToggle is clicked (App state lifts language)', () => {
         render(<App />);
 
-        expect(screen.getByText('Multi-Armed Bandit Playground')).toBeInTheDocument();
-        expect(screen.getByText('Configuration')).toBeInTheDocument();
-        expect(screen.getByText('Total Attempts: 0')).toBeInTheDocument();
+        expect(screen.getByText('Header:de')).toBeInTheDocument();
 
-        const armBtn = screen.getByText(/Campaign #1/i);
-        expect(armBtn).toBeInTheDocument();
+        const toggleBtn = screen.getByRole('button', { name: /LangToggle:de/i });
+        fireEvent.click(toggleBtn);
+
+        expect(screen.getByText('Header:en')).toBeInTheDocument();
     });
 
-    it('calls startGame, handlePull and resetAll through mocked children', () => {
+    it('calls hook functions via child controls and handleReset logs', () => {
         render(<App />);
 
         const startBtn = screen.getByText('Start');
@@ -115,8 +125,8 @@ describe('App (with mocked children & hook)', () => {
 
         const resetBtn = screen.getByText('Reset');
         fireEvent.click(resetBtn);
-        // App passes a wrapper handleReset -> calls resetAll() from hook
         expect(defaults.resetAll).toHaveBeenCalledTimes(1);
+        expect(consoleSpy).toHaveBeenCalledWith('Simulation stopped and reset');
     });
 
     it('renders BanditResultsChart when showPlot is true', () => {
