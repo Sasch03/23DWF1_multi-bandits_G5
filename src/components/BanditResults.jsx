@@ -15,6 +15,12 @@ import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger
+} from "@/components/ui/tooltip";
 
 /**
  * Renders a results dashboard for a multi-armed bandit simulation.
@@ -89,21 +95,36 @@ export default function BanditResults({ totalPulls, totalReward, logs, type }) {
             <CardHeader></CardHeader>
             <CardContent className="flex flex-col gap-6">
                 {/* Top Stats */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <span className="text-sm text-muted-foreground">Total Attempts</span>
-                        <div className="text-3xl font-bold">{totalPulls}</div>
-                    </div>
-                    <div>
-                        <span className="text-sm text-muted-foreground">Total Reward</span>
-                        <div className={`text-3xl font-bold ${totalRewardColor}`}>
-                            {type === "Gaussian"
-                                ? totalReward.toFixed(2) + " €"
-                                : totalReward}
+                <TooltipProvider>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <span className="text-sm text-muted-foreground">Total Attempts</span>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>Total number of times the bandit has been pulled in this simulation.</p>
+                                </TooltipContent>
+                            </Tooltip>
+                            <div className="text-3xl font-bold">{totalPulls}</div>
+                        </div>
+                        <div>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <span className="text-sm text-muted-foreground">Total Reward</span>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>Sum of all rewards accumulated from the attempts.</p>
+                                </TooltipContent>
+                            </Tooltip>
+                            <div className={`text-3xl font-bold ${totalRewardColor}`}>
+                                {type === "Gaussian"
+                                    ? totalReward.toFixed(2) + " €"
+                                    : totalReward}
+                            </div>
                         </div>
                     </div>
-
-                </div>
+                </TooltipProvider>
 
                 <Separator />
 

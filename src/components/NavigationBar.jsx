@@ -42,14 +42,14 @@ export default function NavigationBar({ algo, setAlgo, running}) {
             <div className="mt-4 text-sm text-muted-foreground">
                 {algo === "Bernoulli" && (
                     <p>
-                        Der Bernoulli-Bandit arbeitet mit diskreten Auszahlungen (0 oder 1),
-                        basierend auf festen Wahrscheinlichkeiten pro Arm.
+                        The Bernoulli bandit works with discrete payouts (0 or 1),
+                        based on fixed probabilities for each arm.
                     </p>
                 )}
                 {algo === "Gaussian" && (
                     <p>
-                        Der Gaussian-Bandit verwendet kontinuierliche Auszahlungen,
-                        die aus einer Normalverteilung pro Arm gezogen werden.
+                        The Gaussian bandit uses continuous payouts,
+                        drawn from a normal distribution for each arm.
                     </p>
                 )}
             </div>

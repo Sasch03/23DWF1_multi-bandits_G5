@@ -2,7 +2,13 @@ import React from 'react';
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card.jsx";
 import { Button } from "@/components/ui/button.jsx";
 import Counter from "@/components/shared/Counter.jsx";
-import {Spinner} from "@/components/ui/spinner.jsx";
+import { Spinner } from "@/components/ui/spinner.jsx";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger
+} from "@/components/ui/tooltip";
 
 /**
  * BanditConfig Component
@@ -34,27 +40,56 @@ export default function BanditConfig({
                 <CardDescription>Select a bandit type, number of campaigns and attempts</CardDescription>
             </CardHeader>
 
-                <label className="text-sm">Number of campaigns</label>
-                <Counter value={arms.length} onChange={setArmCount} min={2} max={50} disabled={running} />
+            <TooltipProvider>
+                {/* Number of campaigns with tooltip */}
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <label className="text-sm font-bold mt-4">Number of campaigns</label>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <p>Total number of arms/options available in the current bandit game.</p>
+                    </TooltipContent>
+                </Tooltip>
+                <Counter
+                    value={arms.length}
+                    onChange={setArmCount}
+                    min={2}
+                    max={50}
+                    disabled={running}
+                    className="mb-3"
+                />
 
-                <label className="text-sm">Number of attempts</label>
-                <Counter value={iterations} onChange={setIterations} min={1} max={100} disabled={running} />
+                {/* Number of attempts with tooltip */}
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <label className="text-sm font-bold mt-4">Number of attempts</label>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <p>Total number of trials the simulation will perform.</p>
+                    </TooltipContent>
+                </Tooltip>
+                <Counter
+                    value={iterations}
+                    onChange={setIterations}
+                    min={1}
+                    max={100}
+                    disabled={running}
+                />
+            </TooltipProvider>
 
-
-                <div className="flex gap-2">
-                    {running ? (
-                        <Button variant="secondary" disabled className="flex items-center gap-2">
-                            <Spinner className="size-4 text-white" /> Running
-                        </Button>
-                    ) : (
-                        <Button onClick={startSimulation}>Start</Button>
-                    )}
-                    {!showPlot && running && (
-                        <Button variant="secondary" onClick={() => setShowPlot(true)}>Plot</Button>
-                    )}
-                    <Button variant="secondary" onClick={resetAll}>Reset</Button>
-
-                </div>
+            <div className="flex gap-2 mt-8">
+                {running ? (
+                    <Button variant="secondary" disabled className="flex items-center gap-2">
+                        <Spinner className="size-4" /> Running
+                    </Button>
+                ) : (
+                    <Button onClick={startSimulation}>Start</Button>
+                )}
+                {!showPlot && running && (
+                    <Button variant="secondary" onClick={() => setShowPlot(true)}>Plot</Button>
+                )}
+                <Button variant="secondary" onClick={resetAll}>Reset</Button>
+            </div>
         </Card>
     );
 }
