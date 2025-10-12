@@ -22,6 +22,20 @@ export default class StrategyRewardHistory {
     epsilonGreedyRewards = [];
 
     /**
+     * Stores cumulative rewards for the Upper-Confidence-Bound strategy.
+     * Each index represents the running total up to that point.
+     * @type {number[]}
+     */
+    UpperConfidenceBoundRewards = [];
+
+    /**
+     * Stores cumulative rewards for the gradient bandit strategy.
+     * Each index represents the running total up to that point.
+     * @type {number[]}
+     */
+    GradientBanditRewards = [];
+
+    /**
      * Synchronizes one of the cumulative reward arrays with the observedRewards of a given object.
      * The arrRef must be exactly one of the instance arrays.
      *
@@ -32,7 +46,8 @@ export default class StrategyRewardHistory {
         console.log(`Starting addReward for ${arrRef} from object ${obj}.`);
 
         // Validate target array.
-        if (arrRef !== this.manualRewards && arrRef !== this.greedyRewards && arrRef !== this.epsilonGreedyRewards) {
+        if (arrRef !== this.manualRewards && arrRef !== this.greedyRewards && arrRef !== this.epsilonGreedyRewards
+        && arrRef !== this.UpperConfidenceBoundRewards && arrRef !== this.GradientBanditRewards) {
             throw new Error("Provided array is not managed by StrategyRewardHistory.");
         }
 
@@ -60,7 +75,7 @@ export default class StrategyRewardHistory {
         for (let i = dest.length; i < src.length; i++) {
             const reward = src[i];
 
-            if (typeof reward !== 'number') {
+            if (typeof reward !== "number") {
                 throw new Error(`Invalid reward value at index ${i}. Must be a number.`);
             }
 
@@ -77,6 +92,8 @@ export default class StrategyRewardHistory {
         this.manualRewards.length = 0;
         this.greedyRewards.length = 0;
         this.epsilonGreedyRewards.length = 0;
+        this.UpperConfidenceBoundRewards.length = 0;
+        this.GradientBanditRewards.length = 0;
         console.log("The arrays have been reset.");
     }
 }
