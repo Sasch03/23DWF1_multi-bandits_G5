@@ -9,11 +9,14 @@ const chartConfig = {
     manual: { label: "Manual", color: "var(--chart-1)" },
     greedy: { label: "Greedy", color: "var(--chart-2)" },
     epsilonGreedy: { label: "Epsilon-Greedy", color: "var(--chart-3)" },
+    upperConfidenceBound: { label: "UCB", color: "var(--chart-4)" },
+    gradientBandit: { label: "Gradient Bandit", color: "var(--chart-5)" },
 };
 
-function makeLineData({ manualRewards = [], greedyRewards = [], epsilonGreedyRewards = [] }) {
-    const data = [{ try: 0, manual: 0, greedy: 0, epsilonGreedy: 0 }];
-    const maxLength = Math.max(manualRewards.length, greedyRewards.length, epsilonGreedyRewards.length);
+function makeLineData({ manualRewards = [], greedyRewards = [], epsilonGreedyRewards = [],
+                          UpperConfidenceBoundRewards = [], GradientBanditRewards = [] }) {
+    const data = [{ try: 0, manual: 0, greedy: 0, epsilonGreedy: 0, upperConfidenceBound: 0, gradientBandit: 0 }];
+    const maxLength = Math.max(manualRewards.length, greedyRewards.length, epsilonGreedyRewards.length, UpperConfidenceBoundRewards.length, GradientBanditRewards.length);
 
     for (let i = 0; i < maxLength; i++) {
         const entry = { try: i + 1 };
@@ -21,6 +24,8 @@ function makeLineData({ manualRewards = [], greedyRewards = [], epsilonGreedyRew
         if (i < manualRewards.length) entry.manual = manualRewards[i];
         if (i < greedyRewards.length) entry.greedy = greedyRewards[i];
         if (i < epsilonGreedyRewards.length) entry.epsilonGreedy = epsilonGreedyRewards[i];
+        if (i < UpperConfidenceBoundRewards.length) entry.upperConfidenceBound = UpperConfidenceBoundRewards[i];
+        if (i < GradientBanditRewards.length) entry.gradientBandit = GradientBanditRewards[i];
 
         data.push(entry);
     }
