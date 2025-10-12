@@ -1,4 +1,3 @@
-// src/logic/epsilon/EpsilonProvider.js
 // Unified entry point for epsilon (ε) values used by exploration-based algorithms.
 // Provides a constant epsilon, but can be extended later (e.g. linear or exponential decay).
 
