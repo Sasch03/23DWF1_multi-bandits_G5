@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
-import { Button } from "@/components/ui/button"; // 🆕 Shadcn Button
+import { Button } from "@/components/ui/button";
 
-export default function ThemeToggle() {
+export default function ThemeToggle({ lang }) {
     const [isDark, setIsDark] = useState(false);
 
     useEffect(() => {
@@ -39,7 +39,9 @@ export default function ThemeToggle() {
             aria-label="Toggle Theme"
         >
             {isDark ? <Sun size={16} /> : <Moon size={16} />}
-            {isDark ? "Light" : "Dark"}
+            {isDark
+                ? lang === "de" ? "Hell" : "Light"
+                : lang === "de" ? "Dunkel" : "Dark"}
         </Button>
     );
 }

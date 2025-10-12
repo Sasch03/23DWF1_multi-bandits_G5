@@ -50,13 +50,11 @@ describe('ThemeToggle', () => {
     });
 
     it('falls back to prefers-color-scheme when no localStorage key', () => {
-        // prefers dark
         setMatchMedia(true);
         render(<ThemeToggle />);
         expect(document.documentElement.classList.contains('dark')).toBe(true);
         expect(screen.getByRole('button', { name: /Toggle Theme/i })).toHaveTextContent('Light');
 
-        // rerender with prefers light
         document.documentElement.className = '';
         setMatchMedia(false);
         const { rerender } = render(<ThemeToggle />);
