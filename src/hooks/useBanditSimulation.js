@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import CurrentGame from "@/logic/CurrentGame.js";
 import { DistributionTyp } from "@/logic/enumeration/DistributionTyp.js";
 import ManualAlgorithm from "@/logic/algorithm/strategies/rule-based/Manual.js";
-import { Greedy } from "@/logic/algorithm/strategies/value-based/Greedy.js";
+import Greedy from "@/logic/algorithm/strategies/value-based/Greedy.js";
 import EpsGreedy from "@/logic/algorithm/strategies/value-based/EpsGreedy.js";
 import { DEFAULT_ARMS, DEFAULT_ITERATIONS } from "@/constants.js";
 import StrategyRewardHistory from "@/logic/StrategyRewardHistory.js";

@@ -6,4 +6,4 @@
 
 import ValueBasedAlgorithm from "@/logic/algorithm/ValueBasedAlgorithm.js";
 
-export class Greedy extends ValueBasedAlgorithm {}
+export default class Greedy extends ValueBasedAlgorithm {}
