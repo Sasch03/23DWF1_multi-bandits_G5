@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import Header from "./Header";
+import Header from "@/components/header.jsx";
 import { describe, it, expect } from "vitest";
 
 describe("Header Component", () => {
