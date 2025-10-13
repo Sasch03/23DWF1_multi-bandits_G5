@@ -5,6 +5,7 @@ import {
     NavigationMenuItem,
     NavigationMenuLink
 } from "@/components/ui/navigation-menu";
+import { ArrowUpRightIcon } from "lucide-react";
 
 export default function NavigationBar({ algo, setAlgo, running, lang }) {
     const navItems = [
@@ -30,7 +31,7 @@ export default function NavigationBar({ algo, setAlgo, running, lang }) {
                                 href="#"
                                 onClick={(e) => {
                                     e.preventDefault();
-                                    if (running) return; // nichts tun, wenn gerade läuft
+                                    if (running) return;
                                     setAlgo(item.value);
                                 }}
                                 className={`px-3 py-1 rounded font-medium transition-colors 
@@ -46,36 +47,55 @@ export default function NavigationBar({ algo, setAlgo, running, lang }) {
                 </NavigationMenuList>
             </NavigationMenu>
 
-            {/* Erklärungstext, abhängig vom ausgewählten Algo */}
-            <div className="mt-4 text-sm text-muted-foreground">
+            {/* Erklärungstext */}
+            <div className="mt-4 text-sm text-muted-foreground space-y-2">
                 {algo === "Bernoulli" && (
-                    <p>
-                        {lang === "de"
-                            ? <>
-                                Im Mafia-Phishing-Use-Case beschreibt sie, ob eine einzelne Kampagne erfolgreich Geld bringt (1) oder scheitert (0) – also ein reines Ja/Nein-Ergebnis.
-                                Um mehr über die Bernoulli-Verteilung zu erfahren, drücke{" "}
-                                <a href="https://de.wikipedia.org/wiki/Bernoulli-Verteilung" target="_blank" rel="noopener noreferrer" className="underline text-primary">
-                                    hier
-                                </a>.
-                            </>
-                            : "The Bernoulli bandit works with discrete payouts (0 or 1), based on fixed probabilities for each arm."}
-                    </p>
+                    <div>
+                        <p>
+                            {lang === "de"
+                                ? "Die Bernoulli-Verteilung beschreibt, ob eine einzelne Kampagne erfolgreich Geld bringt (1) oder fehlschlägt (0) – also ein reines Ja/Nein-Ergebnis."
+                                : "The Bernoulli bandit works with discrete payouts (0 or 1), based on fixed probabilities for each arm."}
+                        </p>
+
+                        <div className="text-muted-foreground text-xs flex items-center justify-center gap-1 mt-1">
+                            <a
+                                href={lang === "de"
+                                    ? "https://de.wikipedia.org/wiki/Bernoulli-Verteilung"
+                                    : "https://en.wikipedia.org/wiki/Bernoulli_distribution"}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-1 hover:underline"
+                            >
+                                {lang === "de" ? "Mehr erfahren" : "Learn more"}
+                                <ArrowUpRightIcon className="w-3 h-3" />
+                            </a>
+                        </div>
+                    </div>
                 )}
 
                 {algo === "Gaussian" && (
-                    <p>
-                        {lang === "de"
-                            ? <>
-                                Sie beschreibt, wie stark die Erträge erfolgreicher Kampagnen um einen typischen Durchschnitt schwanken – manche bringen ein bisschen mehr, andere etwas weniger.
-                                Um mehr über die Gaußsche Verteilung zu erfahren, drücke{" "}
-                                <a href="https://de.wikipedia.org/wiki/Normalverteilung" target="_blank" rel="noopener noreferrer" className="underline text-primary">
-                                    hier
-                                </a>.
-                            </>
-                            : "The Gaussian bandit uses continuous payouts, drawn from a normal distribution for each arm."}
-                    </p>
-                )}
+                    <div>
+                        <p>
+                            {lang === "de"
+                                ? "Die gaußsche Verteilung beschreibt, wie stark die Resultate einzelner Kampagnen um einen typischen Durchschnitt schwanken – sie können sowohl positive als auch negative Werte aufweisen."
+                                : "The Gaussian bandit uses continuous payouts, drawn from a normal distribution for each arm."}
+                        </p>
 
+                        <div className="text-muted-foreground text-xs flex items-center justify-center gap-1 mt-1">
+                            <a
+                                href={lang === "de"
+                                    ? "https://de.wikipedia.org/wiki/Normalverteilung"
+                                    : "https://en.wikipedia.org/wiki/Normal_distribution"}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-1 hover:underline"
+                            >
+                                Learn more
+                                <ArrowUpRightIcon className="w-3 h-3" />
+                            </a>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

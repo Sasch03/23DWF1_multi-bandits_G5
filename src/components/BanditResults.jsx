@@ -109,7 +109,7 @@ export default function BanditResults({ totalPulls, totalReward, logs, type , la
                                 </TooltipTrigger>
                                 <TooltipContent>
                                     <p>{lang === "de"
-                                        ? "Gesamtzahl der Ziehungen im Spiel."
+                                        ? "Bisherig durchgeführte Anzahl an Versuchen"
                                         : "Total number of times the bandit has been pulled in this simulation."}</p>
                                 </TooltipContent>
                             </Tooltip>
@@ -125,7 +125,7 @@ export default function BanditResults({ totalPulls, totalReward, logs, type , la
                                 <TooltipContent>
                                     <p>
                                         {lang === "de"
-                                            ? "Gesamtzahl der Ziehungen im Spiel."
+                                            ? "Bisherig kumulierte Belohnung aller gespielten Kampagnen."
                                             : "Total number of times the bandit has been pulled in this simulation."}
                                     </p>
                                 </TooltipContent>

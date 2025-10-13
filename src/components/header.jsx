@@ -1,55 +1,56 @@
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { HoverCard, HoverCardTrigger, HoverCardContent } from "@/components/ui/hover-card";
+import { ArrowUpRightIcon, UserIcon } from "lucide-react";
 
 export default function Header({ lang }) {
     const algos = [
         {
             key: "greedy",
             title: "Guido",
-            hint:
-                lang === "de"
-                    ? `Guido ist der gierige Veteran der Organisation – er setzt immer auf die Kampagne, die bisher am meisten eingebracht hat, und ignoriert alles andere. Er handelt nach dem Prinzip des Greedy-Algorithmus.  
-Um mehr über den Greedy-Algorithmus zu erfahren, drücke <a href="https://en.wikipedia.org/wiki/Greedy_algorithm" target="_blank" rel="noopener noreferrer" class="text-blue-500 underline">hier</a>.`
-                    : `Guido is the greedy veteran – he always chooses the campaign with the best result so far.  
-Learn more about the Greedy algorithm <a href="https://en.wikipedia.org/wiki/Greedy_algorithm" target="_blank" rel="noopener noreferrer" class="text-blue-500 underline">here</a>.`,
+            algoName: "Greedy",
+            link: "https://en.wikipedia.org/wiki/Greedy_algorithm",
+            hint_de:
+                "Guido ist der gierige Veteran der Organisation – er setzt immer auf die Kampagne, die bisher am meisten eingebracht hat, und ignoriert alles andere.",
+            hint_en:
+                "Guido is the greedy veteran – he always chooses the campaign with the best result so far.",
         },
         {
             key: "e-greedy",
             title: "Emilio",
-            hint:
-                lang === "de"
-                    ? `Emilio ist clever, aber vorsichtig – meistens setzt er auf bewährte Kampagnen, probiert aber hin und wieder zufällig etwas Neues aus, nur um sicherzugehen. Er handelt nach dem Prinzip des Epsilon-Greedy-Algorithmus.  
-Um mehr über den Epsilon-Greedy-Algorithmus zu erfahren, drücke <a href="https://www.geeksforgeeks.org/machine-learning/epsilon-greedy-algorithm-in-reinforcement-learning/" target="_blank" rel="noopener noreferrer" class="text-blue-500 underline">hier</a>.`
-                    : `Emilio is clever but cautious – mostly betting on proven campaigns but sometimes exploring new ones.  
-Learn more about the Epsilon-Greedy algorithm <a href="https://www.geeksforgeeks.org/machine-learning/epsilon-greedy-algorithm-in-reinforcement-learning/" target="_blank" rel="noopener noreferrer" class="text-blue-500 underline">here</a>.`,
+            algoName: "Epsilon-Greedy",
+            link: "https://www.geeksforgeeks.org/machine-learning/epsilon-greedy-algorithm-in-reinforcement-learning/",
+            hint_de:
+                "Emilio ist clever, aber vorsichtig – meistens setzt er auf bewährte Kampagnen, probiert aber hin und wieder zufällig etwas Neues aus, nur um sicherzugehen.",
+            hint_en:
+                "Emilio is clever but cautious – mostly betting on proven campaigns but sometimes exploring new ones.",
         },
         {
             key: "gradient",
             title: "Giovanni",
-            hint:
-                lang === "de"
-                    ? `Giovanni ist der Stratege – er bewertet jede Kampagne nach ihrem bisherigen Erfolg und passt seine Vorlieben dynamisch an, je nachdem, wie lohnend sie gerade sind. Er handelt nach dem Prinzip des Gradient-Bandit-Algorithmus.  
-Um mehr über den Gradient-Bandit-Algorithmus zu erfahren, drücke <a href="https://medium.com/@numsmt2/reinforcement-learning-chapter-2-multi-armed-bandits-part-5-gradient-bandit-algorithms-1af59d4c544c" target="_blank" rel="noopener noreferrer" class="text-blue-500 underline">hier</a>.`
-                    : `Giovanni is the strategist – dynamically adjusting his preferences based on success.  
-Learn more about the Gradient Bandit algorithm <a href="https://medium.com/@numsmt2/reinforcement-learning-chapter-2-multi-armed-bandits-part-5-gradient-bandit-algorithms-1af59d4c544c" target="_blank" rel="noopener noreferrer" class="text-blue-500 underline">here</a>.`,
+            algoName: "Gradient Bandit",
+            link: "https://medium.com/@numsmt2/reinforcement-learning-chapter-2-multi-armed-bandits-part-5-gradient-bandit-algorithms-1af59d4c544c",
+            hint_de:
+                "Giovanni ist der Stratege – er bewertet jede Kampagne nach ihrem bisherigen Erfolg und passt seine Vorlieben dynamisch an, je nachdem, wie lohnend sie gerade sind.",
+            hint_en:
+                "Giovanni is the strategist – dynamically adjusting his preferences based on success.",
         },
         {
             key: "ucb",
             title: "Umberto",
-            hint:
-                lang === "de"
-                    ? `Umberto ist der Analytiker – er investiert in Kampagnen, die noch nicht oft getestet wurden, wenn sie das Potenzial haben, sich als Goldgrube zu entpuppen. Er handelt nach dem Prinzip des Upper-Confidence-Bound-Algorithmus.  
-Um mehr über den Upper-Confidence-Bound-Algorithmus zu erfahren, drücke <a href="https://medium.com/@numsmt2/reinforcement-learning-chapter-2-multi-armed-bandits-part-4-upper-confidence-bound-action-589213a8a722" target="_blank" rel="noopener noreferrer" class="text-blue-500 underline">hier</a>.`
-                    : `Umberto is the analyst – he explores less-tested campaigns if they seem promising.  
-Learn more about the Upper Confidence Bound algorithm <a href="https://medium.com/@numsmt2/reinforcement-learning-chapter-2-multi-armed-bandits-part-4-upper-confidence-bound-action-589213a8a722" target="_blank" rel="noopener noreferrer" class="text-blue-500 underline">here</a>.`,
+            algoName: "Upper Confidence Bound",
+            link: "https://medium.com/@numsmt2/reinforcement-learning-chapter-2-multi-armed-bandits-part-4-upper-confidence-bound-action-589213a8a722",
+            hint_de:
+                "Umberto ist der Analytiker – er investiert in Kampagnen, die noch nicht oft getestet wurden, wenn sie das Potenzial haben, sich als Goldgrube zu entpuppen.",
+            hint_en:
+                "Umberto is the analyst – he explores less-tested campaigns if they seem promising.",
         },
     ];
 
     return (
         <div className="mb-6 text-center">
             <h1 className="text-4xl font-bold text-foreground">
-                {lang === "de" ? "Ein Bandit mit vielen Armen" : "A Bandit With Many Arms"}
+                {lang === "de" ? "Multi-Armed Mafia" : "Multi-Armed Mafia"}
             </h1>
 
             <p
@@ -57,10 +58,11 @@ Learn more about the Upper Confidence Bound algorithm <a href="https://medium.co
                 dangerouslySetInnerHTML={{
                     __html:
                         lang === "de"
-                            ? `Diese Anwendung behandelt das <a href="https://en.wikipedia.org/wiki/Multi-armed_bandit" target="_blank" rel="noopener noreferrer" class="text-blue-500 underline">„Multi-armed bandit“</a>-Problem.`
-                            : `This application deals with the <a href="https://en.wikipedia.org/wiki/Multi-armed_bandit" target="_blank" rel="noopener noreferrer" class="text-blue-500 underline">“Multi-armed bandit”</a> problem.`,
+                            ? `Diese Anwendung behandelt das <a href="https://en.wikipedia.org/wiki/Multi-armed_bandit" target="_blank" rel="noopener noreferrer" class="hover:underline">„Multi-armed bandit“</a>-Problem.`
+                            : `This application deals with the <a href="https://en.wikipedia.org/wiki/Multi-armed_bandit" target="_blank" rel="noopener noreferrer" class="hover:underline">“Multi-armed bandit”</a> problem.`,
                 }}
             />
+
 
             <p className="text-muted-foreground mt-2 whitespace-pre-line">
                 {lang === "de"
@@ -69,18 +71,41 @@ Learn more about the Upper Confidence Bound algorithm <a href="https://medium.co
             </p>
 
             <div className="mt-4 flex justify-center gap-3 flex-wrap">
-                {algos.map(a => (
-                    <HoverCard key={a.key}>
+                {algos.map((a) => (
+                    <HoverCard openDelay={300} key={a.key}>
                         <HoverCardTrigger asChild>
                             <Badge variant="secondary" className="uppercase text-xs cursor-pointer">
-                                {a.title}
+                                {a.title} ({a.algoName})
                             </Badge>
                         </HoverCardTrigger>
-                        <HoverCardContent className="w-72 text-left">
-                            <p
-                                className="text-sm whitespace-pre-line"
-                                dangerouslySetInnerHTML={{ __html: a.hint }}
-                            />
+                        <HoverCardContent className="w-80 text-left">
+                            <div className="flex justify-between gap-4">
+                                <div className="flex items-start">
+                                    <div className="bg-muted p-2 rounded-full">
+                                        <UserIcon className="w-5 h-5 text-muted-foreground" />
+                                    </div>
+                                </div>
+                                <div className="space-y-1 flex-1">
+                                    <h4 className="text-sm font-semibold">
+                                        {a.algoName} {lang === "de" ? "Algorithmus" : "Algorithm"}
+                                    </h4>
+                                    <p className="text-sm whitespace-pre-line">
+                                        {lang === "de" ? a.hint_de : a.hint_en}
+                                    </p>
+                                    <div className="text-muted-foreground text-xs flex items-center gap-1 mt-1">
+                                        <a
+                                            href={a.link}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="flex items-center gap-1 hover:underline"
+                                        >
+                                            {lang === "de" ? "Mehr erfahren" : "Learn more"}
+                                            <ArrowUpRightIcon className="w-3 h-3" />
+                                        </a>
+                                    </div>
+
+                                </div>
+                            </div>
                         </HoverCardContent>
                     </HoverCard>
                 ))}

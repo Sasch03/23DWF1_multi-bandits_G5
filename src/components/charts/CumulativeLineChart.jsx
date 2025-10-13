@@ -33,7 +33,7 @@ function makeLineData({ manualRewards = [], greedyRewards = [], epsilonGreedyRew
     return data;
 }
 
-export default function CumulativeLineChart({ cumulativeRewards, chosenDistribution }) {
+export default function CumulativeLineChart({ cumulativeRewards, chosenDistribution, lang }) {
 
     const [hidden, setHidden] = useState({})
 
@@ -45,7 +45,9 @@ export default function CumulativeLineChart({ cumulativeRewards, chosenDistribut
     return (
         <Card className="flex-1 bg-muted/30">
             <CardHeader>
-                <CardTitle>Cumulative Rewards</CardTitle>
+                <CardTitle>
+                    {lang === "de" ? "Kumulierte Belohnungen" : "Cumulative Rewards"}
+                </CardTitle>
             </CardHeader>
             <CardContent>
                 <ChartContainer config={chartConfig} className="overflow-hidden">
@@ -54,7 +56,10 @@ export default function CumulativeLineChart({ cumulativeRewards, chosenDistribut
                             <CartesianGrid vertical={false} />
                             <XAxis dataKey="try" axisLine={false} tickLine={false} />
                             <ChartTooltip
-                                labelFormatter={() => "Rewards"}
+                                labelFormatter={() =>
+                                    lang === "de" ? "Belohnungen" :
+                                        "Rewards"
+                                }
                                 content={
                                     <ChartTooltipContent
                                         formatter={(value, name) => {
