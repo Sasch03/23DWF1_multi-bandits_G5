@@ -82,7 +82,7 @@ export default function BanditResults({ totalPulls, totalReward, logs, type , la
                     </Badge>
                 </TableCell>
                 <TableCell className="text-left">
-                    {lang === "de" ? "Kampagne" : "Campaign"}{arm}</TableCell>
+                    {lang === "de" ? "Kampagne #" : "Campaign #"}{arm}</TableCell>
                 <TableCell
                     className={`text-right font-mono font-semibold ${rewardColor}`}
                 >
@@ -103,9 +103,9 @@ export default function BanditResults({ totalPulls, totalReward, logs, type , la
                         <div>
                             <Tooltip>
                                 <TooltipTrigger asChild>
-                                    <span className="text-sm text-muted-foreground">
+                                    <Button variant="link" className="text-sm hover:text-foreground/80 text-muted-foreground">
                                         {lang === "de" ? "Gesamtversuche" : "Total Attempts"}
-                                    </span>
+                                    </Button>
                                 </TooltipTrigger>
                                 <TooltipContent>
                                     <p>{lang === "de"
@@ -118,9 +118,9 @@ export default function BanditResults({ totalPulls, totalReward, logs, type , la
                         <div>
                             <Tooltip>
                                 <TooltipTrigger asChild>
-                                    <span className="text-sm text-muted-foreground">
+                                    <Button variant="link" className="text-sm hover:text-foreground/80 text-muted-foreground">
                                         {lang === "de" ? "Gesamtgewinn" : "Total Reward"}
-                                    </span>
+                                    </Button>
                                 </TooltipTrigger>
                                 <TooltipContent>
                                     <p>
@@ -156,11 +156,11 @@ export default function BanditResults({ totalPulls, totalReward, logs, type , la
                         >
                             {open ? (
                                 <>
-                                    {lang === "de" ? "Verstecke alle" : "Hide all"} <ChevronUp size={16} />
+                                    {lang === "de" ? "Weniger anzeigen" : "Show less"} <ChevronUp size={16} />
                                 </>
                             ) : (
                                 <>
-                                    {lang === "de" ? "Zeige alle" : "Show all"} <ChevronDown size={16} />
+                                    {lang === "de" ? "Mehr anzeigen" : "Show more"} <ChevronDown size={16} />
                                 </>
                             )}
                         </Button>

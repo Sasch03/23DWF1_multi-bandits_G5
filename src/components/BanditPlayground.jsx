@@ -20,11 +20,12 @@ export default function BanditPlayground({ arms, onPull, disabled, lang }) {
                 <button
                     key={a.id}
                     className={`p-4 rounded-xl bg-muted/40 border border-muted/30 w-full text-left transition ${
-                        !disabled ? "hover:bg-muted/60" : ""
+                        !disabled ? "hover:bg-muted/60 hover:border-primary" : ""
                     }`}
                     onClick={() => onPull(a.id)}
                     disabled={disabled}
                 >
+
                     <div className="flex justify-between items-center mb-2">
                         <div className="font-semibold">
                             {lang === "de" ? "Kampagne" : "Campaign"} #{a.id + 1}</div>
