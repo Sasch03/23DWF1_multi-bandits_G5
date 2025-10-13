@@ -54,7 +54,7 @@ export default function NavigationBar({ algo, setAlgo, running, lang }) {
                         <p>
                             {lang === "de"
                                 ? "Die Bernoulli-Verteilung beschreibt, ob eine einzelne Kampagne erfolgreich Geld bringt (1) oder fehlschlägt (0) – also ein reines Ja/Nein-Ergebnis."
-                                : "The Bernoulli bandit works with discrete payouts (0 or 1), based on fixed probabilities for each arm."}
+                                : "The Bernoulli distribution describes whether a single campaign successfully generates money (1) or fails (0) – in other words, a pure yes/no result."}
                         </p>
 
                         <div className="text-muted-foreground text-xs flex items-center justify-center gap-1 mt-1">
@@ -78,7 +78,7 @@ export default function NavigationBar({ algo, setAlgo, running, lang }) {
                         <p>
                             {lang === "de"
                                 ? "Die gaußsche Verteilung beschreibt, wie stark die Resultate einzelner Kampagnen um einen typischen Durchschnitt schwanken – sie können sowohl positive als auch negative Werte aufweisen."
-                                : "The Gaussian bandit uses continuous payouts, drawn from a normal distribution for each arm."}
+                                : "The Gaussian distribution describes how much the results of individual campaigns fluctuate around a typical average – they can have both positive and negative values."}
                         </p>
 
                         <div className="text-muted-foreground text-xs flex items-center justify-center gap-1 mt-1">
@@ -90,7 +90,7 @@ export default function NavigationBar({ algo, setAlgo, running, lang }) {
                                 rel="noopener noreferrer"
                                 className="flex items-center gap-1 hover:underline"
                             >
-                                Learn more
+                                {lang === "de" ? "Mehr erfahren" : "Learn more"}
                                 <ArrowUpRightIcon className="w-3 h-3" />
                             </a>
                         </div>

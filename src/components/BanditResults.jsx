@@ -98,7 +98,7 @@ export default function BanditResults({ totalPulls, totalReward, logs, type , la
             <CardHeader></CardHeader>
             <CardContent className="flex flex-col gap-6">
                 {/* Top Stats */}
-                <TooltipProvider>
+                <TooltipProvider delayDuration={100}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <Tooltip>

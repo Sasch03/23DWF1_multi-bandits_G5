@@ -48,7 +48,7 @@ export default function BanditConfig({
                 </CardDescription>
             </CardHeader>
 
-            <TooltipProvider>
+            <TooltipProvider delayDuration={100}>
                 {/* Number of campaigns with tooltip */}
                 <Tooltip>
                     <TooltipTrigger asChild>
@@ -62,8 +62,8 @@ export default function BanditConfig({
                     <TooltipContent>
                         <p>
                             {lang === "de"
-                                ? "Gesamtzahl der verfügbaren Arme im Bandit-Spiel."
-                                : "Total number of arms/options available in the current bandit game."}
+                                ? "Gesamtzahl der verfügbaren Arme/Kampagnen im Bandit-Spiel."
+                                : "Total number of arms/campaigns available in the current bandit game."}
                         </p>
                     </TooltipContent>
                 </Tooltip>
@@ -77,7 +77,7 @@ export default function BanditConfig({
                 />
 
                 {/* Number of attempts with tooltip */}
-                <Tooltip>
+                <Tooltip >
                     <TooltipTrigger asChild>
                         <Button
                             variant="link"
@@ -90,7 +90,7 @@ export default function BanditConfig({
                     <TooltipContent>
                         <p>
                             {lang === "de"
-                                ? "Gesamtzahl der Ziehungen in dieser Simulation."
+                                ? "Gesamtzahl der Versuche in dieser Simulation."
                                 : "Total number of trials the simulation will perform."}
                         </p>
                     </TooltipContent>

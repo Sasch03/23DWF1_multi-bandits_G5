@@ -59,7 +59,7 @@ export default function Header({ lang }) {
                     __html:
                         lang === "de"
                             ? `Diese Anwendung behandelt das <a href="https://en.wikipedia.org/wiki/Multi-armed_bandit" target="_blank" rel="noopener noreferrer" class="hover:underline">„Multi-armed bandit“</a>-Problem.`
-                            : `This application deals with the <a href="https://en.wikipedia.org/wiki/Multi-armed_bandit" target="_blank" rel="noopener noreferrer" class="hover:underline">“Multi-armed bandit”</a> problem.`,
+                            : `This application addresses the <a href="https://en.wikipedia.org/wiki/Multi-armed_bandit" target="_blank" rel="noopener noreferrer" class="hover:underline">“Multi-armed bandit”</a> problem.`,
                 }}
             />
 
@@ -67,7 +67,7 @@ export default function Header({ lang }) {
             <p className="text-muted-foreground mt-2 whitespace-pre-line">
                 {lang === "de"
                     ? "Stell dir vor, du bist ein Mafioso auf Profitjagd und willst mit E-Mail-Phishing-Kampagnen das meiste Geld einsacken.\nJede Kampagne bringt unterschiedlich hohe Erträge. Doch auch andere Mafiosi strecken ihre Finger nach dem Gewinn aus:"
-                    : "Imagine you are a mobster on a profit hunt. Each email campaign yields different returns. But other mobsters are also reaching for the loot:"}
+                    : "Imagine you're a mafioso on the hunt for profit and want to rake in as much money as possible with email phishing campaigns.\n Each campaign yields different returns. But other mafiosi are also reaching out for the profits:"}
             </p>
 
             <div className="mt-4 flex justify-center gap-3 flex-wrap">
@@ -115,8 +115,8 @@ export default function Header({ lang }) {
 
             <p className="text-muted-foreground whitespace-pre-line">
                 {lang === "de"
-                    ? "Wer holt am Ende die dickste Beute? Wähle eine Profitart (Verteilungen) und konfiguriere deine Simulation clever,\n um maximalen Profit zu erzielen."
-                    : "Who will claim the biggest haul? Choose a reward type (distributions) and configure your simulation wisely to maximize profit."}
+                    ? "Wer holt am Ende die dickste Beute? Wähle eine Profitart (Verteilung) und konfiguriere deine Simulation clever, um maximalen Profit zu erzielen."
+                    : "Who will claim the biggest haul? Choose a reward type (distribution) and configure your simulation wisely to maximize profit."}
             </p>
         </div>
     );
