@@ -58,7 +58,7 @@ describe("NavigationBar component", () => {
         render(<NavigationBar algo="Bernoulli" setAlgo={setAlgoMock} running={false} lang="de" />);
 
         expect(
-            screen.getByText(/Der Bernoulli-Bandit arbeitet mit diskreten Auszahlungen/)
+            screen.getByText("Die Bernoulli-Verteilung beschreibt, ob eine einzelne Kampagne erfolgreich Geld bringt (1) oder fehlschlägt (0) – also ein reines Ja/Nein-Ergebnis.")
         ).toBeInTheDocument();
     });
 
@@ -66,7 +66,7 @@ describe("NavigationBar component", () => {
         render(<NavigationBar algo="Bernoulli" setAlgo={setAlgoMock} running={false} lang="en" />);
 
         expect(
-            screen.getByText(/The Bernoulli bandit works with discrete payouts/)
+            screen.getByText("The Bernoulli distribution describes whether a single campaign successfully generates money (1) or fails (0) – in other words, a pure yes/no result.")
         ).toBeInTheDocument();
     });
 
@@ -74,7 +74,7 @@ describe("NavigationBar component", () => {
         render(<NavigationBar algo="Gaussian" setAlgo={setAlgoMock} running={false} lang="de" />);
 
         expect(
-            screen.getByText(/Der Gaußsche Bandit verwendet kontinuierliche Auszahlungen/)
+            screen.getByText("Die gaußsche Verteilung beschreibt, wie stark die Resultate einzelner Kampagnen um einen typischen Durchschnitt schwanken – sie können sowohl positive als auch negative Werte aufweisen.")
         ).toBeInTheDocument();
     });
 
@@ -82,7 +82,7 @@ describe("NavigationBar component", () => {
         render(<NavigationBar algo="Gaussian" setAlgo={setAlgoMock} running={false} lang="en" />);
 
         expect(
-            screen.getByText(/The Gaussian bandit uses continuous payouts/)
+            screen.getByText("The Gaussian distribution describes how much the results of individual campaigns fluctuate around a typical average – they can have both positive and negative values.")
         ).toBeInTheDocument();
     });
 });

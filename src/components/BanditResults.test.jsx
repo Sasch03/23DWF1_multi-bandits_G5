@@ -21,17 +21,17 @@ describe("BanditResults Component", () => {
         render(<BanditResults totalPulls={3} logs={logs} type="Bernoulli" />);
         const user = userEvent.setup();
 
-        await user.click(screen.getByRole("button", { name: /show all/i }));
+        await user.click(screen.getByRole("button", { name: /show more/i }));
 
         logs.forEach(log => {
             const match = log.match(/Timestep: (\d+), Arm: (\d+), Reward: (\d+)/);
             if (match) {
                 const [_, ts, arm, reward] = match;
 
-                const attemptCell = screen.getByText(new RegExp(`#${ts}`));
-                expect(attemptCell).toBeInTheDocument();
+                const attemptCells = screen.getAllByText(new RegExp(`#${ts}`));
+                expect(attemptCells[0]).toBeInTheDocument();
 
-                const campaignCells = screen.getAllByText(new RegExp(`Campaign\\s*${arm}`));
+                const campaignCells = screen.getAllByText(new RegExp(`Campaign #\\s*${arm}`));
                 expect(campaignCells.length).toBeGreaterThan(0);
 
                 const rewardText = reward === "1" ? "Success" : "Fail";
@@ -69,7 +69,7 @@ describe("BanditResults Component", () => {
 
         const user = userEvent.setup();
 
-        await user.click(screen.getByRole("button", { name: /show all/i }));
+        await user.click(screen.getByRole("button", { name: /show more/i }));
 
         const rewardCells = screen.getAllByRole("cell").filter(cell =>
             cell.textContent.includes("€")
