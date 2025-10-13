@@ -4,10 +4,11 @@ single-page application. It is possible to play the game and compare different a
 educational and therefore intended for people who want to understand the one-armed bandit and associated algorithms.
 
 ## How to start the application
+The application can be launched via the current deployment via [GitHub Pages](https://sasch03.github.io/23DWF1_multi-bandits_G5/) or via the terminal.
 The following describes how to start the application in the terminal.
 
 1. Clone the repository:
-   ```bash
+   ```bashdeployment via
    git clone
     ```
    
