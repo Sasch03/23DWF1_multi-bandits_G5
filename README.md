@@ -1,6 +1,7 @@
 # 23DWF1_multi-bandits_G5
 Repository for the programming project of Group 5. Here, the n-armed bandit problem was presented in the form of a 
-single-page application. It is possible to play the game and compare different algorithms.
+single-page application. It is possible to play the game and compare different algorithms. The application is 
+educational and therefore intended for people who want to understand the one-armed bandit and associated algorithms.
 
 ## How to start the application
 The following describes how to start the application in the terminal.
