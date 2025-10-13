@@ -32,7 +32,6 @@ export default function BanditConfig({
                                          arms, setArmCount,
                                          iterations, setIterations,
                                          startSimulation, resetAll, running, showPlot, setShowPlot, lang,
-                                         doCustom, setDoCustom,
                                      }) {
     return (
         <Card className="w-1/3 flex flex-col bg-muted/30 gap-4 p-4">

@@ -51,17 +51,31 @@ export default function NavigationBar({ algo, setAlgo, running, lang }) {
                 {algo === "Bernoulli" && (
                     <p>
                         {lang === "de"
-                            ? "Der Bernoulli-Bandit arbeitet mit diskreten Auszahlungen (0 oder 1), basierend auf festen Wahrscheinlichkeiten pro Arm."
+                            ? <>
+                                Im Mafia-Phishing-Use-Case beschreibt sie, ob eine einzelne Kampagne erfolgreich Geld bringt (1) oder scheitert (0) – also ein reines Ja/Nein-Ergebnis.
+                                Um mehr über die Bernoulli-Verteilung zu erfahren, drücke{" "}
+                                <a href="https://de.wikipedia.org/wiki/Bernoulli-Verteilung" target="_blank" rel="noopener noreferrer" className="underline text-primary">
+                                    hier
+                                </a>.
+                            </>
                             : "The Bernoulli bandit works with discrete payouts (0 or 1), based on fixed probabilities for each arm."}
                     </p>
                 )}
+
                 {algo === "Gaussian" && (
                     <p>
                         {lang === "de"
-                            ? "Der Gaußsche Bandit verwendet kontinuierliche Auszahlungen, aus einer Normalverteilung pro Arm gezogen."
+                            ? <>
+                                Sie beschreibt, wie stark die Erträge erfolgreicher Kampagnen um einen typischen Durchschnitt schwanken – manche bringen ein bisschen mehr, andere etwas weniger.
+                                Um mehr über die Gaußsche Verteilung zu erfahren, drücke{" "}
+                                <a href="https://de.wikipedia.org/wiki/Normalverteilung" target="_blank" rel="noopener noreferrer" className="underline text-primary">
+                                    hier
+                                </a>.
+                            </>
                             : "The Gaussian bandit uses continuous payouts, drawn from a normal distribution for each arm."}
                     </p>
                 )}
+
             </div>
         </div>
     );
