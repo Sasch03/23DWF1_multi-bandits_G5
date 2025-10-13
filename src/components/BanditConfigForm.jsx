@@ -31,10 +31,10 @@ import {
 export default function BanditConfig({
                                          arms, setArmCount,
                                          iterations, setIterations,
-                                         startSimulation, resetAll, running, showPlot, setShowPlot, lang
+                                         startSimulation, resetAll, running, showPlot, setShowPlot, lang,
                                      }) {
     return (
-        <Card className="w-1/3 flex flex-col bg-muted/30 gap-4 shadow-xl p-4">
+        <Card className="w-1/3 flex flex-col bg-muted/30 gap-4 p-4">
             <CardHeader>
                 <CardTitle className="text-2xl">
                     {lang === "de"
@@ -48,22 +48,23 @@ export default function BanditConfig({
                 </CardDescription>
             </CardHeader>
 
-            <TooltipProvider>
+            <TooltipProvider delayDuration={100}>
                 {/* Number of campaigns with tooltip */}
                 <Tooltip>
                     <TooltipTrigger asChild>
-                        <label className="text-sm font-bold mt-2">
+                        <Button  variant="link"
+                                 className="text-foreground hover:text-foreground/80 font-bold">
                             {lang === "de"
                                 ? "Anzahl Kampagnen"
                                 : "Number of campaigns"}
-                        </label>
+                        </Button>
                     </TooltipTrigger>
                     <TooltipContent>
                         <p>
                             {lang === "de"
-                                ? "Gesamtzahl der verfügbaren Arme im Bandit-Spiel."
-                                : "Total number of arms/options available in the current bandit game."}
-                            </p>
+                                ? "Gesamtzahl der verfügbaren Arme/Kampagnen im Bandit-Spiel."
+                                : "Total number of arms/campaigns available in the current bandit game."}
+                        </p>
                     </TooltipContent>
                 </Tooltip>
                 <Counter
@@ -76,18 +77,20 @@ export default function BanditConfig({
                 />
 
                 {/* Number of attempts with tooltip */}
-                <Tooltip>
+                <Tooltip >
                     <TooltipTrigger asChild>
-                        <label className="text-sm font-bold mt-4">
-                            {lang === "de"
-                                ? "Anzahl Versuche"
-                                : "Number of attempts"}
-                        </label>
+                        <Button
+                            variant="link"
+                            className="text-foreground hover:text-foreground/80 font-bold"
+                        >
+                            {lang === "de" ? "Anzahl Versuche" : "Number of attempts"}
+                        </Button>
+
                     </TooltipTrigger>
                     <TooltipContent>
                         <p>
                             {lang === "de"
-                                ? "Gesamtzahl der Ziehungen in dieser Simulation."
+                                ? "Gesamtzahl der Versuche in dieser Simulation."
                                 : "Total number of trials the simulation will perform."}
                         </p>
                     </TooltipContent>
@@ -101,7 +104,7 @@ export default function BanditConfig({
                 />
             </TooltipProvider>
 
-            <div className="flex gap-2 mt-8">
+            <div className="flex gap-2 mt-2">
                 {running ? (
                     <Button variant="secondary" disabled className="flex items-center gap-2">
                         <Spinner className="size-4" /> {lang === "de" ? "Läuft" : "Running"}

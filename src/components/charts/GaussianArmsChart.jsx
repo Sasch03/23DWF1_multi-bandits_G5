@@ -67,7 +67,7 @@ function pickColor(i) {
     return palette[i % palette.length]
 }
 
-export default function GaussianArmsChart({ game = {}, points = 300, normalize = true, sd = GAUSSIAN_STD_DEV }) {
+export default function GaussianArmsChart({ game = {}, points = 300, normalize = true, sd = GAUSSIAN_STD_DEV, lang }) {
     const means = game?.gaussianMeans ?? []
     const { data, keys } = makeGaussianLineData(means, sd, points, normalize)
 
@@ -87,7 +87,9 @@ export default function GaussianArmsChart({ game = {}, points = 300, normalize =
     return (
         <Card className="flex-1 bg-muted/30">
             <CardHeader>
-                <CardTitle>Gaussian Arms</CardTitle>
+                <CardTitle>
+                    {lang === "de" ? "Gaußsche Arme" : "Gaussian Arms"}
+                </CardTitle>
             </CardHeader>
             <CardContent>
                 <ChartContainer config={chartConfig} className="overflow-hidden">
@@ -113,7 +115,10 @@ export default function GaussianArmsChart({ game = {}, points = 300, normalize =
                                 domain={[0, 1]}
                             />
                             <ChartTooltip
-                                labelFormatter={() => "Relative Probability Density"}
+                                labelFormatter={() =>
+                                    lang === "de" ? "Relative Wahrscheinlichkeitsdichte" :
+                                        "Relative Probability Density"
+                                }
                                 content={
                                     <ChartTooltipContent
                                         formatter={(value, name) => {

@@ -10,7 +10,7 @@ const chartConfig = {
     epsilonGreedy: { label: "Epsilon-Greedy", color: "var(--chart-3)" },
 };
 
-export default function BernoulliArmsChart({ probabilities }) {
+export default function BernoulliArmsChart({ probabilities, lang }) {
     const barData = (probabilities ?? []).map((p, idx) => ({
         arm: `No. ${idx + 1}`,
         probability: p
@@ -19,7 +19,10 @@ export default function BernoulliArmsChart({ probabilities }) {
     return (
         <Card className="flex-1 bg-muted/30">
             <CardHeader>
-                <CardTitle>True Probabilities</CardTitle>
+                <CardTitle>
+                    {lang === "de" ? "Tatsächliche Wahrscheinlichkeiten" : "True Probabilities"}
+                </CardTitle>
+
             </CardHeader>
             <CardContent>
                 <ChartContainer config={chartConfig} className="overflow-hidden">
@@ -28,6 +31,10 @@ export default function BernoulliArmsChart({ probabilities }) {
                             <CartesianGrid vertical={false} />
                             <XAxis dataKey="arm" axisLine={false} tickLine={false} />
                             <ChartTooltip
+                                labelFormatter={() =>
+                                    lang === "de" ? "Wahrscheinlichkeiten" :
+                                        "Probability"
+                                }
                                 content={
                                     <ChartTooltipContent
                                         hideLabel

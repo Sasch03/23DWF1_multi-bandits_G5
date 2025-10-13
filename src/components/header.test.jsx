@@ -1,35 +1,47 @@
-import React from "react";
 import { render, screen } from "@testing-library/react";
-import "@testing-library/jest-dom";
+import Header from "@/components/header.jsx";
 import { describe, it, expect } from "vitest";
-import Header from "./header.jsx";
 
-describe("Header component", () => {
-
-    it("renders German text when lang='de'", () => {
+describe("Header Component", () => {
+    it("renders title correctly (DE)", () => {
         render(<Header lang="de" />);
-
-        expect(screen.getByRole("heading", { level: 1 }))
-            .toHaveTextContent("Ein Bandit mit vielen Armen");
-
-        expect(screen.getByText(/Stell dir vor, du bist ein Mafioso/i)).toBeInTheDocument();
-
-        expect(screen.getByText(/Wähle aus verschiedenen Gehilfen.*möglichst großen Profit/i)).toBeInTheDocument();
-
-        expect(screen.getByText(/Doch Obacht.*Zeit und Ressourcen/i)).toBeInTheDocument();
+        expect(screen.getByText("Multi-Armed Mafia")).toBeInTheDocument();
     });
 
-    it("renders English text when lang is not 'de'", () => {
+    it("renders title correctly (EN)", () => {
         render(<Header lang="en" />);
-
-        expect(screen.getByRole("heading", { level: 1 }))
-            .toHaveTextContent("A Bandit With Many Arms");
-
-        expect(screen.getByText(/Imagine you are a mobster/i)).toBeInTheDocument();
-
-        expect(screen.getByText(/Choose from various assistants.*generate the highest possible profit/i)).toBeInTheDocument();
-
-        expect(screen.getByText(/But beware.*time and resources/i)).toBeInTheDocument();
+        expect(screen.getByText("Multi-Armed Mafia")).toBeInTheDocument();
     });
 
+    it("renders intro text in German", () => {
+        render(<Header lang="de" />);
+        expect(
+            screen.getByText(/Diese Anwendung behandelt das/i)
+        ).toBeInTheDocument();
+    });
+
+    it("renders intro text in English", () => {
+        render(<Header lang="en" />);
+        expect(
+            screen.getByText(/This application addresses the/i)
+        ).toBeInTheDocument();
+    });
+
+    it("renders all algorithm badges", () => {
+        render(<Header lang="de" />);
+        const algos = ["Guido", "Emilio", "Giovanni", "Umberto"];
+        algos.forEach((name) => {
+            expect(screen.getByText(new RegExp(name, "i"))).toBeInTheDocument();
+        });
+    });
+
+    it("contains external links for algorithms", () => {
+        render(<Header lang="en" />);
+        const links = screen.getAllByRole("link");
+        expect(links.length).toBeGreaterThan(0);
+        links.forEach((link) => {
+            expect(link).toHaveAttribute("href");
+            expect(link.getAttribute("target")).toBe("_blank");
+        });
+    });
 });
