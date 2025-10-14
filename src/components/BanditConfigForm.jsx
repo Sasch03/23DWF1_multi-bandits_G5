@@ -9,6 +9,8 @@ import {
     TooltipProvider,
     TooltipTrigger
 } from "@/components/ui/tooltip";
+import { HelpCircle } from "lucide-react";
+import {Label} from "@/components/ui/label.jsx";
 
 /**
  * BanditConfig Component
@@ -50,15 +52,21 @@ export default function BanditConfig({
 
             <TooltipProvider delayDuration={100}>
                 {/* Number of campaigns with tooltip */}
+
                 <Tooltip>
-                    <TooltipTrigger asChild>
-                        <Button  variant="link"
-                                 className="text-foreground hover:text-foreground/80 font-bold">
-                            {lang === "de"
-                                ? "Anzahl Kampagnen"
-                                : "Number of campaigns"}
-                        </Button>
-                    </TooltipTrigger>
+                    <div className="flex items-center justify-center gap-1">
+                        <Label
+
+                            className="text-foreground hover:text-foreground/80 font-bold p-0"
+                        >
+                            {lang === "de" ? "Anzahl Kampagnen" : "Number of campaigns"}
+                        </Label>
+                        <TooltipTrigger asChild>
+                            <HelpCircle
+                                className="size-4 text-muted-foreground/70 hover:text-foreground cursor-pointer translate-y-[1px]"
+                            />
+                        </TooltipTrigger>
+                    </div>
                     <TooltipContent>
                         <p>
                             {lang === "de"
@@ -67,6 +75,8 @@ export default function BanditConfig({
                         </p>
                     </TooltipContent>
                 </Tooltip>
+
+
                 <Counter
                     value={arms.length}
                     onChange={setArmCount}
@@ -75,18 +85,24 @@ export default function BanditConfig({
                     disabled={running}
                     className="mb-3"
                 />
-
-                {/* Number of attempts with tooltip */}
-                <Tooltip >
-                    <TooltipTrigger asChild>
-                        <Button
-                            variant="link"
-                            className="text-foreground hover:text-foreground/80 font-bold"
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <Tooltip>
+                    <div className="flex items-center justify-center gap-1">
+                        <Label
+                            className="text-foreground hover:text-foreground/80 font-bold p-0"
                         >
                             {lang === "de" ? "Anzahl Versuche" : "Number of attempts"}
-                        </Button>
-
-                    </TooltipTrigger>
+                        </Label>
+                        <TooltipTrigger asChild>
+                            <HelpCircle
+                                className="size-4 text-muted-foreground/70 hover:text-foreground cursor-pointer translate-y-[1px]"
+                            />
+                        </TooltipTrigger>
+                    </div>
                     <TooltipContent>
                         <p>
                             {lang === "de"
