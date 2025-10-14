@@ -30,7 +30,6 @@ export default class ValueBasedAlgorithm extends Algorithm {
      * Replace current expected rewards.
      * Validates array length and coerces values to numbers.
      * @param {number[]} expectedRewards - New expected rewards array, length = numberOfArms.
-     * @throws {Error} if invalid array length.
      */
     setExpectedRewards(expectedRewards) {
         if (!Array.isArray(expectedRewards) || expectedRewards.length !== this.numberOfArms) throw new Error('bad expectedRewards');
