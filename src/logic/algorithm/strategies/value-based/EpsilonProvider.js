@@ -3,25 +3,34 @@
 
 import { EPSILON_DEFAULT } from "@/constants.js";
 
+/**
+ * Provides ε values for ε-greedy or similar algorithms.
+ * Default: constant ε from configuration.
+ */
 export class EpsilonProvider {
-    constructor() { this.epsilon = EPSILON_DEFAULT; }
+    constructor() {
+        /** @type {number} current epsilon value (0 ≤ ε ≤ 1) */
+        this.epsilon = EPSILON_DEFAULT; }
 
     /**
      * Returns the epsilon value for the given step.
      * Currently constant.
-     * @param {number} _step - Current time step (unused).
-     * @param {number} _totalSteps - Total steps (unused).
      * @returns {number} Epsilon value.
      */
-
     getEpsilon() {
         return this.epsilon;
     }
+
+    /**
+     * Set new epsilon value.
+     * @param {number} v - Must be in [0,1].
+     */
     setEpsilon(v) {
         if (typeof v !== "number" || v < 0 || v > 1) throw new Error("epsilon must be 0..1");
         this.epsilon = v;
     }
 }
 
+/** @type {EpsilonProvider} shared singleton instance */
 const epsilonProvider = new EpsilonProvider();
 export default epsilonProvider;
