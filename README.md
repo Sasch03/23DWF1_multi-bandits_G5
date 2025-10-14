@@ -87,9 +87,8 @@ This documentation describes the conventions for branches, commits, and the defi
 
 A ticket is considered closed when:
 - At least 80% test coverage has been achieved
-- All acceptance criteria for the ticket have been met
+- The ticket requirements have been met
 - Non-self-explanatory code sections have been sufficiently documented
-- The solution to the ticket has been documented in text form in the ticket
 - Current functions are not impaired
 - The change has been functionally tested
 
