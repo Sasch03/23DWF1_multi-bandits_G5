@@ -9,7 +9,7 @@ import { EPSILON_DEFAULT } from "@/constants.js";
  */
 export class EpsilonProvider {
     constructor() {
-        /** @type {number} current epsilon value (0 ≤ ε ≤ 1) */
+        /** @type {number} current epsilon value (0 ≤ ε ≤ 1). */
         this.epsilon = EPSILON_DEFAULT; }
 
     /**
@@ -31,6 +31,6 @@ export class EpsilonProvider {
     }
 }
 
-/** @type {EpsilonProvider} shared singleton instance */
+/** @type {EpsilonProvider} shared singleton instance. */
 const epsilonProvider = new EpsilonProvider();
 export default epsilonProvider;

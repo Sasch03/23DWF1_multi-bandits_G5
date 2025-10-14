@@ -12,7 +12,7 @@ import epsilonProvider from "@/logic/algorithm/strategies/value-based/EpsilonPro
  */
 export default class EpsGreedy extends ValueBasedAlgorithm {
     /**
-     * @param {Object} opts - Algorithm parameters (numberOfArms, numberOfTries, etc.)
+     * @param {Object} opts - Algorithm parameters (numberOfArms, numberOfTries, etc.).
      * @param {EpsilonProvider} [provider=epsilonProvider] - Source of ε values.
      */
     constructor(opts, provider = epsilonProvider) {
@@ -23,7 +23,7 @@ export default class EpsGreedy extends ValueBasedAlgorithm {
 
     /**
      * Choose arm according to ε-Greedy rule.
-     * @returns {number} selected arm index
+     * @returns {number} selected arm index.
      */
     selectArm() {
         const eps = this.epsSvc.getEpsilon(this.step, this.numberOfTries);

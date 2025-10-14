@@ -5,7 +5,7 @@ import UCBProvider from "@/logic/algorithm/strategies/value-based/UCBProvider.js
 
 /**
  * UCB1 over ValueBasedAlgorithm (Q-values).
- * Score(i) = Q[i] + c * sqrt((2 * ln t) / N[i])
+ * Score(i) = Q[i] + c * sqrt((2 * ln t) / N[i]).
  * - Pull each arm once (cold-start).
  * - Optimistic init works via initial value .
  */

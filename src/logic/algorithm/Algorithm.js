@@ -2,8 +2,8 @@
  * Abstract base class for k-armed bandit algorithms.
  * Purpose: keep a fixed-size history of selected arms per step (selectedArms[t] = arm)
  * and define the interface:
- *  - selectArm(): choose next arm using past observations only
- *  - update(): record result and advance step
+ *  - selectArm(): choose next arm using past observations only;
+ *  - update(): record result and advance step.
  *
  * Literature:
  *  - Richard S. Sutton, Andrew G. Barto. "Reinforcement Learning: An Introduction", 2nd Ed., MIT Press, 2018.
@@ -14,7 +14,7 @@
 
 export default class Algorithm {
     /**
-     * @param {Object} params
+     * @param {Object} params.
      * @param {number} params.numberOfArms - Number of arms (k), valid indices: 0..k-1.
      * @param {number} params.numberOfTries - Total number of steps (T).
      */
@@ -31,7 +31,7 @@ export default class Algorithm {
 
     /**
      * Abstract method — must return index of next selected arm.
-     * @returns {number} arm index in [0, numberOfArms)
+     * @returns {number} arm index in [0, numberOfArms).
      */
     selectArm()
     { throw new Error('abstract'); }
@@ -40,7 +40,7 @@ export default class Algorithm {
      * Record selected arm and observed reward for current step,
      * then advance t.
      * Validates arm range and prevents double write.
-     * @param {Object} p
+     * @param {Object} p.
      * @param {number} p.arm - Arm index in [0, numberOfArms).
      * @param {number} p.observedReward - Observed reward.
      */

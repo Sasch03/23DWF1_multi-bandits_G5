@@ -13,7 +13,7 @@ import Algorithm from "@/logic/algorithm/Algorithm.js";
 export default class ManualAlgorithm extends Algorithm {
     constructor(opts) {
         super(opts);
-        /** @private @type {?number} arm chosen manually for next step */
+        /** @private @type {?number} arm chosen manually for next step. */
         this._nextArm = null;
     }
 
@@ -29,7 +29,7 @@ export default class ManualAlgorithm extends Algorithm {
     /**
      * Return the arm set via setNextArm().
      * Consumes the stored value (resets it to null).
-     * @returns {number} chosen arm index
+     * @returns {number} chosen arm index.
      */
     selectArm() {
         if (this._nextArm == null) throw new Error("next arm not set");
