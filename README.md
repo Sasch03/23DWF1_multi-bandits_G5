@@ -1,7 +1,7 @@
 # 23DWF1_multi-bandits_G5
 Repository for the programming project of Group 5. Here, the n-armed bandit problem was presented in the form of a 
 single-page application. It is possible to play the game and compare different algorithms. The application is 
-educational and therefore intended for people who want to understand the one-armed bandit and associated algorithms.
+educational and therefore intended for people who want to understand the n-armed bandit and associated algorithms.
 
 ## How to start the application
 The application can be launched via the current deployment via [GitHub Pages](https://sasch03.github.io/23DWF1_multi-bandits_G5/) or via the terminal.
