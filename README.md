@@ -9,7 +9,7 @@ The following describes how to start the application in the terminal.
 
 1. Clone the repository:
    ```bashdeployment via
-   git clone
+   git clone https://github.com/Sasch03/23DWF1_multi-bandits_G5.git
     ```
    
 
