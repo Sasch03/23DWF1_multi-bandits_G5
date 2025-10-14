@@ -1,4 +1,5 @@
 // Ucb.js
+// Upper Confidence Bound (UCB1) algorithm built on ValueBasedAlgorithm.
 import ValueBasedAlgorithm from "@/logic/algorithm/ValueBasedAlgorithm.js";
 import UCBProvider from "@/logic/algorithm/strategies/value-based/UCBProvider.js";
 
