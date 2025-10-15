@@ -7,12 +7,14 @@
  * @type {number}
  */
 export const MEAN_OF_MEANS = 10.0;
+
 /**
  * The standard deviation for generating the true means of each arm (the "signal").
  * This controls how different the arms are from each other. 50 creates a significant spread.
  * @type {number}
  */
 export const GAUSSIAN_MEAN_SPREAD_STD_DEV = 50.0;
+
 /**
  * The standard deviation for the rewards drawn from a single arm (the "noise").
  * This controls the volatility of results. Setting it equal to the signal (50)
@@ -22,18 +24,13 @@ export const GAUSSIAN_MEAN_SPREAD_STD_DEV = 50.0;
  */
 export const GAUSSIAN_STD_DEV = 60.0;
 
-// --- Default Game Settings ---
+/** Default bandit size & horizon. */
 export const DEFAULT_ARMS = 4;
 export const DEFAULT_ITERATIONS = 10;
 
 // --- Epsilon / Exploration ---
+/** Default ε for ε-greedy. */
 export const EPSILON_DEFAULT = 0.1;
-//export const EPSILON_MIN = 0.01;
-export const EPSILON_MODES = {
-    CONSTANT: "constant",
-    LINEAR: "linear",
-    EXP: "exp",
-};
 
 // --- UCB ---
 /**

@@ -2,6 +2,7 @@
 // Provides a constant epsilon, but can be extended later (e.g. linear or exponential decay).
 
 import { EPSILON_DEFAULT } from "@/constants.js";
+import { EpsilonMode } from "@/logic/enumeration/EpsilonMode.js";
 
 /**
  * Provides ε values for ε-greedy or similar algorithms.
