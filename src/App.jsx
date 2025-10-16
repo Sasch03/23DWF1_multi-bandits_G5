@@ -71,9 +71,11 @@ export default function App() {
                             arms={arms}
                             totalPulls={totalPulls}
                             totalReward={totalReward}
+                            iterations={iterations}
                             logs={logs}
                             type={type}
                             lang={lang}
+                            running={running}
                         />
                     </div>
                 </div>
