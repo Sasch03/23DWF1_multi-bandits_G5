@@ -1,17 +1,17 @@
 import Algorithm from "@/logic/algorithm/Algorithm.js";
 /**
  * Abstract subclass of Algorithm that maintains estimated (expected) rewards Q(a).
- * Serves as a base for value-based strategies (ε-Greedy, UCB, etc.).
+ * Serves as a base for value-based strategies (Epsilon-Greedy, UCB, etc.).
  * Handles initialization and incremental update of expected rewards.
  */
 
 export default class ValueBasedAlgorithm extends Algorithm {
     /**
-     * @param {Object} params.
-     * @param {number} params.numberOfArms - Number of arms (k).
-     * @param {number} params.numberOfTries - Total number of steps (T).
-     * @param {?number[]} [params.expectedRewardsBegin=null] - Optional initial Q-values (optimistic start or UI input).
+     * @param {number} numberOfArms - Number of arms (k).
+     * @param {number} numberOfTries - Total number of steps (T).
+     * @param {?number[]} [expectedRewardsBegin=null] - Optional initial Q-values (optimistic start or UI input).
      */
+
     constructor({
                     numberOfArms,
                     numberOfTries,
@@ -58,9 +58,8 @@ export default class ValueBasedAlgorithm extends Algorithm {
      * Update internal state after observing reward.
      * Applies incremental mean update:
      * Q(a) ← Q(a) + (R - Q(a)) / N(a).
-     * @param {Object} p.
-     * @param {number} p.arm - Selected arm index.
-     * @param {number} p.observedReward - Observed reward.
+     * @param {number} arm - Selected arm index.
+     * @param {number} observedReward - Observed reward.
      */
     update({arm, observedReward}) {
         super.update({arm, observedReward});

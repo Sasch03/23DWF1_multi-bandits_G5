@@ -4,18 +4,20 @@
 import { EPSILON_DEFAULT } from "@/constants.js";
 
 /**
- * Provides ε values for ε-greedy or similar algorithms.
- * Default: constant ε from configuration.
+ * Provides epsilon values for epsilon-greedy or similar algorithms.
+ * Default: constant Epsilon from configuration.
  */
 export class EpsilonProvider {
     constructor() {
-        /** @type {number} current epsilon value (0 ≤ ε ≤ 1). */
+        /**
+         * @type {number} current epsilon value (0 ≤ ε ≤ 1).
+         */
         this.epsilon = EPSILON_DEFAULT; }
 
     /**
      * Returns the epsilon value for the given step.
      * Currently constant.
-     * @returns {number} Epsilon value.
+     * @returns {number} epsilon value.
      */
     getEpsilon() {
         return this.epsilon;
@@ -31,6 +33,8 @@ export class EpsilonProvider {
     }
 }
 
-/** @type {EpsilonProvider} shared singleton instance. */
+/**
+ * @type {EpsilonProvider} shared singleton instance.
+ */
 const epsilonProvider = new EpsilonProvider();
 export default epsilonProvider;

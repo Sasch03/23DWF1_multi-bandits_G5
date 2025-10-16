@@ -1,22 +1,13 @@
 /**
  * Abstract base class for k-armed bandit algorithms.
- * Purpose: keep a fixed-size history of selected arms per step (selectedArms[t] = arm)
- * and define the interface:
- *  - selectArm(): choose next arm using past observations only;
- *  - update(): record result and advance step.
- *
- * Literature:
- *  - Richard S. Sutton, Andrew G. Barto. "Reinforcement Learning: An Introduction", 2nd Ed., MIT Press, 2018.
- *  - Gangan, S., Soni, M., & Patel, D. (2021).
- *    "Survey of multi-armed bandit algorithms applied to recommendation systems."
- *    Int. J. of Computer Applications Technology and Research (IJCATR).
+ * Used as a foundation for Greedy, Epsilon-Greedy, UCB, Manual, etc.
+ * Purpose: stores common state (arms, pulls, rewards, step history).
  */
 
 export default class Algorithm {
     /**
-     * @param {Object} params.
-     * @param {number} params.numberOfArms - Number of arms (k), valid indices: 0..k-1.
-     * @param {number} params.numberOfTries - Total number of steps (T).
+     * @param {number} numberOfArms - Number of arms (k), valid indices: 0..k-1.
+     * @param {number} numberOfTries - Total number of steps (T).
      */
     constructor({ numberOfArms, numberOfTries }) {
         //parameters:

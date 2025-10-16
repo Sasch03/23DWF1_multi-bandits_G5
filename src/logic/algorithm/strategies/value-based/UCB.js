@@ -1,5 +1,3 @@
-// Ucb.js
-// Upper Confidence Bound (UCB1) algorithm built on ValueBasedAlgorithm.
 import ValueBasedAlgorithm from "@/logic/algorithm/ValueBasedAlgorithm.js";
 import UCBProvider from "@/logic/algorithm/strategies/value-based/UCBProvider.js";
 
@@ -15,7 +13,9 @@ export default class UCB extends ValueBasedAlgorithm {
         this.cSvc = provider; // exploration coefficient provider (c)
     }
 
-    /** Select the next arm using UCB1. */
+    /**
+     * Select the next arm using UCB1.
+     */
     selectArm() {
         // --- Cold-start: ensure every arm is tried once ---
         for (let i = 0; i < this.numberOfArms; i++) {
