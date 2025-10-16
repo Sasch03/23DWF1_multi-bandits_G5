@@ -33,6 +33,11 @@ export default class ManualAlgorithm extends Algorithm {
      * @returns {number} chosen arm index.
      */
     selectArm() {
-        return this.#nextArm;
+        if (this.#nextArm === null || this.#nextArm === undefined) {
+            throw new Error('next arm not set');
+        }
+        const arm = this.#nextArm;
+        this.#nextArm = null; // consume once: require new setNextArm() before next selectArm()
+        return arm;
     }
 }
