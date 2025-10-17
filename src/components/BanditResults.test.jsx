@@ -7,8 +7,8 @@ import BanditResults from "./BanditResults";
 describe("BanditResults Component", () => {
     it("renders total pulls correctly", () => {
         render(<BanditResults totalPulls={7} logs={[]} />);
-        expect(screen.getByText("Total Attempts")).toBeInTheDocument();
-        expect(screen.getByText("7")).toBeInTheDocument();
+        expect(screen.getByText("Remaining Attempts")).toBeInTheDocument();
+        expect(screen.getByText("0")).toBeInTheDocument();
     });
 
     it("renders all logs correctly", async () => {
@@ -43,7 +43,7 @@ describe("BanditResults Component", () => {
 
     it("handles empty logs", () => {
         render(<BanditResults totalPulls={0} logs={[]} />);
-        expect(screen.getByText("Total Attempts")).toBeInTheDocument();
+        expect(screen.getByText("Remaining Attempts")).toBeInTheDocument();
         expect(screen.getByText("0")).toBeInTheDocument();
         expect(screen.getByText("Recent Activity")).toBeInTheDocument();
         expect(screen.getByText("No phishing campaign activity yet")).toBeInTheDocument();

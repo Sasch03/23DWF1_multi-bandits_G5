@@ -32,6 +32,7 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
     const [rewardTable, setRewardTable] = useState([]);
     const [game, setGame] = useState(null);
     const [type, setType] = useState(DistributionTyp.BERNOULLI);
+    const [winner, setWinner] = useState(null);
     const gameRef = useRef(null);
     const historyRef = useRef(new StrategyRewardHistory());
     const manualObservedRewardsRef = useRef([]);
@@ -45,9 +46,28 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
         if (totalPulls >= iterations && running) setShowPlot(true);
     }, [totalPulls, iterations, running]);
 
+    useEffect(() => {
+        if (!running) return;
+
+        const cumulativeRewards = {
+            Manual: manualObservedRewardsRef.current.reduce((a, b) => a + b, 0),
+            Greedy: algorithmsRef.current.greedy.getObservedRewards().reduce((a, b) => a + b, 0),
+            "Epsilon-Greedy": algorithmsRef.current.epsilon.getObservedRewards().reduce((a, b) => a + b, 0),
+            "Gradient Bandit": algorithmsRef.current.gradientBandit.getObservedRewards().reduce((a, b) => a + b, 0),
+            UCB: algorithmsRef.current.ucb.getObservedRewards().reduce((a, b) => a + b, 0),
+        };
+
+        const maxReward = Math.max(...Object.values(cumulativeRewards));
+        const winners = Object.entries(cumulativeRewards)
+            .filter(([, reward]) => reward === maxReward)
+            .map(([name]) => name);
+
+        setWinner(winners);
+
+    }, [totalPulls, running]);
+
 
     // === Helper functions ===
-
     /**
      * Safely update the algorithm with the observed reward for a given arm.
      * Handles exceptions and returns the timestep.
@@ -276,6 +296,7 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
         showPlot,
         setShowPlot,
         game,
+        winner,
         getCumulativeRewards,
         startGame,
         handlePull,
