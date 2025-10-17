@@ -181,28 +181,28 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
         const table = newGame.tableOfRewards;
         if (newGame.chosenDistribution === "Gaussian") {
             for (let t = 0; t < iterations; t++) {
-                // === Greedy ===
+                // Greedy
                 const gArm = greedyAlgo.selectArm();
                 for (let i = 0; i < NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM; i++) {
                     const gReward = table[gArm][t * NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM + i];
                     greedyAlgo.update({ arm: gArm, observedReward: gReward });
                 }
 
-                // === Epsilon-Greedy ===
+                // Epsilon-Greedy
                 const eArm = epsAlgo.selectArm();
                 for (let i = 0; i < NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM; i++) {
                     const eReward = table[eArm][t * NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM + i];
                     epsAlgo.update({ arm: eArm, observedReward: eReward });
                 }
 
-                // === Gradient Bandit ===
+                // Gradient Bandit
                 const gbArm = gbAlgo.selectArm();
                 for (let i = 0; i < NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM; i++) {
                     const gbReward = table[gbArm][t * NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM + i];
                     gbAlgo.update({ arm: gbArm, observedReward: gbReward });
                 }
 
-                // === UCB ===
+                // UCB
                 const ucbArm = ucbAlgo.selectArm();
                 for (let i = 0; i < NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM; i++) {
                     const ucbReward = table[ucbArm][t * NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM + i];
@@ -278,9 +278,9 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
             const avgReward = totalReward / NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM;
 
             updateArm(idx, avgReward);
-            setTotalReward(prev => prev + totalReward); // sum = total impact
-            setTotalPulls(prev => prev + 1); // one "click" counts as one pull
-            addLog(totalPulls + 1, idx, avgReward);
+            setTotalReward(prev => prev + totalReward);
+            setTotalPulls(prev => prev + 1);
+            addLog(totalPulls + 1, idx, totalReward);
 
             historyRef.current.addReward(historyRef.current.manualRewards, {
                 observedRewards: manualObservedRewardsRef.current
