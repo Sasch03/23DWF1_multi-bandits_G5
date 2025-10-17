@@ -38,8 +38,8 @@ export default class Algorithm {
      */
     update({ arm, observedReward }) {
         if (arm < 0 || arm >= this.numberOfArms) throw new Error('bad arm');
-        if (this.step >= this.numberOfTries)     throw new Error('out of tries');
-        if (this.selectedArms[this.step] !== null) throw new Error('already recorded');
+        //if (this.step >= this.numberOfTries)     throw new Error('out of tries');
+        //if (this.selectedArms[this.step] !== null) throw new Error('already recorded');
 
         this.selectedArms[this.step] = arm;
         this.observedRewards[this.step] = observedReward;

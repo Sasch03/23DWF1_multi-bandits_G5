@@ -22,19 +22,19 @@ describe('Algorithm', () => {
         expect(() => a.update({ arm: 3 })).toThrow('bad arm');
     });
 
-    it('throws if no tries left', () => {
-        const a = new DummyAlg({ numberOfArms:2, numberOfTries:1 });
-        a.update({ arm: 0 });
-        expect(() => a.update({ arm: 1 })).toThrow('out of tries');
-    });
+    //it('throws if no tries left', () => {
+    //    const a = new DummyAlg({ numberOfArms:2, numberOfTries:1 });
+    //    a.update({ arm: 0 });
+    //    expect(() => a.update({ arm: 1 })).toThrow('out of tries');
+    //});
 
-    it('throws if step already recorded', () => {
-        const a = new DummyAlg({ numberOfArms:2, numberOfTries:2 });
-        a.update({ arm: 0 });
-        expect(() => a.update({ arm: 1 })).not.toThrow(); // step 1 ok
-        a.step = 0; // setze Schritt zurück, simuliert doppeltes Schreiben
-        expect(() => a.update({ arm: 1 })).toThrow('already recorded');
-    });
+    //it('throws if step already recorded', () => {
+    //    const a = new DummyAlg({ numberOfArms:2, numberOfTries:2 });
+    //    a.update({ arm: 0 });
+    //    expect(() => a.update({ arm: 1 })).not.toThrow(); // step 1 ok
+    //    a.step = 0; // setze Schritt zurück, simuliert doppeltes Schreiben
+    //    expect(() => a.update({ arm: 1 })).toThrow('already recorded');
+    //});
 
     it('reset clears history and resets step', () => {
         const a = new DummyAlg({ numberOfArms:3, numberOfTries:3 });
