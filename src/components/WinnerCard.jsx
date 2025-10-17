@@ -25,7 +25,7 @@ export default function WinnerCard({  lang, winner }) {
     return (
     <Card className="bg-muted/30 border border-muted-foreground/20 text-center">
         <CardHeader>
-            <CardTitle className={`text-2xl font-bold ${manualWon ? "text-emerald-500" : "text-red-500"}`}>
+            <CardTitle className={`text-2xl font-bold`}>
                 {manualWon ? (
                     lang === "de" ? "Glückwunsch! Du hast gewonnen!" : "Congratulations! You won!"
                 ) : (

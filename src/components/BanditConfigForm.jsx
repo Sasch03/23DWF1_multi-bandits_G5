@@ -65,6 +65,7 @@ export default function BanditConfig({
 
                     <div className="flex items-center gap-2">
                         <Button
+                            aria-label="Decrease campaigns"
                             size="icon"
                             className="bg-muted hover:bg-primary/20 text-foreground rounded-full w-8 h-8 flex items-center justify-center shadow-sm transition-transform duration-150 ease-in-out hover:scale-105"
                             disabled={running || arms.length <= 2}
@@ -84,6 +85,7 @@ export default function BanditConfig({
                         />
 
                         <Button
+                            aria-label="Increase campaigns"
                             size="icon"
                             className="bg-muted hover:bg-primary/20 text-foreground rounded-full w-8 h-8 flex items-center justify-center shadow-sm transition-transform duration-150 ease-in-out hover:scale-105"
                             disabled={running || arms.length >= 50}
@@ -114,6 +116,7 @@ export default function BanditConfig({
 
                     <div className="flex items-center gap-2">
                         <Button
+                            aria-label="Decrease attempts"
                             size="icon"
                             className="bg-muted hover:bg-primary/20 text-foreground rounded-full w-8 h-8 flex items-center justify-center shadow-sm transition-transform duration-150 ease-in-out hover:scale-105"
                             disabled={running || iterations <= 1}
@@ -133,6 +136,7 @@ export default function BanditConfig({
                         />
 
                         <Button
+                            aria-label="Increase attempts"
                             size="icon"
                             className="bg-muted hover:bg-primary/20 text-foreground rounded-full w-8 h-8 flex items-center justify-center shadow-sm transition-transform duration-150 ease-in-out hover:scale-105"
                             disabled={running || iterations >= 100}
