@@ -155,7 +155,7 @@ export default function BanditConfig({
                         disabled
                         className="w-full flex items-center justify-center gap-2"
                     >
-                        <Spinner className="size-4" /> {lang === "de" ? "Läuft" : "Running"}
+                        <Spinner className="size-4" /> {lang === "de" ? "Spiel gestartet..." : "Game started..."}
                     </Button>
                 ) : (
                     <Button onClick={startSimulation} className="w-full">

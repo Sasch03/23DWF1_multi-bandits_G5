@@ -42,13 +42,6 @@ export default function BanditResults({ running, iterations, totalPulls, totalRe
 
     const remainingPulls = running ? Math.max(0, iterations - totalPulls) : 0;
 
-    let totalRewardColor =
-        totalReward > 0
-            ? "text-emerald-500"
-            : totalReward < 0
-                ? "text-red-500"
-                : "";
-
     const renderLogRow = (log) => {
         const match = log.match(/Timestep: (\d+), Arm: (\d+), Reward: ([\d.-]+)/);
         if (!match) return null;
@@ -143,7 +136,15 @@ export default function BanditResults({ running, iterations, totalPulls, totalRe
                                     </p>
                                 </TooltipContent>
                             </Tooltip>
-                            <div className={`text-3xl font-bold ${totalRewardColor}`}>
+                            <div
+                                className={`text-3xl font-bold ${
+                                    totalReward === 0
+                                        ? "text-muted-foreground"
+                                        : totalReward > 0
+                                            ? "text-emerald-500"
+                                            : "text-red-500"
+                                }`}
+                            >
                                 {type === "Gaussian"
                                     ? totalReward.toFixed(2) + " €"
                                     : totalReward}
