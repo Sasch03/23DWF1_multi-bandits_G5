@@ -1,4 +1,19 @@
 // === Global constants used across the project ===
+/**
+ * Default number of arms for a new bandit game.
+ * Used when no custom number of arms is specified by the user.
+ *
+ * @type {number}
+ */
+export const DEFAULT_ARMS = 4;
+
+/**
+ * Default number of iterations (trials) for a new bandit game.
+ * Used when no custom number of trials is specified by the user.
+ *
+ * @type {number}
+ */
+export const DEFAULT_ITERATIONS = 10;
 
 // --- Gaussian standard deviation ---
 /**
@@ -28,19 +43,15 @@ export const GAUSSIAN_MEAN_SPREAD_STD_DEV = 50.0;
  */
 export const GAUSSIAN_STD_DEV = 60.0;
 
-// --- Default Game Settings ---
-export const DEFAULT_ARMS = 4;
-export const DEFAULT_ITERATIONS = 10;
-
-// --- Epsilon / Exploration ---
+// --- Epsilon ---
+/**
+ * Default value for epsilon used in epsilon-greedy algorithms.
+ * Determines the probability of exploring a random arm instead of exploiting
+ * the current best-known arm.
+ *
+ * @type {number}
+ */
 export const EPSILON_DEFAULT = 0.1;
-
-//export const EPSILON_MIN = 0.01;
-export const EPSILON_MODES = {
-    CONSTANT: "constant",
-    LINEAR: "linear",
-    EXP: "exp",
-};
 
 // --- UCB ---
 /**
