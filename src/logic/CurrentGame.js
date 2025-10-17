@@ -3,7 +3,7 @@ import { AlgorithmTyp } from '@/logic/enumeration/AlgorithmTyp.js';
 import { GAUSSIAN_STD_DEV } from "@/constants.js";
 import { MEAN_OF_MEANS } from "@/constants.js";
 import { GAUSSIAN_MEAN_SPREAD_STD_DEV } from "@/constants.js";
-
+import { NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM } from "@/constants.js";
 /**
  * This class represents a k-armed bandit game configuration and environment.
  * It allows to set the number of arms and trials, select a reward distribution
@@ -147,7 +147,11 @@ export default class CurrentGame {
             case DistributionTyp.GAUSSIAN: {
                 // Generate a mean for each arm.
                 const gaussianMeans = [];
-                for (let i = 0; i < numberOfArms; i++) {
+
+                // Total number of Gaussian values to generate.
+                const numberOfValuesToGenerate = numberOfArms * NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM;
+
+                for (let i = 0; i < numberOfValuesToGenerate; i++) {
                     // Box-Muller for mean sampling.
                     let u = 0;
                     let v = 0;
@@ -163,7 +167,7 @@ export default class CurrentGame {
                 console.log(`Gaussian means:=${gaussianMeans}, StdDev=${GAUSSIAN_STD_DEV}`);
 
                 // For each arm, draw "numberOfTries" samples.
-                for (let i = 0; i < numberOfArms; i++) {
+                for (let i = 0; i < numberOfValuesToGenerate; i++) {
                     const rewardsForArm = [];
                     let generated = 0;
 
