@@ -14,11 +14,11 @@ export default class Algorithm {
         //parameters:
         this.numberOfArms = numberOfArms;
         this.numberOfTries = numberOfTries;
-        this.step = 0;                          // current step t (0..T-1)
+        this.step = 0;
         //logging (only common dates for all type of algorithms):
-        this.selectedArms = Array(numberOfTries).fill(null);    // selectedArms[T] -> selectedArm, which arm was selected at each step t
-        this.numberOfPulls = Array(numberOfArms).fill(0);       // counter - how many times each arm has been pulled
-        this.observedRewards = Array(numberOfTries).fill(0);    // history: observed rewards at each step t
+        this.selectedArms = Array(numberOfTries).fill(null);
+        this.numberOfPulls = Array(numberOfArms).fill(0);
+        this.observedRewards = Array(numberOfTries).fill(0);
     }
 
     /**
