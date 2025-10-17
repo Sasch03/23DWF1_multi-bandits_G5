@@ -1,6 +1,3 @@
-// Epsilon-greedy algorithm that retrieves epsilon values from the global EpsilonProvider.
-// At the moment, exploration probability is constant, but the service can be extended later.
-
 import ValueBasedAlgorithm from "@/logic/algorithm/ValueBasedAlgorithm.js";
 import epsilonProvider from "@/logic/algorithm/strategies/value-based/EpsilonProvider.js";
 
@@ -15,11 +12,14 @@ export default class EpsGreedy extends ValueBasedAlgorithm {
      */
     constructor(opts, provider = epsilonProvider) {
         super(opts);
-        /**
-         * @type {EpsilonProvider} - Shared epsilon provider.
-         */
         this.epsSvc = provider;
     }
+
+    /**
+     * Shared epsilon provider.
+     * @type {EpsilonProvider}
+     */
+    epsSvc;
 
     /**
      * Choose arm according to epsilon-greedy rule.
