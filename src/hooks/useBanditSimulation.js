@@ -8,6 +8,7 @@ import { DEFAULT_ARMS, DEFAULT_ITERATIONS, ALPHA_DEFAULT } from "@/constants.js"
 import StrategyRewardHistory from "@/logic/StrategyRewardHistory.js";
 import GradientBandit from "@/logic/algorithm/strategies/gradient-based/GradientBandit.js";
 import UCB from "@/logic/algorithm/strategies/value-based/UCB.js";
+import { NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM } from "@/constants.js";
 
 /**
  * Custom hook to manage a multi-armed bandit simulation.
@@ -178,23 +179,62 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
 
         // algo simulations for history tracking
         const table = newGame.tableOfRewards;
-        for (let t = 0; t < iterations; t++) {
-            const gArm = greedyAlgo.selectArm();
-            const gReward = table[gArm][t];
-            greedyAlgo.update({ arm: gArm, observedReward: gReward });
+        if (newGame.chosenDistribution === "Gaussian") {
+            for (let t = 0; t < iterations * NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM; t++) {
+                const gArm = greedyAlgo.selectArm();
+                let gReward;
+                for (let i = 0; i < NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM; i++) {
+                    gReward = table[gArm][t + i];
+                    greedyAlgo.update({arm: gArm, observedReward: gReward});
+                }
 
-            const eArm = epsAlgo.selectArm();
-            const eReward = table[eArm][t];
-            epsAlgo.update({ arm: eArm, observedReward: eReward });
+                const eArm = epsAlgo.selectArm();
+                let eReward;
+                for (let i = 0; i < NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM; i++) {
+                    eReward = table[eArm][t + 1];
+                    epsAlgo.update({arm: eArm, observedReward: eReward});
+                }
 
-            const gbArm = gbAlgo.selectArm();
-            const gbReward = table[gbArm][t];
-            gbAlgo.update({ arm: gbArm, observedReward: gbReward });
+                const gbArm = gbAlgo.selectArm();
+                let gbReward;
+                for (let i = 0; i < NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM; i++) {
+                    gbReward = table[gbArm][t + 1];
+                    gbAlgo.update({arm: gbArm, observedReward: gbReward});
+                }
 
-            const ucbArm = ucbAlgo.selectArm();
-            const ucbReward = table[ucbArm][t];
-            ucbAlgo.update({ arm: ucbArm, observedReward: ucbReward });
+                const ucbArm = ucbAlgo.selectArm();
+                let ucbReward;
+                for (let i = 0; i < NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM; i++) {
+                    ucbReward = table[ucbArm][t + 1];
+                    ucbAlgo.update({arm: ucbArm, observedReward: ucbReward});
+                }
+
+                t += NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM - 1;
+            }
         }
+        else if (newGame.chosenDistribution === "Bernoulli") {
+            for (let t = 0; t < iterations; t++) {
+                const gArm = greedyAlgo.selectArm();
+                const gReward = table[gArm][t];
+                greedyAlgo.update({arm: gArm, observedReward: gReward});
+
+                const eArm = epsAlgo.selectArm();
+                const eReward = table[eArm][t];
+                epsAlgo.update({arm: eArm, observedReward: eReward});
+
+                const gbArm = gbAlgo.selectArm();
+                const gbReward = table[gbArm][t];
+                gbAlgo.update({arm: gbArm, observedReward: gbReward});
+
+                const ucbArm = ucbAlgo.selectArm();
+                const ucbReward = table[ucbArm][t];
+                ucbAlgo.update({arm: ucbArm, observedReward: ucbReward});
+            }
+        }
+        else {
+            throw new Error("Unsupported distribution type in simulation.");
+        }
+
 
         // sync history
         historyRef.current.addReward(historyRef.current.greedyRewards, { observedRewards: greedyAlgo.getObservedRewards() });
