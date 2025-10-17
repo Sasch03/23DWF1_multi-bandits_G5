@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import React, { useContext } from "react";
 import { render } from "@testing-library/react";
-import { act } from "react-dom/test-utils"; // <- act import
+import { act } from "react-dom/test-utils";
 import { LanguageProvider } from "./LanguageProvider";
 import { LanguageContext } from "./LanguageContext";
 

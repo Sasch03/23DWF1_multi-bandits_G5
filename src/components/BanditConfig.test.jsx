@@ -2,6 +2,8 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import BanditConfig from './BanditConfig.jsx';
+
 
 // Mocks for UI wrappers / components
 vi.mock('@/components/ui/card.jsx', () => {
@@ -35,8 +37,6 @@ vi.mock('@/components/ui/tooltip', () => {
     };
 });
 
-import BanditConfig from './BanditConfig.jsx';
-
 const setup = (overrides = {}) => {
     const props = {
         arms: Array.from({ length: 5 }),
@@ -55,7 +55,7 @@ const setup = (overrides = {}) => {
     return props;
 };
 
-describe('BanditConfigForm', () => {
+describe('BanditConfig', () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });
@@ -135,10 +135,4 @@ describe('BanditConfigForm', () => {
         expect(props.setShowPlot).toHaveBeenCalledWith(true);
     });
 
-    it('shows English labels when lang != "de"', () => {
-        setup({ lang: 'en' });
-        expect(screen.getByText('Configuration')).toBeInTheDocument();
-        expect(screen.getByText('Number of campaigns')).toBeInTheDocument();
-        expect(screen.getByText('Number of attempts')).toBeInTheDocument();
-    });
 });

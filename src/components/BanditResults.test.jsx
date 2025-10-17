@@ -1,74 +1,79 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
 import BanditResults from "./BanditResults";
 
 describe("BanditResults Component", () => {
-    it("renders total pulls correctly", () => {
-        render(<BanditResults totalPulls={7} logs={[]} />);
-        expect(screen.getByText("Remaining Attempts")).toBeInTheDocument();
-        expect(screen.getByText("0")).toBeInTheDocument();
-    });
-
-    it("renders all logs correctly", async () => {
-        const logs = [
+    const defaultProps = {
+        running: false,
+        iterations: 10,
+        totalPulls: 3,
+        totalReward: 5,
+        logs: [
             "Timestep: 1, Arm: 1, Reward: 1",
             "Timestep: 2, Arm: 2, Reward: 0",
             "Timestep: 3, Arm: 1, Reward: 1",
-        ];
+        ],
+        type: "Bernoulli",
+        lang: "en",
+    };
 
-        render(<BanditResults totalPulls={3} logs={logs} type="Bernoulli" />);
-        const user = userEvent.setup();
-
-        await user.click(screen.getByRole("button", { name: /show more/i }));
-
-        logs.forEach(log => {
-            const match = log.match(/Timestep: (\d+), Arm: (\d+), Reward: (\d+)/);
-            if (match) {
-                const [_, ts, arm, reward] = match;
-
-                const attemptCells = screen.getAllByText(new RegExp(`#${ts}`));
-                expect(attemptCells[0]).toBeInTheDocument();
-
-                const campaignCells = screen.getAllByText(new RegExp(`Campaign #\\s*${arm}`));
-                expect(campaignCells.length).toBeGreaterThan(0);
-
-                const rewardText = reward === "1" ? "Success" : "Fail";
-                const rewardCells = screen.getAllByText(rewardText);
-                expect(rewardCells.length).toBeGreaterThan(0);
-            }
-        });
+    beforeEach(() => {
+        vi.clearAllMocks();
     });
 
-    it("handles empty logs", () => {
-        render(<BanditResults totalPulls={0} logs={[]} />);
+    it("renders remaining attempts correctly", () => {
+        render(<BanditResults {...defaultProps} running={true} />);
         expect(screen.getByText("Remaining Attempts")).toBeInTheDocument();
-        expect(screen.getByText("0")).toBeInTheDocument();
-        expect(screen.getByText("Recent Activity")).toBeInTheDocument();
-        expect(screen.getByText("No phishing campaign activity yet")).toBeInTheDocument();
+        expect(screen.getByText(`${defaultProps.iterations - defaultProps.totalPulls}`)).toBeInTheDocument();
     });
 
-    it("renders Gaussian rewards correctly with proper formatting and color", async () => {
+    it("renders total reward correctly for Bernoulli", () => {
+        render(<BanditResults {...defaultProps} />);
+        expect(screen.getByText("Total Reward")).toBeInTheDocument();
+        expect(screen.getByText(`${defaultProps.totalReward}`)).toBeInTheDocument();
+    });
+
+    it("renders all Bernoulli logs correctly and handles collapsible", async () => {
+        const user = userEvent.setup();
+        render(<BanditResults {...defaultProps} />);
+
+        // Initially only first log
+        expect(screen.getByText("#1")).toBeInTheDocument();
+        expect(screen.getByText("Campaign #1")).toBeInTheDocument();
+        expect(screen.getByText("Success")).toBeInTheDocument();
+
+        // Expand
+        await user.click(screen.getByRole("button", { name: /show more/i }));
+        expect(screen.getByText("#2")).toBeInTheDocument();
+        expect(screen.getByText("Campaign #2")).toBeInTheDocument();
+        expect(screen.getByText("Fail")).toBeInTheDocument();
+
+        // Collapse
+        await user.click(screen.getByRole("button", { name: /show less/i }));
+        expect(screen.getByText("#1")).toBeInTheDocument();
+    });
+
+    it("renders Gaussian rewards correctly with formatting and colors", async () => {
         const logs = [
             "Timestep: 1, Arm: 1, Reward: 5.123",
             "Timestep: 2, Arm: 2, Reward: -3.45",
             "Timestep: 3, Arm: 3, Reward: 0"
         ];
-
         const totalReward = 5.123 + (-3.45);
+        const user = userEvent.setup();
 
         render(
             <BanditResults
-                totalPulls={3}
+                {...defaultProps}
                 logs={logs}
-                type="Gaussian"
                 totalReward={totalReward}
+                type="Gaussian"
             />
         );
 
-        const user = userEvent.setup();
-
+        // Expand logs
         await user.click(screen.getByRole("button", { name: /show more/i }));
 
         const rewardCells = screen.getAllByRole("cell").filter(cell =>
@@ -82,6 +87,14 @@ describe("BanditResults Component", () => {
         expect(rewardCells[0].className).toContain("text-emerald-500");
         expect(rewardCells[1].className).toContain("text-red-500");
         expect(rewardCells[2].className).toContain("text-muted-foreground");
+    });
+
+    it("handles empty logs gracefully", () => {
+        render(<BanditResults {...defaultProps} logs={[]} totalPulls={0} />);
+        expect(screen.getByText("Remaining Attempts")).toBeInTheDocument();
+        expect(screen.getByText("0")).toBeInTheDocument();
+        expect(screen.getByText("Recent Activity")).toBeInTheDocument();
+        expect(screen.getByText("No phishing campaign activity yet")).toBeInTheDocument();
     });
 
 });
