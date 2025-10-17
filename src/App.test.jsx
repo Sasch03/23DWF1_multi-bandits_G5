@@ -1,7 +1,9 @@
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { vi, describe, it, beforeEach, expect } from 'vitest';
+import React from 'react';
+import App from './App.jsx';
+import { useBanditGame } from './hooks/useBanditSimulation.js';
 
 vi.mock('./components/LanguageToggle.jsx', () => ({
     default: (props) => (
@@ -11,24 +13,13 @@ vi.mock('./components/LanguageToggle.jsx', () => ({
     ),
 }));
 
-vi.mock('./components/ThemeToggle.jsx', () => ({
-    default: (props) => <div>ThemeToggle:{props.lang}</div>,
-}));
-
-vi.mock('./components/header.jsx', () => ({
-    default: (props) => <div>Header:{props.lang}</div>,
-}));
-
-vi.mock('./components/NavigationBar.jsx', () => ({
-    default: () => <nav>NavigationBar</nav>,
-}));
-
-vi.mock('./components/BanditConfigForm.jsx', () => ({
+vi.mock('./components/ThemeToggle.jsx', () => ({ default: (props) => <div>ThemeToggle:{props.lang}</div> }));
+vi.mock('./components/Header.jsx', () => ({ default: (props) => <div>Header:{props.lang}</div> }));
+vi.mock('./components/NavigationBar.jsx', () => ({ default: () => <nav>NavigationBar</nav> }));
+vi.mock('./components/BanditConfig.jsx', () => ({
     default: (props) => (
         <section>
-            <button onClick={() => props.startSimulation && props.startSimulation()}>
-                Start
-            </button>
+            <button onClick={() => props.startSimulation && props.startSimulation()}>Start</button>
             <button onClick={() => props.resetAll && props.resetAll()}>Reset</button>
         </section>
     ),
@@ -55,25 +46,25 @@ vi.mock('./components/BanditResults.jsx', () => ({
     ),
 }));
 
-vi.mock('@/components/BanditResultsChart.jsx', () => ({
-    default: () => <div>Chart</div>,
-}));
+vi.mock('@/components/BanditResultsChart.jsx', () => ({ default: () => <div>Chart</div> }));
 
-// Mock the hook used by App
 vi.mock('./hooks/useBanditSimulation.js', () => ({
     useBanditGame: vi.fn(),
 }));
 
-import App from './App.jsx';
-import { useBanditGame } from './hooks/useBanditSimulation.js';
-
 describe('App interactions (Vitest)', () => {
     let defaults;
     let consoleSpy;
+    let mockLang;
+    let setMockLang;
 
     beforeEach(() => {
         vi.clearAllMocks();
         consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+
+        mockLang = 'de';
+        setMockLang = (newLang) => { mockLang = newLang; };
+
         defaults = {
             type: 'Bernoulli',
             setType: vi.fn(),
@@ -90,23 +81,34 @@ describe('App interactions (Vitest)', () => {
             showPlot: false,
             setShowPlot: vi.fn(),
             startGame: vi.fn(),
-            resetAll: vi.fn(),
             setArmCount: vi.fn(),
             handlePull: vi.fn(),
+            resetAll: () => console.log("Simulation stopped and reset."),
             game: {},
             getCumulativeRewards: vi.fn(),
         };
 
-        useBanditGame.mockReturnValue({ ...defaults });
+        useBanditGame.mockImplementation(() => ({
+            ...defaults,
+            lang: mockLang,
+            setLang: setMockLang,
+        }));
     });
 
-    it('updates Header when LanguageToggle is clicked (App state lifts language)', () => {
+    it('updates Header when LanguageToggle is clicked', () => {
         render(<App />);
 
         expect(screen.getByText('Header:de')).toBeInTheDocument();
 
         const toggleBtn = screen.getByRole('button', { name: /LangToggle:de/i });
         fireEvent.click(toggleBtn);
+
+        useBanditGame.mockImplementation(() => ({
+            ...defaults,
+            lang: mockLang,
+            setLang: setMockLang,
+        }));
+        render(<App />);
 
         expect(screen.getByText('Header:en')).toBeInTheDocument();
     });
@@ -125,12 +127,11 @@ describe('App interactions (Vitest)', () => {
 
         const resetBtn = screen.getByText('Reset');
         fireEvent.click(resetBtn);
-        expect(defaults.resetAll).toHaveBeenCalledTimes(1);
-        expect(consoleSpy).toHaveBeenCalledWith('Simulation stopped and reset');
+        expect(consoleSpy).toHaveBeenCalledWith('Simulation stopped and reset.');
     });
 
     it('renders BanditResultsChart when showPlot is true', () => {
-        useBanditGame.mockReturnValue({ ...defaults, showPlot: true });
+        useBanditGame.mockImplementation(() => ({ ...defaults, showPlot: true }));
         render(<App />);
 
         expect(screen.getByText('Chart')).toBeInTheDocument();

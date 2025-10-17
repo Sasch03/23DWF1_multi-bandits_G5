@@ -4,11 +4,10 @@ import { DistributionTyp } from "@/logic/enumeration/DistributionTyp.js";
 import ManualAlgorithm from "@/logic/algorithm/strategies/rule-based/Manual.js";
 import Greedy from "@/logic/algorithm/strategies/value-based/Greedy.js";
 import EpsGreedy from "@/logic/algorithm/strategies/value-based/EpsGreedy.js";
-import { DEFAULT_ARMS, DEFAULT_ITERATIONS, ALPHA_DEFAULT } from "@/constants.js";
-import StrategyRewardHistory from "@/logic/StrategyRewardHistory.js";
-import GradientBandit from "@/logic/algorithm/strategies/gradient-based/GradientBandit.js";
 import UCB from "@/logic/algorithm/strategies/value-based/UCB.js";
-import { NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM } from "@/constants.js";
+import GradientBandit from "@/logic/algorithm/strategies/gradient-based/GradientBandit.js";
+import StrategyRewardHistory from "@/logic/StrategyRewardHistory.js";
+import { DEFAULT_ARMS, DEFAULT_ITERATIONS, ALPHA_DEFAULT, NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM } from "@/constants.js";
 
 /**
  * Custom hook to manage a multi-armed bandit simulation.
@@ -20,10 +19,9 @@ import { NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM } from "@/constants.js";
  */
 export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DEFAULT_ITERATIONS) {
 
-    // === State variables ===
-    const [arms, setArms] = useState(
-        Array.from({ length: initialArms }, (_, i) => ({ id: i, pulls: 0, lastReward: 0 }))
-    );
+    // States
+    const [arms, setArms] = useState(Array.from({ length: initialArms }, (_, i) =>
+        ({ id: i, pulls: 0, lastReward: 0 })));
     const [iterations, setIterations] = useState(initialIterations);
     const [totalPulls, setTotalPulls] = useState(0);
     const [totalReward, setTotalReward] = useState(0);
@@ -34,22 +32,56 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
     const [game, setGame] = useState(null);
     const [type, setType] = useState(DistributionTyp.BERNOULLI);
     const [winner, setWinner] = useState(null);
+    const [lang, setLang] = useState("de");
+
+    // Refs
     const gameRef = useRef(null);
     const historyRef = useRef(new StrategyRewardHistory());
     const manualObservedRewardsRef = useRef([]);
     const algorithmsRef = useRef({});
 
-    // === Effects ===
-    /**
-     * Automatically shows the plot when total pulls reach or exceed the iteration limit.
-     */
+    // Effects
     useEffect(() => {
         if (totalPulls >= iterations && running) setShowPlot(true);
     }, [totalPulls, iterations, running]);
 
     useEffect(() => {
         if (!running) return;
+        updateWinner();
+    }, [totalPulls, running]);
 
+    // ================= Helper Functions =================
+
+    const safeUpdateAlgorithm = (algo, armIndex, reward) => {
+        if (!algo || typeof algo.update !== "function") return null;
+        try {
+            algo.update({ arm: armIndex, observedReward: reward });
+            return algo.getStep();
+        } catch (err) {
+            console.warn("Algorithm update failed:", err);
+            return { error: err };
+        }
+    };
+
+    const addLog = (timestep, armIndex, reward) => {
+        const roundedReward = game?.chosenDistribution === "Gaussian" ? reward.toFixed(2) : reward;
+        setLogs(prev => [`Timestep: ${timestep}, Arm: ${armIndex + 1}, Reward: ${roundedReward}`, ...prev]);
+    };
+
+    const updateArm = (index, reward) => {
+        setArms(prev => prev.map((a, i) =>
+            i === index ? { ...a, pulls: a.pulls + 1, lastReward: reward } : a
+        ));
+    };
+
+    const recordManualReward = (reward) => {
+        manualObservedRewardsRef.current.push(reward);
+        historyRef.current.addReward(
+            historyRef.current.manualRewards, { observedRewards: manualObservedRewardsRef.current }
+        );
+    };
+
+    const updateWinner = () => {
         const cumulativeRewards = {
             Manual: manualObservedRewardsRef.current.reduce((a, b) => a + b, 0),
             Greedy: algorithmsRef.current.greedy.getObservedRewards().reduce((a, b) => a + b, 0),
@@ -64,102 +96,11 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
             .map(([name]) => name);
 
         setWinner(winners);
-
-    }, [totalPulls, running]);
-
-
-    // === Helper functions ===
-    /**
-     * Safely update the algorithm with the observed reward for a given arm.
-     * Handles exceptions and returns the timestep.
-     *
-     * @param {object} algo - The algorithm instance (must have update() and getStep()).
-     * @param {number} armIdx - Index of the arm that was pulled.
-     * @param {number} reward - Reward obtained from the arm pull.
-     * @returns {number|object} - Returns the timestep or an error object.
-     */
-    const safeUpdateAlgorithm = (algo, armIdx, reward) => {
-        if (!algo || typeof algo.update !== "function") return null;
-        try {
-            algo.update({ arm: armIdx, observedReward: reward });
-            return algo.getStep();
-        } catch (err) {
-            console.warn("Algorithm update failed:", err);
-            return { error: err };
-        }
     };
 
-    /**
-     * Add a log entry for a single arm pull.
-     *
-     * @param {number} timestep - Current timestep of the simulation.
-     * @param {number} idx - Index of the arm pulled.
-     * @param {number} reward - Reward obtained from the arm pull.
-     */
-    const addLog = (timestep, idx, reward) => {
-        const roundedReward =
-            game?.chosenDistribution === "Gaussian" ? reward.toFixed(2) : reward;
+    // ================= Game Control Functions =================
 
-        setLogs(prev => [
-            `Timestep: ${timestep}, Arm: ${idx + 1}, Reward: ${roundedReward}`,
-            ...prev
-        ]);
-    };
-
-
-    /**
-     * Update the state of a single arm after a pull.
-     *
-     * @param {number} idx - Index of the arm.
-     * @param {number} reward - Reward received for the pull.
-     */
-    const updateArm = (idx, reward) => {
-        setArms(prev => prev.map((a, i) =>
-            i === idx ? { ...a, pulls: a.pulls + 1, lastReward: reward } : a
-        ));
-    };
-
-
-    // === Game control functions ===
-
-    /**
-     * Reset all internal state variables for a new simulation
-     * without touching the game instance itself.
-     */
-    const resetState = () => {
-        setArms(prev => prev.map(a => ({ ...a, pulls: 0, lastReward: 0 })));
-        setTotalPulls(0);
-        setTotalReward(0);
-        setLogs([]);
-        setShowPlot(false);
-    };
-
-    const getCumulativeRewards = () => ({
-        manualRewards: [...historyRef.current.manualRewards],
-        greedyRewards: [...historyRef.current.greedyRewards],
-        epsilonGreedyRewards: [...historyRef.current.epsilonGreedyRewards],
-        UpperConfidenceBoundRewards: [...historyRef.current.UpperConfidenceBoundRewards],
-        GradientBanditRewards: [...historyRef.current.GradientBanditRewards],
-    });
-
-    /**
-     * Start a new bandit simulation.
-     * Initializes the game, the reward table, and the manual algorithm.
-     */
-    const startGame = () => {
-        if (running) return;
-
-        // Reset state first
-        resetState();
-
-        // Initialize new game instance
-        const newGame = new CurrentGame();
-        newGame.setNumberOfArms(arms.length);
-        newGame.setNumberOfTries(iterations);
-        newGame.setChosenDistribution(type);
-        newGame.createTable();
-
-        // algorithms setup
+    const initializeAlgorithms = () => {
         const manualAlgo = new ManualAlgorithm({ numberOfArms: arms.length, numberOfTries: iterations });
         manualAlgo.reset();
 
@@ -169,170 +110,135 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
         const epsAlgo = new EpsGreedy({ numberOfArms: arms.length, numberOfTries: iterations });
         epsAlgo.reset();
 
-        const gbAlgo = new GradientBandit({ numberOfArms: arms.length, numberOfTries: iterations, alpha: ALPHA_DEFAULT });
-        gbAlgo.reset();
+        const gradientAlgo = new GradientBandit({ numberOfArms: arms.length, numberOfTries: iterations, alpha: ALPHA_DEFAULT });
+        gradientAlgo.reset();
 
         const ucbAlgo = new UCB({ numberOfArms: arms.length, numberOfTries: iterations });
         ucbAlgo.reset();
 
-        algorithmsRef.current = { manual: manualAlgo, greedy: greedyAlgo, epsilon: epsAlgo, gradientBandit: gbAlgo, ucb: ucbAlgo };
+        algorithmsRef.current = { manual: manualAlgo, greedy: greedyAlgo, epsilon: epsAlgo, gradientBandit: gradientAlgo, ucb: ucbAlgo };
+    };
 
-        // algo simulations for history tracking
-        const table = newGame.tableOfRewards;
-        if (newGame.chosenDistribution === "Gaussian") {
+    const simulateAlgorithmHistory = (gameInstance) => {
+        const table = gameInstance.tableOfRewards;
+
+        const simulateSingleAlgorithm = (algo, selectArmFn) => {
             for (let t = 0; t < iterations; t++) {
-                // Greedy
-                const gArm = greedyAlgo.selectArm();
-                for (let i = 0; i < NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM; i++) {
-                    const gReward = table[gArm][t * NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM + i];
-                    greedyAlgo.update({ arm: gArm, observedReward: gReward });
-                }
-
-                // Epsilon-Greedy
-                const eArm = epsAlgo.selectArm();
-                for (let i = 0; i < NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM; i++) {
-                    const eReward = table[eArm][t * NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM + i];
-                    epsAlgo.update({ arm: eArm, observedReward: eReward });
-                }
-
-                // Gradient Bandit
-                const gbArm = gbAlgo.selectArm();
-                for (let i = 0; i < NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM; i++) {
-                    const gbReward = table[gbArm][t * NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM + i];
-                    gbAlgo.update({ arm: gbArm, observedReward: gbReward });
-                }
-
-                // UCB
-                const ucbArm = ucbAlgo.selectArm();
-                for (let i = 0; i < NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM; i++) {
-                    const ucbReward = table[ucbArm][t * NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM + i];
-                    ucbAlgo.update({ arm: ucbArm, observedReward: ucbReward });
+                const selectedArm = selectArmFn();
+                if (gameInstance.chosenDistribution === "Gaussian") {
+                    for (let i = 0; i < NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM; i++) {
+                        const reward = table[selectedArm][t * NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM + i];
+                        algo.update({ arm: selectedArm, observedReward: reward });
+                    }
+                } else {
+                    const reward = table[selectedArm][t];
+                    algo.update({ arm: selectedArm, observedReward: reward });
                 }
             }
-        }
-        else if (newGame.chosenDistribution === "Bernoulli") {
-            for (let t = 0; t < iterations; t++) {
-                const gArm = greedyAlgo.selectArm();
-                const gReward = table[gArm][t];
-                greedyAlgo.update({arm: gArm, observedReward: gReward});
+        };
 
-                const eArm = epsAlgo.selectArm();
-                const eReward = table[eArm][t];
-                epsAlgo.update({arm: eArm, observedReward: eReward});
-
-                const gbArm = gbAlgo.selectArm();
-                const gbReward = table[gbArm][t];
-                gbAlgo.update({arm: gbArm, observedReward: gbReward});
-
-                const ucbArm = ucbAlgo.selectArm();
-                const ucbReward = table[ucbArm][t];
-                ucbAlgo.update({arm: ucbArm, observedReward: ucbReward});
-            }
-        }
-        else {
-            throw new Error("Unsupported distribution type in simulation.");
-        }
-
+        simulateSingleAlgorithm(algorithmsRef.current.greedy, () => algorithmsRef.current.greedy.selectArm());
+        simulateSingleAlgorithm(algorithmsRef.current.epsilon, () => algorithmsRef.current.epsilon.selectArm());
+        simulateSingleAlgorithm(algorithmsRef.current.gradientBandit, () => algorithmsRef.current.gradientBandit.selectArm());
+        simulateSingleAlgorithm(algorithmsRef.current.ucb, () => algorithmsRef.current.ucb.selectArm());
 
         // sync history
-        historyRef.current.addReward(historyRef.current.greedyRewards, { observedRewards: greedyAlgo.getObservedRewards() });
-        historyRef.current.addReward(historyRef.current.epsilonGreedyRewards, { observedRewards: epsAlgo.getObservedRewards() });
-        historyRef.current.addReward(historyRef.current.GradientBanditRewards, { observedRewards: gbAlgo.getObservedRewards() });
-        historyRef.current.addReward(historyRef.current.UpperConfidenceBoundRewards, { observedRewards: ucbAlgo.getObservedRewards() });
+        historyRef.current.addReward(historyRef.current.greedyRewards, { observedRewards: algorithmsRef.current.greedy.getObservedRewards() });
+        historyRef.current.addReward(historyRef.current.epsilonGreedyRewards, { observedRewards: algorithmsRef.current.epsilon.getObservedRewards() });
+        historyRef.current.addReward(historyRef.current.GradientBanditRewards, { observedRewards: algorithmsRef.current.gradientBandit.getObservedRewards() });
+        historyRef.current.addReward(historyRef.current.UpperConfidenceBoundRewards, { observedRewards: algorithmsRef.current.ucb.getObservedRewards() });
+    };
 
+    const resetState = () => {
+        setArms(prev => prev.map(a => ({ ...a, pulls: 0, lastReward: 0 })));
+        setTotalPulls(0);
+        setTotalReward(0);
+        setLogs([]);
+        setShowPlot(false);
+    };
+
+    /**
+     * Start a new bandit simulation.
+     * Initializes the game, the reward table, and the manual algorithm.
+     */
+    const startGame = () => {
+        if (running) return;
+
+        resetState();
+
+        const newGame = new CurrentGame();
+        newGame.setNumberOfArms(arms.length);
+        newGame.setNumberOfTries(iterations);
+        newGame.setChosenDistribution(type);
+        newGame.createTable();
+
+        initializeAlgorithms();
+        simulateAlgorithmHistory(newGame);
 
         // initialize manual observed rewards
-        newGame.algorithm = manualAlgo;
+        newGame.algorithm = algorithmsRef.current.manual;
         gameRef.current = newGame;
         setGame(newGame);
         setRewardTable(newGame.tableOfRewards);
         setRunning(true);
     };
 
-
     /**
      * Handle a single pull of a given arm.
      * Updates arm state, total reward, total pulls, and logs.
      *
-     * @param {number} idx - Index of the arm to pull.
+     * @param {number} armIndex - Index of the arm to pull.
      */
-    const handlePull = (idx) => {
-        if (!running || !gameRef.current || rewardTable.length === 0) return;
-        if (totalPulls >= iterations || arms[idx].pulls >= iterations) return;
+    const handleGaussianPull = (armIndex) => {
+        let totalRewardForArm = 0;
+        const startIndex = arms[armIndex].pulls * NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM;
 
-        const isGaussian = gameRef.current.chosenDistribution === "Gaussian";
-
-        if (isGaussian) {
-            let totalReward = 0;
-            const startIndex = arms[idx].pulls * NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM;
-
-            for (let i = 0; i < NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM; i++) {
-                const rewardIndex = startIndex + i;
-                const reward = rewardTable[idx][rewardIndex];
-
-                totalReward += reward;
-                safeUpdateAlgorithm(algorithmsRef.current.manual, idx, reward);
-                manualObservedRewardsRef.current.push(reward);
-            }
-
-            const avgReward = totalReward / NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM;
-
-            updateArm(idx, avgReward);
-            setTotalReward(prev => prev + totalReward);
-            setTotalPulls(prev => prev + 1);
-            addLog(totalPulls + 1, idx, totalReward);
-
-            historyRef.current.addReward(historyRef.current.manualRewards, {
-                observedRewards: manualObservedRewardsRef.current
-            });
+        for (let i = 0; i < NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM; i++) {
+            const reward = rewardTable[armIndex][startIndex + i];
+            totalRewardForArm += reward;
+            safeUpdateAlgorithm(algorithmsRef.current.manual, armIndex, reward);
+            recordManualReward(reward);
         }
-        else {
-            const reward = rewardTable[idx][arms[idx].pulls];
-            const timestep = safeUpdateAlgorithm(algorithmsRef.current.manual, idx, reward) || totalPulls + 1;
 
-            updateArm(idx, reward);
-            setTotalReward(prev => prev + reward);
-            setTotalPulls(prev => prev + 1);
-            addLog(timestep, idx, reward);
+        const avgReward = totalRewardForArm / NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM;
+        updateArm(armIndex, avgReward);
+        setTotalReward(prev => prev + totalRewardForArm);
+        setTotalPulls(prev => prev + 1);
+        addLog(totalPulls + 1, armIndex, totalRewardForArm);
+    };
 
-            manualObservedRewardsRef.current.push(reward);
-            historyRef.current.addReward(historyRef.current.manualRewards, {
-                observedRewards: manualObservedRewardsRef.current
-            });
+    const handleBernoulliPull = (armIndex) => {
+        const reward = rewardTable[armIndex][arms[armIndex].pulls];
+        const timestep = safeUpdateAlgorithm(algorithmsRef.current.manual, armIndex, reward) || totalPulls + 1;
+
+        updateArm(armIndex, reward);
+        setTotalReward(prev => prev + reward);
+        setTotalPulls(prev => prev + 1);
+        addLog(timestep, armIndex, reward);
+        recordManualReward(reward);
+    };
+
+    const handlePull = (armIndex) => {
+        if (!running || !gameRef.current || rewardTable.length === 0) return;
+        if (totalPulls >= iterations || arms[armIndex].pulls >= iterations) return;
+
+        if (gameRef.current.chosenDistribution === "Gaussian") {
+            handleGaussianPull(armIndex);
+        } else {
+            handleBernoulliPull(armIndex);
         }
     };
 
-
-
-    /**
-     * Change the number of arms in the simulation.
-     * Can increase or decrease the arm count dynamically.
-     *
-     * @param {number} count - Desired number of arms.
-     */
     const setArmCount = (count) => {
         const current = arms.length;
-        let newArms;
-        if (count > current) {
-            const extra = Array.from({ length: count - current }, (_, i) => ({
-                id: current + i,
-                pulls: 0,
-                lastReward: 0
-            }));
-            newArms = [...arms, ...extra];
-        } else {
-            newArms = arms.slice(0, count);
-        }
+        const newArms = count > current
+            ? [...arms, ...Array.from({ length: count - current }, (_, i) => ({ id: current + i, pulls: 0, lastReward: 0 }))]
+            : arms.slice(0, count);
         setArms(newArms);
     };
 
-    /**
-     * Reset all game state to initial defaults.
-     * Resets arms, iterations, total pulls, reward, logs, and plot visibility.
-     */
     const resetAll = () => {
         if (algorithmsRef.current.manual?.reset) algorithmsRef.current.manual.reset();
-
         setArms(Array.from({ length: initialArms }, (_, i) => ({ id: i, pulls: 0, lastReward: 0 })));
         setIterations(initialIterations);
         setTotalPulls(0);
@@ -345,7 +251,17 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
         setGame(null);
         historyRef.current.reset();
         manualObservedRewardsRef.current = [];
+
+        console.log("Simulation stopped and reset.");
     };
+
+    const getCumulativeRewards = () => ({
+        manualRewards: [...historyRef.current.manualRewards],
+        greedyRewards: [...historyRef.current.greedyRewards],
+        epsilonGreedyRewards: [...historyRef.current.epsilonGreedyRewards],
+        UpperConfidenceBoundRewards: [...historyRef.current.UpperConfidenceBoundRewards],
+        GradientBanditRewards: [...historyRef.current.GradientBanditRewards],
+    });
 
     return {
         type, setType,
@@ -360,6 +276,8 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
         setShowPlot,
         game,
         winner,
+        lang,
+        setLang,
         getCumulativeRewards,
         startGame,
         handlePull,

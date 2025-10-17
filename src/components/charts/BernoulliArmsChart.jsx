@@ -1,6 +1,6 @@
 "use client"
 
-import { Bar, BarChart, XAxis, CartesianGrid, ResponsiveContainer } from "recharts"
+import { Bar, BarChart, XAxis, CartesianGrid } from "recharts"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.jsx";
 
@@ -25,7 +25,6 @@ export default function BernoulliArmsChart({ probabilities, lang }) {
             </CardHeader>
             <CardContent>
                 <ChartContainer config={chartConfig} className="overflow-hidden">
-                    <ResponsiveContainer width="100%" height={300}>
                         <BarChart data={barData}>
                             <CartesianGrid vertical={false} />
                             <XAxis dataKey="arm" axisLine={false} tickLine={false} />
@@ -49,7 +48,6 @@ export default function BernoulliArmsChart({ probabilities, lang }) {
                             />
                             <Bar dataKey="probability" fill="var(--chart-1)" radius={8} />
                         </BarChart>
-                    </ResponsiveContainer>
                 </ChartContainer>
             </CardContent>
         </Card>

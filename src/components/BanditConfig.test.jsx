@@ -35,7 +35,7 @@ vi.mock('@/components/ui/tooltip', () => {
     };
 });
 
-import BanditConfig from './BanditConfigForm.jsx';
+import BanditConfig from './BanditConfig.jsx';
 
 const setup = (overrides = {}) => {
     const props = {
@@ -71,8 +71,8 @@ describe('BanditConfigForm', () => {
 
     it('calls setArmCount when increasing or decreasing the campaign count via buttons', () => {
         const props = setup();
-        const decreaseCampaignBtn = screen.getByRole('button', { name: 'Decrease campaigns' });
-        const increaseCampaignBtn = screen.getByRole('button', { name: 'Increase campaigns' });
+        const decreaseCampaignBtn = screen.getByRole('button', { name: 'decrease-campaigns' });
+        const increaseCampaignBtn = screen.getByRole('button', { name: 'increase-campaigns' });
 
         // increase
         fireEvent.click(increaseCampaignBtn);
@@ -85,8 +85,8 @@ describe('BanditConfigForm', () => {
 
     it('calls setIterations when increasing or decreasing the attempts via buttons', () => {
         const props = setup();
-        const decreaseAttemptsBtn = screen.getByRole('button', { name: 'Decrease attempts' });
-        const increaseAttemptsBtn = screen.getByRole('button', { name: 'Increase attempts' });
+        const decreaseAttemptsBtn = screen.getByRole('button', { name: 'decrease-attempts' });
+        const increaseAttemptsBtn = screen.getByRole('button', { name: 'increase-attempts' });
 
         // increase
         fireEvent.click(increaseAttemptsBtn);
@@ -114,10 +114,10 @@ describe('BanditConfigForm', () => {
         const runningBtn = screen.getByText('Spiel gestartet...');
         expect(runningBtn).toBeDisabled();
 
-        const decreaseCampaignBtn = screen.getByRole('button', { name: 'Decrease campaigns' });
-        const increaseCampaignBtn = screen.getByRole('button', { name: 'Increase campaigns' });
-        const decreaseAttemptsBtn = screen.getByRole('button', { name: 'Decrease attempts' });
-        const increaseAttemptsBtn = screen.getByRole('button', { name: 'Increase attempts' });
+        const decreaseCampaignBtn = screen.getByRole('button', { name: 'decrease-campaigns' });
+        const increaseCampaignBtn = screen.getByRole('button', { name: 'increase-campaigns' });
+        const decreaseAttemptsBtn = screen.getByRole('button', { name: 'decrease-attempts' });
+        const increaseAttemptsBtn = screen.getByRole('button', { name: 'increase-attempts' });
 
         expect(decreaseCampaignBtn).toBeDisabled();
         expect(increaseCampaignBtn).toBeDisabled();
