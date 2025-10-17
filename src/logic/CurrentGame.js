@@ -151,7 +151,7 @@ export default class CurrentGame {
                 // Total number of Gaussian values to generate.
                 const numberOfValuesToGenerate = numberOfArms * NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM;
 
-                for (let i = 0; i < numberOfValuesToGenerate; i++) {
+                for (let i = 0; i < numberOfArms; i++) {
                     // Box-Muller for mean sampling.
                     let u = 0;
                     let v = 0;
