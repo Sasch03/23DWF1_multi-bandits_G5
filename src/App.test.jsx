@@ -23,7 +23,7 @@ vi.mock('./components/NavigationBar.jsx', () => ({
     default: () => <nav>NavigationBar</nav>,
 }));
 
-vi.mock('./components/BanditConfigForm.jsx', () => ({
+vi.mock('./components/BanditConfig.jsx', () => ({
     default: (props) => (
         <section>
             <button onClick={() => props.startSimulation && props.startSimulation()}>

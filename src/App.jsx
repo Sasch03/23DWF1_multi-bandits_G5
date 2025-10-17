@@ -4,7 +4,7 @@ import ThemeToggle from './components/ThemeToggle.jsx';
 import LanguageToggle from './components/LanguageToggle.jsx';
 import Header from './components/header.jsx';
 import NavigationBar from './components/NavigationBar.jsx';
-import BanditConfig from './components/BanditConfigForm.jsx';
+import BanditConfig from './components/BanditConfig.jsx';
 import BanditPlayground from './components/BanditPlayground.jsx';
 import BanditResults from './components/BanditResults.jsx';
 import { useBanditGame } from "./hooks/useBanditSimulation.js";

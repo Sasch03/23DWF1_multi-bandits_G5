@@ -35,7 +35,7 @@ vi.mock('@/components/ui/tooltip', () => {
     };
 });
 
-import BanditConfig from './BanditConfigForm.jsx';
+import BanditConfig from './BanditConfig.jsx';
 
 const setup = (overrides = {}) => {
     const props = {
