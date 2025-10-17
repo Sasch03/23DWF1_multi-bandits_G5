@@ -3,7 +3,7 @@ import { AlgorithmTyp } from '@/logic/enumeration/AlgorithmTyp.js';
 import { GAUSSIAN_STD_DEV } from "@/constants.js";
 import { MEAN_OF_MEANS } from "@/constants.js";
 import { GAUSSIAN_MEAN_SPREAD_STD_DEV } from "@/constants.js";
-
+import { NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM } from "@/constants.js";
 /**
  * This class represents a k-armed bandit game configuration and environment.
  * It allows to set the number of arms and trials, select a reward distribution
@@ -165,10 +165,11 @@ export default class CurrentGame {
                 // For each arm, draw "numberOfTries" samples.
                 for (let i = 0; i < numberOfArms; i++) {
                     const rewardsForArm = [];
+                    const numberOfValuesToGenerate = numberOfTries * NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM;
                     let generated = 0;
 
                     // Use Box-Muller to generate pairs of normals.
-                    while (generated < numberOfTries) {
+                    while (generated < numberOfValuesToGenerate) {
                         let u = 0;
                         let v = 0;
                         while (u === 0) u = Math.random();
@@ -178,11 +179,11 @@ export default class CurrentGame {
                         const z1 = mag * Math.cos(2.0 * Math.PI * v);
                         const z2 = mag * Math.sin(2.0 * Math.PI * v);
 
-                        if (generated < numberOfTries) {
+                        if (generated < numberOfValuesToGenerate) {
                             rewardsForArm.push(z1 * GAUSSIAN_STD_DEV + gaussianMeans[i]);
                             generated++;
                         }
-                        if (generated < numberOfTries) {
+                        if (generated < numberOfValuesToGenerate) {
                             rewardsForArm.push(z2 * GAUSSIAN_STD_DEV + gaussianMeans[i]);
                             generated++;
                         }

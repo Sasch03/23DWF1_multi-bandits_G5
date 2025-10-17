@@ -8,6 +8,7 @@ import { DEFAULT_ARMS, DEFAULT_ITERATIONS, ALPHA_DEFAULT } from "@/constants.js"
 import StrategyRewardHistory from "@/logic/StrategyRewardHistory.js";
 import GradientBandit from "@/logic/algorithm/strategies/gradient-based/GradientBandit.js";
 import UCB from "@/logic/algorithm/strategies/value-based/UCB.js";
+import { NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM } from "@/constants.js";
 
 /**
  * Custom hook to manage a multi-armed bandit simulation.
@@ -178,23 +179,60 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
 
         // algo simulations for history tracking
         const table = newGame.tableOfRewards;
-        for (let t = 0; t < iterations; t++) {
-            const gArm = greedyAlgo.selectArm();
-            const gReward = table[gArm][t];
-            greedyAlgo.update({ arm: gArm, observedReward: gReward });
+        if (newGame.chosenDistribution === "Gaussian") {
+            for (let t = 0; t < iterations; t++) {
+                // Greedy
+                const gArm = greedyAlgo.selectArm();
+                for (let i = 0; i < NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM; i++) {
+                    const gReward = table[gArm][t * NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM + i];
+                    greedyAlgo.update({ arm: gArm, observedReward: gReward });
+                }
 
-            const eArm = epsAlgo.selectArm();
-            const eReward = table[eArm][t];
-            epsAlgo.update({ arm: eArm, observedReward: eReward });
+                // Epsilon-Greedy
+                const eArm = epsAlgo.selectArm();
+                for (let i = 0; i < NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM; i++) {
+                    const eReward = table[eArm][t * NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM + i];
+                    epsAlgo.update({ arm: eArm, observedReward: eReward });
+                }
 
-            const gbArm = gbAlgo.selectArm();
-            const gbReward = table[gbArm][t];
-            gbAlgo.update({ arm: gbArm, observedReward: gbReward });
+                // Gradient Bandit
+                const gbArm = gbAlgo.selectArm();
+                for (let i = 0; i < NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM; i++) {
+                    const gbReward = table[gbArm][t * NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM + i];
+                    gbAlgo.update({ arm: gbArm, observedReward: gbReward });
+                }
 
-            const ucbArm = ucbAlgo.selectArm();
-            const ucbReward = table[ucbArm][t];
-            ucbAlgo.update({ arm: ucbArm, observedReward: ucbReward });
+                // UCB
+                const ucbArm = ucbAlgo.selectArm();
+                for (let i = 0; i < NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM; i++) {
+                    const ucbReward = table[ucbArm][t * NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM + i];
+                    ucbAlgo.update({ arm: ucbArm, observedReward: ucbReward });
+                }
+            }
         }
+        else if (newGame.chosenDistribution === "Bernoulli") {
+            for (let t = 0; t < iterations; t++) {
+                const gArm = greedyAlgo.selectArm();
+                const gReward = table[gArm][t];
+                greedyAlgo.update({arm: gArm, observedReward: gReward});
+
+                const eArm = epsAlgo.selectArm();
+                const eReward = table[eArm][t];
+                epsAlgo.update({arm: eArm, observedReward: eReward});
+
+                const gbArm = gbAlgo.selectArm();
+                const gbReward = table[gbArm][t];
+                gbAlgo.update({arm: gbArm, observedReward: gbReward});
+
+                const ucbArm = ucbAlgo.selectArm();
+                const ucbReward = table[ucbArm][t];
+                ucbAlgo.update({arm: ucbArm, observedReward: ucbReward});
+            }
+        }
+        else {
+            throw new Error("Unsupported distribution type in simulation.");
+        }
+
 
         // sync history
         historyRef.current.addReward(historyRef.current.greedyRewards, { observedRewards: greedyAlgo.getObservedRewards() });
@@ -222,23 +260,48 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
         if (!running || !gameRef.current || rewardTable.length === 0) return;
         if (totalPulls >= iterations || arms[idx].pulls >= iterations) return;
 
-        const reward = rewardTable[idx][arms[idx].pulls];
-        const timestep = safeUpdateAlgorithm(algorithmsRef.current.manual, idx, reward) || totalPulls + 1;
+        const isGaussian = gameRef.current.chosenDistribution === "Gaussian";
 
-        // --- State Updates ---
-        updateArm(idx, reward);
-        setTotalReward(prev => prev + reward);
-        setTotalPulls(prev => prev + 1);
-        addLog(timestep, idx, reward);
+        if (isGaussian) {
+            let totalReward = 0;
+            const startIndex = arms[idx].pulls * NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM;
 
-        // save observed reward for history tracking
-        manualObservedRewardsRef.current.push(reward);
+            for (let i = 0; i < NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM; i++) {
+                const rewardIndex = startIndex + i;
+                const reward = rewardTable[idx][rewardIndex];
 
-        // sync history
-        historyRef.current.addReward(historyRef.current.manualRewards, {
-            observedRewards: manualObservedRewardsRef.current
-        });
+                totalReward += reward;
+                safeUpdateAlgorithm(algorithmsRef.current.manual, idx, reward);
+                manualObservedRewardsRef.current.push(reward);
+            }
+
+            const avgReward = totalReward / NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM;
+
+            updateArm(idx, avgReward);
+            setTotalReward(prev => prev + totalReward);
+            setTotalPulls(prev => prev + 1);
+            addLog(totalPulls + 1, idx, totalReward);
+
+            historyRef.current.addReward(historyRef.current.manualRewards, {
+                observedRewards: manualObservedRewardsRef.current
+            });
+        }
+        else {
+            const reward = rewardTable[idx][arms[idx].pulls];
+            const timestep = safeUpdateAlgorithm(algorithmsRef.current.manual, idx, reward) || totalPulls + 1;
+
+            updateArm(idx, reward);
+            setTotalReward(prev => prev + reward);
+            setTotalPulls(prev => prev + 1);
+            addLog(timestep, idx, reward);
+
+            manualObservedRewardsRef.current.push(reward);
+            historyRef.current.addReward(historyRef.current.manualRewards, {
+                observedRewards: manualObservedRewardsRef.current
+            });
+        }
     };
+
 
 
     /**
