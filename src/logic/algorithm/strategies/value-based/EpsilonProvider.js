@@ -1,6 +1,3 @@
-// Unified entry point for epsilon (ε) values used by exploration-based algorithms.
-// Provides a constant epsilon, but can be extended later (e.g. linear or exponential decay).
-
 import { EPSILON_DEFAULT } from "@/constants.js";
 
 /**
@@ -8,33 +5,43 @@ import { EPSILON_DEFAULT } from "@/constants.js";
  * Default: constant Epsilon from configuration.
  */
 export class EpsilonProvider {
+    /**
+     * Creates a new EpsilonProvider with default epsilon.
+     */
     constructor() {
-        /**
-         * @type {number} current epsilon value (0 ≤ ε ≤ 1).
-         */
-        this.epsilon = EPSILON_DEFAULT; }
+        this.epsilon = EPSILON_DEFAULT;
+    }
+
+    /**
+     * Current epsilon value (0 ≤ Epsilon ≤ 1).
+     * @type {number}
+     */
+    epsilon;
 
     /**
      * Returns the epsilon value for the given step.
      * Currently constant.
-     * @returns {number} epsilon value.
+     * @returns {number} Epsilon value.
      */
     getEpsilon() {
         return this.epsilon;
     }
 
     /**
-     * Set new epsilon value.
-     * @param {number} v - Must be in [0,1].
+     * Set new epsilon value for exploration.
+     * @param {number} epsilon - Must be in [0,1].
      */
-    setEpsilon(v) {
-        if (typeof v !== "number" || v < 0 || v > 1) throw new Error("epsilon must be 0..1");
-        this.epsilon = v;
+    setEpsilon(epsilon) {
+        if (typeof epsilon !== "number" || epsilon < 0 || epsilon > 1) {
+            throw new Error("epsilon must be 0..1");
+        }
+        this.epsilon = epsilon;
     }
 }
 
 /**
- * @type {EpsilonProvider} shared singleton instance.
+ * Shared singleton instance.
+ * @type {EpsilonProvider}
  */
 const epsilonProvider = new EpsilonProvider();
 export default epsilonProvider;
