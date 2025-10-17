@@ -7,7 +7,6 @@ import {
     XAxis,
     YAxis,
     CartesianGrid,
-    ResponsiveContainer,
     ReferenceLine,
 } from "recharts"
 
@@ -93,7 +92,6 @@ export default function GaussianArmsChart({ game = {}, points = 300, normalize =
             </CardHeader>
             <CardContent>
                 <ChartContainer config={chartConfig} className="overflow-hidden">
-                    <ResponsiveContainer width="100%" height={320}>
                         <LineChart
                             data={data}
                             margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
@@ -124,7 +122,7 @@ export default function GaussianArmsChart({ game = {}, points = 300, normalize =
                                         formatter={(value, name) => {
                                             if (hidden[name]) return null
                                             return (
-                                                <div className="text-muted-foreground flex min-w-[140px] items-center text-xs">
+                                                <div className="text-muted-foreground flex min-w-[180px] text-xs">
                                                     {chartConfig[name]?.label || name}
                                                     <div className="text-foreground ml-auto flex items-baseline gap-0.5 font-mono font-medium tabular-nums">
                                                         {Number(value).toFixed(4)}
@@ -158,7 +156,6 @@ export default function GaussianArmsChart({ game = {}, points = 300, normalize =
                                 />
                             ))}
                         </LineChart>
-                    </ResponsiveContainer>
                 </ChartContainer>
 
                 <div className="flex flex-wrap gap-2 mt-2">

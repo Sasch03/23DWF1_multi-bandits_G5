@@ -15,74 +15,82 @@ vi.mock("@/components/ui/navigation-menu", () => {
 import NavigationBar from "./NavigationBar";
 
 describe("NavigationBar component", () => {
-    const setAlgoMock = vi.fn();
+    let setTypeMock;
 
     beforeEach(() => {
-        vi.clearAllMocks();
+        setTypeMock = vi.fn();
     });
 
     it("renders German labels when lang='de'", () => {
-        render(<NavigationBar algo="Bernoulli" setAlgo={setAlgoMock} running={false} lang="de" />);
+        render(<NavigationBar type="Bernoulli" setType={setTypeMock} running={false} lang="de" />);
 
         expect(screen.getByText("Bernoulli")).toBeInTheDocument();
         expect(screen.getByText("Gaußsche")).toBeInTheDocument();
     });
 
     it("renders English labels when lang!='de'", () => {
-        render(<NavigationBar algo="Bernoulli" setAlgo={setAlgoMock} running={false} lang="en" />);
+        render(<NavigationBar type="Bernoulli" setType={setTypeMock} running={false} lang="en" />);
 
         expect(screen.getByText("Bernoulli")).toBeInTheDocument();
         expect(screen.getByText("Gaussian")).toBeInTheDocument();
     });
 
-    it("calls setAlgo with correct value when clicked and running=false", () => {
-        render(<NavigationBar algo="Bernoulli" setAlgo={setAlgoMock} running={false} lang="en" />);
+    it("calls setType with correct value when clicked and running=false", () => {
+        render(<NavigationBar type="Bernoulli" setType={setTypeMock} running={false} lang="en" />);
 
         const gaussianLink = screen.getByText("Gaussian").closest("a");
         fireEvent.click(gaussianLink);
 
-        expect(setAlgoMock).toHaveBeenCalledTimes(1);
-        expect(setAlgoMock).toHaveBeenCalledWith("Gaussian");
+        expect(setTypeMock).toHaveBeenCalledTimes(1);
+        expect(setTypeMock).toHaveBeenCalledWith("Gaussian");
     });
 
-    it("does not call setAlgo when running=true", () => {
-        render(<NavigationBar algo="Bernoulli" setAlgo={setAlgoMock} running={true} lang="en" />);
+    it("does not call setType when running=true", () => {
+        render(<NavigationBar type="Bernoulli" setType={setTypeMock} running={true} lang="en" />);
 
         const gaussianLink = screen.getByText("Gaussian").closest("a");
         fireEvent.click(gaussianLink);
 
-        expect(setAlgoMock).not.toHaveBeenCalled();
+        expect(setTypeMock).not.toHaveBeenCalled();
     });
 
     it("renders the correct explanatory text for Bernoulli in German", () => {
-        render(<NavigationBar algo="Bernoulli" setAlgo={setAlgoMock} running={false} lang="de" />);
+        render(<NavigationBar type="Bernoulli" setType={setTypeMock} running={false} lang="de" />);
 
         expect(
-            screen.getByText("Die Bernoulli-Verteilung beschreibt, ob eine einzelne Kampagne erfolgreich Geld bringt (1) oder fehlschlägt (0) – also ein reines Ja/Nein-Ergebnis.")
+            screen.getByText(
+                "Die Bernoulli-Verteilung beschreibt, ob eine einzelne Kampagne erfolgreich Geld bringt (1) oder fehlschlägt (0) – also ein reines Ja/Nein-Ergebnis."
+            )
         ).toBeInTheDocument();
     });
 
     it("renders the correct explanatory text for Bernoulli in English", () => {
-        render(<NavigationBar algo="Bernoulli" setAlgo={setAlgoMock} running={false} lang="en" />);
+        render(<NavigationBar type="Bernoulli" setType={setTypeMock} running={false} lang="en" />);
 
         expect(
-            screen.getByText("The Bernoulli distribution describes whether a single campaign successfully generates money (1) or fails (0) – in other words, a pure yes/no result.")
+            screen.getByText(
+                "The Bernoulli distribution describes whether a single campaign successfully generates money (1) or fails (0) – in other words, a pure yes/no result."
+            )
         ).toBeInTheDocument();
     });
 
     it("renders the correct explanatory text for Gaussian in German", () => {
-        render(<NavigationBar algo="Gaussian" setAlgo={setAlgoMock} running={false} lang="de" />);
+        render(<NavigationBar type="Gaussian" setType={setTypeMock} running={false} lang="de" />);
 
         expect(
-            screen.getByText("Die gaußsche Verteilung beschreibt, wie stark die Resultate einzelner Kampagnen um einen typischen Durchschnitt schwanken – sie können sowohl positive als auch negative Werte aufweisen.")
+            screen.getByText(
+                "Die gaußsche Verteilung beschreibt, wie stark die Resultate einzelner Kampagnen um einen typischen Durchschnitt schwanken – sie können sowohl positive als auch negative Werte aufweisen."
+            )
         ).toBeInTheDocument();
     });
 
     it("renders the correct explanatory text for Gaussian in English", () => {
-        render(<NavigationBar algo="Gaussian" setAlgo={setAlgoMock} running={false} lang="en" />);
+        render(<NavigationBar type="Gaussian" setType={setTypeMock} running={false} lang="en" />);
 
         expect(
-            screen.getByText("The Gaussian distribution describes how much the results of individual campaigns fluctuate around a typical average – they can have both positive and negative values.")
+            screen.getByText(
+                "The Gaussian distribution describes how much the results of individual campaigns fluctuate around a typical average – they can have both positive and negative values."
+            )
         ).toBeInTheDocument();
     });
 });

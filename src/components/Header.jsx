@@ -4,6 +4,7 @@ import { HoverCard, HoverCardTrigger, HoverCardContent } from "@/components/ui/h
 import { ArrowUpRightIcon, UserIcon } from "lucide-react";
 
 export default function Header({ lang }) {
+
     const algos = [
         {
             key: "greedy",
@@ -11,7 +12,7 @@ export default function Header({ lang }) {
             algoName: "Greedy",
             link: "https://en.wikipedia.org/wiki/Greedy_algorithm",
             hint_de:
-                "Guido ist der gierige Veteran der Organisation – er setzt immer auf die Kampagne, die bisher am meisten eingebracht hat, und ignoriert alles andere.",
+                "Guido ist der gierige Veteran – er setzt immer auf die Kampagne, die bisher am meisten eingebracht hat, und ignoriert alles andere.",
             hint_en:
                 "Guido is the greedy veteran – he always chooses the campaign with the best result so far.",
         },
@@ -50,7 +51,7 @@ export default function Header({ lang }) {
     return (
         <div className="mb-6 text-center">
             <h1 className="text-4xl font-bold text-foreground">
-                {lang === "de" ? "Multi-Armed Mafia" : "Multi-Armed Mafia"}
+                Multi-Armed Mafia
             </h1>
 
             <p
@@ -63,13 +64,13 @@ export default function Header({ lang }) {
                 }}
             />
 
-
             <p className="text-muted-foreground mt-2 whitespace-pre-line">
                 {lang === "de"
                     ? "Stell dir vor, du bist ein Mafioso auf Profitjagd und willst mit E-Mail-Phishing-Kampagnen das meiste Geld einsacken.\nJede Kampagne bringt unterschiedlich hohe Erträge. Doch auch andere Mafiosi strecken ihre Finger nach dem Gewinn aus:"
                     : "Imagine you're a mafioso on the hunt for profit and want to rake in as much money as possible with email phishing campaigns.\n Each campaign yields different returns. But other mafiosi are also reaching out for the profits:"}
             </p>
 
+            {/* Algorithm Badges with HoverCards */}
             <div className="mt-4 flex justify-center gap-3 flex-wrap">
                 {algos.map((a) => (
                     <HoverCard openDelay={300} key={a.key}>
@@ -115,8 +116,8 @@ export default function Header({ lang }) {
 
             <p className="text-muted-foreground whitespace-pre-line">
                 {lang === "de"
-                    ? "Wer holt am Ende die dickste Beute? Wähle eine Profitart (Verteilung) und konfiguriere deine Simulation clever, um maximalen Profit zu erzielen."
-                    : "Who will claim the biggest haul? Choose a reward type (distribution) and configure your simulation wisely to maximize profit."}
+                    ? "Wer holt am Ende die dickste Beute? Wähle eine Profitart (Verteilung) und setze die Anzahl an Gesamtversuchen und Kampagnen fest. Drücke Start und führe Kampagnen per Klick aus, um maximalen Profit zu erzielen."
+                    : "Who will end up with the biggest haul? Choose a profit type (distribution) and set the number of total attempts and campaigns. Press Start and run campaigns with a click to maximize your profits."}
             </p>
         </div>
     );

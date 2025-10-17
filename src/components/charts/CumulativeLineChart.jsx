@@ -1,17 +1,9 @@
 "use client"
 
 import React, { useState } from "react"
-import { LineChart, Line, XAxis, CartesianGrid, ResponsiveContainer } from "recharts"
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { LineChart, Line, XAxis, CartesianGrid } from "recharts"
+import { ChartContainer, ChartTooltip } from "@/components/ui/chart"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.jsx";
-
-const chartConfig = {
-    manual: { label: "Manual", color: "var(--chart-1)" },
-    greedy: { label: "Greedy", color: "var(--chart-2)" },
-    epsilonGreedy: { label: "Epsilon-Greedy", color: "var(--chart-3)" },
-    upperConfidenceBound: { label: "UCB", color: "var(--chart-4)" },
-    gradientBandit: { label: "Gradient Bandit", color: "var(--chart-5)" },
-};
 
 function makeLineData({ manualRewards = [], greedyRewards = [], epsilonGreedyRewards = [],
                           UpperConfidenceBoundRewards = [], GradientBanditRewards = [] }) {
@@ -35,12 +27,19 @@ function makeLineData({ manualRewards = [], greedyRewards = [], epsilonGreedyRew
 
 export default function CumulativeLineChart({ cumulativeRewards, chosenDistribution, lang }) {
 
+    const chartConfig = {
+        manual: { label: { de: "Du", en: "You" }, color: "var(--chart-1)" },
+        greedy: { label: { de: "Greedy", en: "Greedy" }, color: "var(--chart-2)" },
+        epsilonGreedy: { label: { de: "Epsilon-Greedy", en: "Epsilon-Greedy" }, color: "var(--chart-3)" },
+        upperConfidenceBound: { label: { de: "UCB", en: "UCB" }, color: "var(--chart-4)" },
+        gradientBandit: { label: { de: "Gradient Bandit", en: "Gradient Bandit" }, color: "var(--chart-5)" },
+    };
+
     const [hidden, setHidden] = useState({})
 
     const handleLegendClick = (key) => {
         setHidden((prev) => ({ ...prev, [key]: !prev[key] }))
     }
-
 
     return (
         <Card className="flex-1 bg-muted/30">
@@ -51,56 +50,60 @@ export default function CumulativeLineChart({ cumulativeRewards, chosenDistribut
             </CardHeader>
             <CardContent>
                 <ChartContainer config={chartConfig} className="overflow-hidden">
-                    <ResponsiveContainer width="100%">
-                        <LineChart data={makeLineData(cumulativeRewards)}>
-                            <CartesianGrid vertical={false} />
-                            <XAxis dataKey="try" axisLine={false} tickLine={false} />
-                            <ChartTooltip
-                                labelFormatter={() =>
-                                    lang === "de" ? "Belohnungen" :
-                                        "Rewards"
-                                }
-                                content={
-                                    <ChartTooltipContent
-                                        formatter={(value, name) => {
-                                            if (chosenDistribution === "Gaussian") {
-                                                return (
-                                                    <div className="text-muted-foreground flex min-w-[150px] items-center text-xs">
-                                                        {chartConfig[name]?.label || name}
-                                                        <div className="text-foreground ml-auto flex items-baseline gap-0.5 font-mono font-medium tabular-nums">
-                                                            {value.toFixed(2)} €
-                                                        </div>
-                                                    </div>
-                                                )
-                                            }
+                    <LineChart data={makeLineData(cumulativeRewards)}>
+                        <CartesianGrid vertical={false} />
+                        <XAxis dataKey="try" axisLine={false} tickLine={false} />
 
+                        <ChartTooltip
+                            content={({ active, payload, label }) => {
+                                if (!active || !payload?.length) return null;
+
+                                return (
+                                    <div className="rounded-md border bg-background p-2 shadow-sm w-[200px]">
+                                        <div className="font-medium text-sm mb-1">
+                                            {lang === "de" ? "Versuch" : "Attempt"} #{label}
+                                        </div>
+                                        {payload.map((entry) => {
+                                            const name = entry.dataKey;
+                                            const value = entry.value;
+                                            const config = chartConfig[name];
                                             return (
-                                                <div className="text-muted-foreground flex min-w-[100px] items-center text-xs">
-                                                    {chartConfig[name]?.label || name}
+                                                <div
+                                                    key={name}
+                                                    className="text-muted-foreground flex min-w-[150px] items-center text-xs"
+                                                >
+                                                    {config?.label[lang] || name}
                                                     <div className="text-foreground ml-auto flex items-baseline gap-0.5 font-mono font-medium tabular-nums">
-                                                        {value}
+                                                        {chosenDistribution === "Gaussian"
+                                                            ? `${value.toFixed(2)} €`
+                                                            : value}
                                                     </div>
                                                 </div>
-                                            )
-                                        }}
-                                    />
-                                }
+                                            );
+                                        })}
+                                    </div>
+                                );
+                            }}
+                        />
+
+
+
+
+                        {Object.entries(chartConfig).map(([key, cfg]) => (
+                            <Line
+                                key={key}
+                                type="linear"
+                                dataKey={key}
+                                stroke={cfg.color}
+                                strokeWidth={2}
+                                dot={false}
+                                hide={hidden[key] ?? false}
+                                name={cfg.label[lang]}
                             />
-                            {Object.entries(chartConfig).map(([key, cfg]) => (
-                                <Line
-                                    key={key}
-                                    type="linear"
-                                    dataKey={key}
-                                    stroke={cfg.color}
-                                    strokeWidth={2}
-                                    dot={false}
-                                    hide={hidden[key] ?? false}
-                                    name={cfg.label}
-                                />
-                            ))}
-                        </LineChart>
-                    </ResponsiveContainer>
+                        ))}
+                    </LineChart>
                 </ChartContainer>
+
                 <div className="flex flex-wrap gap-2 mt-2">
                     {Object.entries(chartConfig).map(([key, cfg]) => (
                         <button
@@ -110,11 +113,10 @@ export default function CumulativeLineChart({ cumulativeRewards, chosenDistribut
                             style={{ opacity: hidden[key] ? 0.3 : 1 }}
                         >
                             <span className="w-3 h-3 rounded-full" style={{ backgroundColor: cfg.color }} />
-                            <span className="text-xs">{cfg.label}</span>
+                            <span className="text-xs">{cfg.label[lang]}</span>
                         </button>
                     ))}
                 </div>
-
             </CardContent>
         </Card>
     )

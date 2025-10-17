@@ -16,24 +16,31 @@ import React from "react";
 export default function BanditPlayground({ arms, onPull, disabled, lang }) {
     return (
         <div className="grid grid-cols-2 gap-4 max-h-[36vh] overflow-auto pr-2">
-            {arms.map(a => (
+
+            {/* Render each arm as a button */}
+            {arms.map(arm => (
                 <button
-                    key={a.id}
-                    className={`p-4 rounded-xl bg-muted/40 border border-muted/30 w-full text-left transition ${
-                        !disabled ? "hover:bg-muted/60 hover:border-primary" : ""
+                    key={arm.id}
+                    className={`p-4 rounded-xl w-full text-left transition border
+                    ${disabled
+                        ? "bg-muted text-muted-foreground border-muted cursor-not-allowed opacity-60"
+                        : "bg-muted/40 border-muted/30 hover:bg-muted/60 hover:border-primary"
                     }`}
-                    onClick={() => onPull(a.id)}
+                    onClick={() => onPull(arm.id)}
                     disabled={disabled}
                 >
 
+                    {/* Arm details: Campaign number and pull count */ }
                     <div className="flex justify-between items-center mb-2">
                         <div className="font-semibold">
-                            {lang === "de" ? "Kampagne" : "Campaign"} #{a.id + 1}</div>
+                            {lang === "de" ? "Kampagne" : "Campaign"} #{arm.id + 1}</div>
                         <div className="text-sm text-muted-foreground">
-                            {lang === "de" ? "Versuche" : "Attempts"}: {a.pulls}</div>
+                            {lang === "de" ? "Versuche" : "Attempts"}: {arm.pulls}</div>
                     </div>
+
                 </button>
             ))}
+
         </div>
     );
 }

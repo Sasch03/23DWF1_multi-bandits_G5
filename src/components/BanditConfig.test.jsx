@@ -1,5 +1,3 @@
-// javascript
-// File: `src/components/BanditConfigForm.test.jsx`
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
@@ -12,8 +10,11 @@ vi.mock('@/components/ui/card.jsx', () => {
         CardHeader: ({ children }) => React.createElement('div', null, children),
         CardTitle: ({ children }) => React.createElement('h2', null, children),
         CardDescription: ({ children }) => React.createElement('p', null, children),
+        CardContent: ({ children }) => React.createElement('div', null, children),
+        CardFooter: ({ children }) => React.createElement('div', null, children),
     };
 });
+
 
 vi.mock('@/components/ui/button.jsx', () => {
     return {
@@ -34,28 +35,7 @@ vi.mock('@/components/ui/tooltip', () => {
     };
 });
 
-vi.mock('@/components/shared/Counter.jsx', () => {
-    return {
-        default: ({ value = 0, onChange = () => {}, disabled }) =>
-            React.createElement(
-                'div',
-                null,
-                React.createElement('button', {
-                    'data-testid': 'decrement',
-                    disabled,
-                    onClick: () => onChange(Math.max(0, value - 1)),
-                }, '-'),
-                React.createElement('span', null, String(value)),
-                React.createElement('button', {
-                    'data-testid': 'increment',
-                    disabled,
-                    onClick: () => onChange(value + 1),
-                }, '+')
-            ),
-    };
-});
-
-import BanditConfig from './BanditConfigForm.jsx';
+import BanditConfig from './BanditConfig.jsx';
 
 const setup = (overrides = {}) => {
     const props = {
@@ -89,19 +69,35 @@ describe('BanditConfigForm', () => {
         expect(screen.getByText('Zurücksetzen')).toBeInTheDocument();
     });
 
-    it('calls setArmCount when increasing the campaign counter', () => {
+    it('calls setArmCount when increasing or decreasing the campaign count via buttons', () => {
         const props = setup();
-        const incrementButtons = screen.getAllByTestId('increment');
-        fireEvent.click(incrementButtons[0]);
-        expect(props.setArmCount).toHaveBeenCalledWith(6);
+        const decreaseCampaignBtn = screen.getByRole('button', { name: 'decrease-campaigns' });
+        const increaseCampaignBtn = screen.getByRole('button', { name: 'increase-campaigns' });
+
+        // increase
+        fireEvent.click(increaseCampaignBtn);
+        expect(props.setArmCount).toHaveBeenCalledWith(props.arms.length + 1);
+
+        // decrease
+        fireEvent.click(decreaseCampaignBtn);
+        expect(props.setArmCount).toHaveBeenCalledWith(props.arms.length - 1);
     });
 
-    it('calls setIterations when increasing the attempts counter', () => {
+    it('calls setIterations when increasing or decreasing the attempts via buttons', () => {
         const props = setup();
-        const incrementButtons = screen.getAllByTestId('increment');
-        fireEvent.click(incrementButtons[1]);
-        expect(props.setIterations).toHaveBeenCalledWith(11);
+        const decreaseAttemptsBtn = screen.getByRole('button', { name: 'decrease-attempts' });
+        const increaseAttemptsBtn = screen.getByRole('button', { name: 'increase-attempts' });
+
+        // increase
+        fireEvent.click(increaseAttemptsBtn);
+        expect(props.setIterations).toHaveBeenCalledWith(props.iterations + 1);
+
+        // decrease
+        fireEvent.click(decreaseAttemptsBtn);
+        expect(props.setIterations).toHaveBeenCalledWith(props.iterations - 1);
     });
+
+
 
     it('starts simulation and resets via buttons', () => {
         const props = setup();
@@ -114,20 +110,25 @@ describe('BanditConfigForm', () => {
 
     it('shows disabled running button and disabled counters when running=true', () => {
         setup({ running: true });
-        const runningBtn = screen.getByText('Läuft');
+
+        const runningBtn = screen.getByText('Spiel gestartet...');
         expect(runningBtn).toBeDisabled();
 
-        const decrementButtons = screen.getAllByTestId('decrement');
-        const incrementButtons = screen.getAllByTestId('increment');
-        expect(decrementButtons[0]).toBeDisabled();
-        expect(incrementButtons[0]).toBeDisabled();
-        expect(decrementButtons[1]).toBeDisabled();
-        expect(incrementButtons[1]).toBeDisabled();
+        const decreaseCampaignBtn = screen.getByRole('button', { name: 'decrease-campaigns' });
+        const increaseCampaignBtn = screen.getByRole('button', { name: 'increase-campaigns' });
+        const decreaseAttemptsBtn = screen.getByRole('button', { name: 'decrease-attempts' });
+        const increaseAttemptsBtn = screen.getByRole('button', { name: 'increase-attempts' });
+
+        expect(decreaseCampaignBtn).toBeDisabled();
+        expect(increaseCampaignBtn).toBeDisabled();
+        expect(decreaseAttemptsBtn).toBeDisabled();
+        expect(increaseAttemptsBtn).toBeDisabled();
     });
+
 
     it('shows diagram button when running=true and showPlot=false and calls setShowPlot', () => {
         const props = setup({ running: true, showPlot: false });
-        const plotBtn = screen.getByText('Diagramm');
+        const plotBtn = screen.getByText('Ergebnisse');
         expect(plotBtn).toBeInTheDocument();
 
         fireEvent.click(plotBtn);

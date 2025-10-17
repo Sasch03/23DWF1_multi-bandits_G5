@@ -2,6 +2,12 @@
 
 // --- Gaussian standard deviation ---
 /**
+ * The number of Gaussian values generated for each arm per trial.
+ * This number of draws is also performed per draw.
+ * @type {number}
+ */
+export const NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM = 50
+/**
  * The central mean around which the true means of each bandit arm are generated.
  * A value of 0 creates a neutral baseline with both positive (gain) and negative (loss) arms.
  * @type {number}

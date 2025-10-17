@@ -37,20 +37,24 @@ import {
  *
  * @returns {JSX.Element} The rendered BanditResults component.
  */
-export default function BanditResults({ totalPulls, totalReward, logs, type , lang}) {
+export default function BanditResults({
+                                          running,
+                                          iterations,
+                                          totalPulls,
+                                          totalReward,
+                                          logs,
+                                          type,
+                                          lang
+                                      }) {
+
     const [open, setOpen] = useState(false);
 
-    let totalRewardColor =
-        totalReward > 0
-            ? "text-emerald-500"
-            : totalReward < 0
-                ? "text-red-500"
-                : "";
+    const remainingPulls = running ? Math.max(0, iterations - totalPulls) : 0;
 
-    const renderLogRow = (log) => {
+    const renderLogTableRow = (log) => {
         const match = log.match(/Timestep: (\d+), Arm: (\d+), Reward: ([\d.-]+)/);
         if (!match) return null;
-        const [, ts, arm, reward] = match;
+        const [, timestep, arm, reward] = match;
         const rewardValue = parseFloat(reward);
 
         let rewardDisplay;
@@ -65,24 +69,24 @@ export default function BanditResults({ totalPulls, totalReward, logs, type , la
                         ? "text-red-500"
                         : "text-muted-foreground";
         } else {
-            rewardDisplay = rewardValue === 1
-                ? (lang === "de" ? "Erfolg" : "Success")
-                : (lang === "de" ? "Fehlschlag" : "Fail");
-            rewardColor =
+            rewardDisplay =
                 rewardValue === 1
-                    ? "text-emerald-500"
-                    : "text-red-500";
+                    ? (lang === "de" ? "Erfolg" : "Success")
+                    : (lang === "de" ? "Fehlschlag" : "Fail");
+            rewardColor = rewardValue === 1 ? "text-emerald-500" : "text-red-500";
         }
 
         return (
-            <TableRow key={ts}>
+            <TableRow key={timestep}>
                 <TableCell className="text-left">
                     <Badge variant="secondary" className="font-mono">
-                        #{ts}
+                        #{timestep}
                     </Badge>
                 </TableCell>
                 <TableCell className="text-left">
-                    {lang === "de" ? "Kampagne #" : "Campaign #"}{arm}</TableCell>
+                    {lang === "de" ? "Kampagne #" : "Campaign #"}
+                    {arm}
+                </TableCell>
                 <TableCell
                     className={`text-right font-mono font-semibold ${rewardColor}`}
                 >
@@ -92,45 +96,72 @@ export default function BanditResults({ totalPulls, totalReward, logs, type , la
         );
     };
 
-
     return (
         <Card className="mt-auto w-full bg-muted/30">
             <CardHeader></CardHeader>
             <CardContent className="flex flex-col gap-6">
+
                 {/* Top Stats */}
                 <TooltipProvider delayDuration={100}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <Tooltip>
                                 <TooltipTrigger asChild>
-                                    <Button variant="link" className="text-sm hover:text-foreground/80 text-muted-foreground">
-                                        {lang === "de" ? "Gesamtversuche" : "Total Attempts"}
+                                    <Button
+                                        variant="link"
+                                        className="text-sm hover:text-foreground/80 text-muted-foreground"
+                                    >
+                                        {lang === "de"
+                                            ? "Verbleibende Versuche"
+                                            : "Remaining Attempts"}
                                     </Button>
                                 </TooltipTrigger>
                                 <TooltipContent>
-                                    <p>{lang === "de"
-                                        ? "Bisherig durchgeführte Anzahl an Versuchen"
-                                        : "Total number of times the bandit has been pulled in this simulation."}</p>
+                                    <p>
+                                        {lang === "de"
+                                            ? "Anzahl der verbleibenden Versuche in dieser Simulation."
+                                            : "Number of attempts still remaining in this simulation."}
+                                    </p>
                                 </TooltipContent>
                             </Tooltip>
-                            <div className="text-3xl font-bold">{totalPulls}</div>
+                            <div
+                                className={`text-3xl font-bold ${
+                                    remainingPulls === 0
+                                        ? "text-muted-foreground"
+                                        : "text-foreground"
+                                }`}
+                            >
+                                {remainingPulls}
+                            </div>
                         </div>
+
                         <div>
                             <Tooltip>
                                 <TooltipTrigger asChild>
-                                    <Button variant="link" className="text-sm hover:text-foreground/80 text-muted-foreground">
+                                    <Button
+                                        variant="link"
+                                        className="text-sm hover:text-foreground/80 text-muted-foreground"
+                                    >
                                         {lang === "de" ? "Gesamtgewinn" : "Total Reward"}
                                     </Button>
                                 </TooltipTrigger>
                                 <TooltipContent>
                                     <p>
                                         {lang === "de"
-                                            ? "Bisherig kumulierte Belohnung aller gespielten Kampagnen."
-                                            : "Total number of times the bandit has been pulled in this simulation."}
+                                            ? "Bisher kumulierte Belohnung aller Kampagnen."
+                                            : "Cumulative total reward across all campaigns."}
                                     </p>
                                 </TooltipContent>
                             </Tooltip>
-                            <div className={`text-3xl font-bold ${totalRewardColor}`}>
+                            <div
+                                className={`text-3xl font-bold ${
+                                    totalReward === 0
+                                        ? "text-muted-foreground"
+                                        : totalReward > 0
+                                            ? "text-emerald-500"
+                                            : "text-red-500"
+                                }`}
+                            >
                                 {type === "Gaussian"
                                     ? totalReward.toFixed(2) + " €"
                                     : totalReward}
@@ -156,16 +187,19 @@ export default function BanditResults({ totalPulls, totalReward, logs, type , la
                         >
                             {open ? (
                                 <>
-                                    {lang === "de" ? "Weniger anzeigen" : "Show less"} <ChevronUp size={16} />
+                                    {lang === "de" ? "Weniger anzeigen" : "Show less"}{" "}
+                                    <ChevronUp size={16} />
                                 </>
                             ) : (
                                 <>
-                                    {lang === "de" ? "Mehr anzeigen" : "Show more"} <ChevronDown size={16} />
+                                    {lang === "de" ? "Mehr anzeigen" : "Show more"}{" "}
+                                    <ChevronDown size={16} />
                                 </>
                             )}
                         </Button>
                     </div>
 
+                    {/* Full log table */}
                     <Collapsible open={open}>
                         <div className="overflow-hidden transition-all duration-300">
                             <Table className="w-full">
@@ -185,7 +219,10 @@ export default function BanditResults({ totalPulls, totalReward, logs, type , la
                                 <TableBody>
                                     {logs.length === 0 ? (
                                         <TableRow>
-                                            <TableCell colSpan={3} className="text-center text-muted-foreground py-3">
+                                            <TableCell
+                                                colSpan={3}
+                                                className="text-center text-muted-foreground py-3"
+                                            >
                                                 {lang === "de"
                                                     ? "Noch keine Phishing-Kampagnenaktivität"
                                                     : "No phishing campaign activity yet"}
@@ -193,16 +230,17 @@ export default function BanditResults({ totalPulls, totalReward, logs, type , la
                                         </TableRow>
                                     ) : (
                                         <>
-                                            {renderLogRow(logs[0])}
-
-                                            {open && logs.slice(1).map((log) => renderLogRow(log))}
+                                            {renderLogTableRow(logs[0])}
+                                            {open && logs.slice(1).map((log) => renderLogTableRow(log))}
                                         </>
                                     )}
                                 </TableBody>
                             </Table>
                         </div>
                     </Collapsible>
+
                 </div>
+
             </CardContent>
         </Card>
     );
