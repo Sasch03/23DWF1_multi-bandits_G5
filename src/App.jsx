@@ -26,6 +26,7 @@ export default function App() {
         setArmCount,
         handlePull,
         game,
+        winner,
         getCumulativeRewards,
     } = useBanditGame();
 
@@ -87,6 +88,7 @@ export default function App() {
                     game={game}
                     cumulativeRewards={getCumulativeRewards()}
                     lang={lang}
+                    winner={winner}
                 />
             )}
         </div>
