@@ -9,12 +9,13 @@ export default function SliderWithButtons({
                                               max,
                                               step = 1,
                                               disabled,
+                                              label
                                           }) {
     return (
         <div className="flex items-center gap-2">
             <Button
                 size="icon"
-                aria-label="decrease"
+                aria-label={`decrease-${label}`}
                 className="bg-muted hover:bg-primary/20 text-foreground rounded-full w-8 h-8 flex items-center justify-center shadow-sm transition-transform duration-150 ease-in-out hover:scale-105"
                 disabled={disabled || value <= min}
                 onClick={() => onChange(value - 1)}
@@ -34,7 +35,7 @@ export default function SliderWithButtons({
 
             <Button
                 size="icon"
-                aria-label="increase"
+                aria-label={`increase-${label}`}
                 className="bg-muted hover:bg-primary/20 text-foreground rounded-full w-8 h-8 flex items-center justify-center shadow-sm transition-transform duration-150 ease-in-out hover:scale-105"
                 disabled={disabled || value >= max}
                 onClick={() => onChange(value + 1)}

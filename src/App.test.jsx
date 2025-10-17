@@ -15,7 +15,7 @@ vi.mock('./components/ThemeToggle.jsx', () => ({
     default: (props) => <div>ThemeToggle:{props.lang}</div>,
 }));
 
-vi.mock('./components/header.jsx', () => ({
+vi.mock('./components/Header.jsx', () => ({
     default: (props) => <div>Header:{props.lang}</div>,
 }));
 

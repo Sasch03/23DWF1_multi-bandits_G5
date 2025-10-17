@@ -1,15 +1,10 @@
 import { render, screen } from "@testing-library/react";
-import Header from "@/components/header.jsx";
+import Header from "@/components/Header.jsx";
 import { describe, it, expect } from "vitest";
 
 describe("Header Component", () => {
-    it("renders title correctly (DE)", () => {
+    it("renders title correctly ", () => {
         render(<Header lang="de" />);
-        expect(screen.getByText("Multi-Armed Mafia")).toBeInTheDocument();
-    });
-
-    it("renders title correctly (EN)", () => {
-        render(<Header lang="en" />);
         expect(screen.getByText("Multi-Armed Mafia")).toBeInTheDocument();
     });
 

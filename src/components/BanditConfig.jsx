@@ -80,6 +80,7 @@ export default function BanditConfig({
                         min={2}
                         max={50}
                         disabled={running}
+                        label="campaigns"
                     />
 
                     <div className="text-center text-sm text-muted-foreground">{arms.length}</div>
@@ -113,6 +114,7 @@ export default function BanditConfig({
                         min={1}
                         max={100}
                         disabled={running}
+                        label="attempts"
                     />
 
                     <div className="text-center text-sm text-muted-foreground">{iterations}</div>

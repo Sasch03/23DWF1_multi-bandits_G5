@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import './App.css';
 import ThemeToggle from './components/ThemeToggle.jsx';
 import LanguageToggle from './components/LanguageToggle.jsx';
-import Header from './components/header.jsx';
+import Header from './components/Header.jsx';
 import NavigationBar from './components/NavigationBar.jsx';
 import BanditConfig from './components/BanditConfig.jsx';
 import BanditPlayground from './components/BanditPlayground.jsx';
@@ -44,8 +44,8 @@ export default function App() {
             <Header lang={lang} />
             {/* Navigation mit aktuellem Typ und Setter */}
             <NavigationBar
-                algo={type}
-                setAlgo={setType}
+                type={type}
+                setType={setType}
                 running={running}
                 lang={lang}
             />
