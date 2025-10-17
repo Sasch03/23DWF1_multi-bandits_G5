@@ -37,15 +37,10 @@ import {
  *
  * @returns {JSX.Element} The rendered BanditResults component.
  */
-export default function BanditResults({ totalPulls, totalReward, logs, type , lang}) {
+export default function BanditResults({ running, iterations, totalPulls, totalReward, logs, type , lang}) {
     const [open, setOpen] = useState(false);
 
-    let totalRewardColor =
-        totalReward > 0
-            ? "text-emerald-500"
-            : totalReward < 0
-                ? "text-red-500"
-                : "";
+    const remainingPulls = running ? Math.max(0, iterations - totalPulls) : 0;
 
     const renderLogRow = (log) => {
         const match = log.match(/Timestep: (\d+), Arm: (\d+), Reward: ([\d.-]+)/);
@@ -104,17 +99,28 @@ export default function BanditResults({ totalPulls, totalReward, logs, type , la
                             <Tooltip>
                                 <TooltipTrigger asChild>
                                     <Button variant="link" className="text-sm hover:text-foreground/80 text-muted-foreground">
-                                        {lang === "de" ? "Gesamtversuche" : "Total Attempts"}
+                                        {lang === "de" ? "Verbleibende Versuche" : "Remaining Attempts"}
                                     </Button>
                                 </TooltipTrigger>
                                 <TooltipContent>
-                                    <p>{lang === "de"
-                                        ? "Bisherig durchgeführte Anzahl an Versuchen"
-                                        : "Total number of times the bandit has been pulled in this simulation."}</p>
+                                    <p>
+                                        {lang === "de"
+                                            ? "Anzahl der verbleibenden Versuche in dieser Simulation."
+                                            : "Number of attempts still remaining in this simulation."}
+                                    </p>
                                 </TooltipContent>
                             </Tooltip>
-                            <div className="text-3xl font-bold">{totalPulls}</div>
+                            <div
+                                className={`text-3xl font-bold ${
+                                    remainingPulls === 0
+                                        ? "text-muted-foreground"
+                                        : "text-foreground"
+                                }`}
+                            >
+                                {remainingPulls}
+                            </div>
                         </div>
+
                         <div>
                             <Tooltip>
                                 <TooltipTrigger asChild>
@@ -125,12 +131,20 @@ export default function BanditResults({ totalPulls, totalReward, logs, type , la
                                 <TooltipContent>
                                     <p>
                                         {lang === "de"
-                                            ? "Bisherig kumulierte Belohnung aller gespielten Kampagnen."
-                                            : "Total number of times the bandit has been pulled in this simulation."}
+                                            ? "Bisher kumulierte Belohnung aller Kampagnen."
+                                            : "Cumulative total reward across all campaigns."}
                                     </p>
                                 </TooltipContent>
                             </Tooltip>
-                            <div className={`text-3xl font-bold ${totalRewardColor}`}>
+                            <div
+                                className={`text-3xl font-bold ${
+                                    totalReward === 0
+                                        ? "text-muted-foreground"
+                                        : totalReward > 0
+                                            ? "text-emerald-500"
+                                            : "text-red-500"
+                                }`}
+                            >
                                 {type === "Gaussian"
                                     ? totalReward.toFixed(2) + " €"
                                     : totalReward}
@@ -194,7 +208,6 @@ export default function BanditResults({ totalPulls, totalReward, logs, type , la
                                     ) : (
                                         <>
                                             {renderLogRow(logs[0])}
-
                                             {open && logs.slice(1).map((log) => renderLogRow(log))}
                                         </>
                                     )}

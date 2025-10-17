@@ -115,8 +115,8 @@ export default function Header({ lang }) {
 
             <p className="text-muted-foreground whitespace-pre-line">
                 {lang === "de"
-                    ? "Wer holt am Ende die dickste Beute? Wähle eine Profitart (Verteilung) und konfiguriere deine Simulation clever, um maximalen Profit zu erzielen."
-                    : "Who will claim the biggest haul? Choose a reward type (distribution) and configure your simulation wisely to maximize profit."}
+                    ? "Wer holt am Ende die dickste Beute? Wähle eine Profitart (Verteilung) und setze die Anzahl an Gesamtversuchen und Kampagnen fest. Drücke Start und führe Kampagnen per Klick aus, um maximalen Profit zu erzielen."
+                    : "Who will end up with the biggest haul? Choose a profit type (distribution) and set the number of total attempts and campaigns. Press Start and run campaigns with a click to maximize your profits."}
             </p>
         </div>
     );

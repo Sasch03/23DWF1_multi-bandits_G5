@@ -12,7 +12,13 @@ const mockData = {
 
 describe("CumulativeLineChart", () => {
     beforeEach(() => {
-        render(<CumulativeLineChart cumulativeRewards={mockData} chosenDistribution="Gaussian" />)
+        render(
+            <CumulativeLineChart
+                cumulativeRewards={mockData}
+                chosenDistribution="Gaussian"
+                lang="en"
+            />
+        )
     })
 
     it("renders the chart title", () => {
@@ -20,7 +26,7 @@ describe("CumulativeLineChart", () => {
     })
 
     it("renders all legend buttons", () => {
-        expect(screen.getByText("Manual")).toBeInTheDocument()
+        expect(screen.getByText("You")).toBeInTheDocument()
         expect(screen.getByText("Greedy")).toBeInTheDocument()
         expect(screen.getByText("Epsilon-Greedy")).toBeInTheDocument()
         expect(screen.getByText("Gradient Bandit")).toBeInTheDocument()
@@ -28,7 +34,7 @@ describe("CumulativeLineChart", () => {
     })
 
     it("toggles line visibility when legend button is clicked", () => {
-        const manualButton = screen.getByText("Manual").closest("button")
+        const manualButton = screen.getByText("You").closest("button")
         expect(manualButton).toHaveStyle({ opacity: "1" })
 
         fireEvent.click(manualButton)

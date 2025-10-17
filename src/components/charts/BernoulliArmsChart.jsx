@@ -12,7 +12,7 @@ const chartConfig = {
 
 export default function BernoulliArmsChart({ probabilities, lang }) {
     const barData = (probabilities ?? []).map((p, idx) => ({
-        arm: `No. ${idx + 1}`,
+        arm: `${idx + 1}`,
         probability: p
     }));
 
@@ -22,29 +22,26 @@ export default function BernoulliArmsChart({ probabilities, lang }) {
                 <CardTitle>
                     {lang === "de" ? "Tatsächliche Wahrscheinlichkeiten" : "True Probabilities"}
                 </CardTitle>
-
             </CardHeader>
             <CardContent>
                 <ChartContainer config={chartConfig} className="overflow-hidden">
-                    <ResponsiveContainer width="100%">
+                    <ResponsiveContainer width="100%" height={300}>
                         <BarChart data={barData}>
                             <CartesianGrid vertical={false} />
                             <XAxis dataKey="arm" axisLine={false} tickLine={false} />
                             <ChartTooltip
-                                labelFormatter={() =>
-                                    lang === "de" ? "Wahrscheinlichkeiten" :
-                                        "Probability"
-                                }
                                 content={
                                     <ChartTooltipContent
-                                        hideLabel
-                                        formatter={(value, name) => (
-                                            <div className="text-muted-foreground flex min-w-[100px] items-center text-xs">
-                                                {chartConfig[name]?.label || name}
-                                                <div className="text-foreground ml-auto flex items-baseline gap-0.5 font-mono font-medium tabular-nums">
-                                                    {Math.round(value * 100)}
-                                                    <span className="text-muted-foreground font-normal">%</span>
-                                                </div>
+                                        className="w-[150px]"
+                                        labelFormatter={(label) => `${lang === "de" ? "Kampagne" : "Campaign"} #${label}`}
+                                        formatter={(value) => (
+                                            <div className="flex justify-between text-xs w-full">
+                                                <span className="text-muted-foreground">
+                                                    {lang === "de" ? "Wahrscheinlichkeit" : "Probability"}
+                                                </span>
+                                                <span className="text-foreground font-mono font-medium tabular-nums">
+                                                    {Math.round(value * 100)}%
+                                                </span>
                                             </div>
                                         )}
                                     />
