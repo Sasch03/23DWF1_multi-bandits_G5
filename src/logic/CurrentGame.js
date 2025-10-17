@@ -147,10 +147,6 @@ export default class CurrentGame {
             case DistributionTyp.GAUSSIAN: {
                 // Generate a mean for each arm.
                 const gaussianMeans = [];
-
-                // Total number of Gaussian values to generate.
-                const numberOfValuesToGenerate = numberOfArms * NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM;
-
                 for (let i = 0; i < numberOfArms; i++) {
                     // Box-Muller for mean sampling.
                     let u = 0;
@@ -167,12 +163,13 @@ export default class CurrentGame {
                 console.log(`Gaussian means:=${gaussianMeans}, StdDev=${GAUSSIAN_STD_DEV}`);
 
                 // For each arm, draw "numberOfTries" samples.
-                for (let i = 0; i < numberOfValuesToGenerate; i++) {
+                for (let i = 0; i < numberOfArms; i++) {
                     const rewardsForArm = [];
+                    const numberOfValuesToGenerate = numberOfTries * NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM;
                     let generated = 0;
 
                     // Use Box-Muller to generate pairs of normals.
-                    while (generated < numberOfTries) {
+                    while (generated < numberOfValuesToGenerate) {
                         let u = 0;
                         let v = 0;
                         while (u === 0) u = Math.random();
@@ -182,11 +179,11 @@ export default class CurrentGame {
                         const z1 = mag * Math.cos(2.0 * Math.PI * v);
                         const z2 = mag * Math.sin(2.0 * Math.PI * v);
 
-                        if (generated < numberOfTries) {
+                        if (generated < numberOfValuesToGenerate) {
                             rewardsForArm.push(z1 * GAUSSIAN_STD_DEV + gaussianMeans[i]);
                             generated++;
                         }
-                        if (generated < numberOfTries) {
+                        if (generated < numberOfValuesToGenerate) {
                             rewardsForArm.push(z2 * GAUSSIAN_STD_DEV + gaussianMeans[i]);
                             generated++;
                         }
