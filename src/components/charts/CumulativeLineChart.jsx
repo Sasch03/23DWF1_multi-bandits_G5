@@ -1,11 +1,9 @@
 "use client"
 
 import React, { useState } from "react"
-import { LineChart, Line, XAxis, CartesianGrid, ResponsiveContainer } from "recharts"
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { LineChart, Line, XAxis, CartesianGrid } from "recharts"
+import { ChartContainer, ChartTooltip } from "@/components/ui/chart"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.jsx";
-
-
 
 function makeLineData({ manualRewards = [], greedyRewards = [], epsilonGreedyRewards = [],
                           UpperConfidenceBoundRewards = [], GradientBanditRewards = [] }) {
@@ -52,56 +50,60 @@ export default function CumulativeLineChart({ cumulativeRewards, chosenDistribut
             </CardHeader>
             <CardContent>
                 <ChartContainer config={chartConfig} className="overflow-hidden">
-                    <ResponsiveContainer width="100%">
-                        <LineChart data={makeLineData(cumulativeRewards)}>
-                            <CartesianGrid vertical={false} />
-                            <XAxis dataKey="try" axisLine={false} tickLine={false} />
-                            <ChartTooltip
-                                labelFormatter={() =>
-                                    lang === "de" ? "Belohnungen" :
-                                        "Rewards"
-                                }
-                                content={
-                                    <ChartTooltipContent
-                                        formatter={(value, name) => {
-                                            if (chosenDistribution === "Gaussian") {
-                                                return (
-                                                    <div className="text-muted-foreground flex min-w-[150px] items-center text-xs">
-                                                        {chartConfig[name]?.label || name}
-                                                        <div className="text-foreground ml-auto flex items-baseline gap-0.5 font-mono font-medium tabular-nums">
-                                                            {value.toFixed(2)} €
-                                                        </div>
-                                                    </div>
-                                                )
-                                            }
+                    <LineChart data={makeLineData(cumulativeRewards)}>
+                        <CartesianGrid vertical={false} />
+                        <XAxis dataKey="try" axisLine={false} tickLine={false} />
 
+                        <ChartTooltip
+                            content={({ active, payload, label }) => {
+                                if (!active || !payload?.length) return null;
+
+                                return (
+                                    <div className="rounded-md border bg-background p-2 shadow-sm w-[200px]">
+                                        <div className="font-medium text-sm mb-1">
+                                            {lang === "de" ? "Versuch" : "Attempt"} #{label}
+                                        </div>
+                                        {payload.map((entry) => {
+                                            const name = entry.dataKey;
+                                            const value = entry.value;
+                                            const config = chartConfig[name];
                                             return (
-                                                <div className="text-muted-foreground flex min-w-[100px] items-center text-xs">
-                                                    {chartConfig[name]?.label || name}
+                                                <div
+                                                    key={name}
+                                                    className="text-muted-foreground flex min-w-[150px] items-center text-xs"
+                                                >
+                                                    {config?.label[lang] || name}
                                                     <div className="text-foreground ml-auto flex items-baseline gap-0.5 font-mono font-medium tabular-nums">
-                                                        {value}
+                                                        {chosenDistribution === "Gaussian"
+                                                            ? `${value.toFixed(2)} €`
+                                                            : value}
                                                     </div>
                                                 </div>
-                                            )
-                                        }}
-                                    />
-                                }
+                                            );
+                                        })}
+                                    </div>
+                                );
+                            }}
+                        />
+
+
+
+
+                        {Object.entries(chartConfig).map(([key, cfg]) => (
+                            <Line
+                                key={key}
+                                type="linear"
+                                dataKey={key}
+                                stroke={cfg.color}
+                                strokeWidth={2}
+                                dot={false}
+                                hide={hidden[key] ?? false}
+                                name={cfg.label[lang]}
                             />
-                            {Object.entries(chartConfig).map(([key, cfg]) => (
-                                <Line
-                                    key={key}
-                                    type="linear"
-                                    dataKey={key}
-                                    stroke={cfg.color}
-                                    strokeWidth={2}
-                                    dot={false}
-                                    hide={hidden[key] ?? false}
-                                    name={cfg.label[lang]}
-                                />
-                            ))}
-                        </LineChart>
-                    </ResponsiveContainer>
+                        ))}
+                    </LineChart>
                 </ChartContainer>
+
                 <div className="flex flex-wrap gap-2 mt-2">
                     {Object.entries(chartConfig).map(([key, cfg]) => (
                         <button
@@ -115,7 +117,6 @@ export default function CumulativeLineChart({ cumulativeRewards, chosenDistribut
                         </button>
                     ))}
                 </div>
-
             </CardContent>
         </Card>
     )
