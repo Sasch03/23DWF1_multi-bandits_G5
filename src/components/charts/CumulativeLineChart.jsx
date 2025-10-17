@@ -5,13 +5,7 @@ import { LineChart, Line, XAxis, CartesianGrid, ResponsiveContainer } from "rech
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.jsx";
 
-const chartConfig = {
-    manual: { label: "Manual", color: "var(--chart-1)" },
-    greedy: { label: "Greedy", color: "var(--chart-2)" },
-    epsilonGreedy: { label: "Epsilon-Greedy", color: "var(--chart-3)" },
-    upperConfidenceBound: { label: "UCB", color: "var(--chart-4)" },
-    gradientBandit: { label: "Gradient Bandit", color: "var(--chart-5)" },
-};
+
 
 function makeLineData({ manualRewards = [], greedyRewards = [], epsilonGreedyRewards = [],
                           UpperConfidenceBoundRewards = [], GradientBanditRewards = [] }) {
@@ -35,12 +29,19 @@ function makeLineData({ manualRewards = [], greedyRewards = [], epsilonGreedyRew
 
 export default function CumulativeLineChart({ cumulativeRewards, chosenDistribution, lang }) {
 
+    const chartConfig = {
+        manual: { label: { de: "Du", en: "You" }, color: "var(--chart-1)" },
+        greedy: { label: { de: "Greedy", en: "Greedy" }, color: "var(--chart-2)" },
+        epsilonGreedy: { label: { de: "Epsilon-Greedy", en: "Epsilon-Greedy" }, color: "var(--chart-3)" },
+        upperConfidenceBound: { label: { de: "UCB", en: "UCB" }, color: "var(--chart-4)" },
+        gradientBandit: { label: { de: "Gradient Bandit", en: "Gradient Bandit" }, color: "var(--chart-5)" },
+    };
+
     const [hidden, setHidden] = useState({})
 
     const handleLegendClick = (key) => {
         setHidden((prev) => ({ ...prev, [key]: !prev[key] }))
     }
-
 
     return (
         <Card className="flex-1 bg-muted/30">
@@ -95,7 +96,7 @@ export default function CumulativeLineChart({ cumulativeRewards, chosenDistribut
                                     strokeWidth={2}
                                     dot={false}
                                     hide={hidden[key] ?? false}
-                                    name={cfg.label}
+                                    name={cfg.label[lang]}
                                 />
                             ))}
                         </LineChart>
@@ -110,7 +111,7 @@ export default function CumulativeLineChart({ cumulativeRewards, chosenDistribut
                             style={{ opacity: hidden[key] ? 0.3 : 1 }}
                         >
                             <span className="w-3 h-3 rounded-full" style={{ backgroundColor: cfg.color }} />
-                            <span className="text-xs">{cfg.label}</span>
+                            <span className="text-xs">{cfg.label[lang]}</span>
                         </button>
                     ))}
                 </div>
