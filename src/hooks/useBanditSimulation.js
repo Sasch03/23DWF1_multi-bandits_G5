@@ -32,7 +32,7 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
     const [rewardTable, setRewardTable] = useState([]);
     const [game, setGame] = useState(null);
     const [type, setType] = useState(DistributionTyp.BERNOULLI);
-    const [winner, setWinner] = useState(null); // <--- neu
+    const [winner, setWinner] = useState(null);
     const gameRef = useRef(null);
     const historyRef = useRef(new StrategyRewardHistory());
     const manualObservedRewardsRef = useRef([]);
