@@ -37,15 +37,24 @@ import {
  *
  * @returns {JSX.Element} The rendered BanditResults component.
  */
-export default function BanditResults({ running, iterations, totalPulls, totalReward, logs, type , lang}) {
+export default function BanditResults({
+                                          running,
+                                          iterations,
+                                          totalPulls,
+                                          totalReward,
+                                          logs,
+                                          type,
+                                          lang
+                                      }) {
+
     const [open, setOpen] = useState(false);
 
     const remainingPulls = running ? Math.max(0, iterations - totalPulls) : 0;
 
-    const renderLogRow = (log) => {
+    const renderLogTableRow = (log) => {
         const match = log.match(/Timestep: (\d+), Arm: (\d+), Reward: ([\d.-]+)/);
         if (!match) return null;
-        const [, ts, arm, reward] = match;
+        const [, timestep, arm, reward] = match;
         const rewardValue = parseFloat(reward);
 
         let rewardDisplay;
@@ -60,24 +69,24 @@ export default function BanditResults({ running, iterations, totalPulls, totalRe
                         ? "text-red-500"
                         : "text-muted-foreground";
         } else {
-            rewardDisplay = rewardValue === 1
-                ? (lang === "de" ? "Erfolg" : "Success")
-                : (lang === "de" ? "Fehlschlag" : "Fail");
-            rewardColor =
+            rewardDisplay =
                 rewardValue === 1
-                    ? "text-emerald-500"
-                    : "text-red-500";
+                    ? (lang === "de" ? "Erfolg" : "Success")
+                    : (lang === "de" ? "Fehlschlag" : "Fail");
+            rewardColor = rewardValue === 1 ? "text-emerald-500" : "text-red-500";
         }
 
         return (
-            <TableRow key={ts}>
+            <TableRow key={timestep}>
                 <TableCell className="text-left">
                     <Badge variant="secondary" className="font-mono">
-                        #{ts}
+                        #{timestep}
                     </Badge>
                 </TableCell>
                 <TableCell className="text-left">
-                    {lang === "de" ? "Kampagne #" : "Campaign #"}{arm}</TableCell>
+                    {lang === "de" ? "Kampagne #" : "Campaign #"}
+                    {arm}
+                </TableCell>
                 <TableCell
                     className={`text-right font-mono font-semibold ${rewardColor}`}
                 >
@@ -87,19 +96,24 @@ export default function BanditResults({ running, iterations, totalPulls, totalRe
         );
     };
 
-
     return (
         <Card className="mt-auto w-full bg-muted/30">
             <CardHeader></CardHeader>
             <CardContent className="flex flex-col gap-6">
+
                 {/* Top Stats */}
                 <TooltipProvider delayDuration={100}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <Tooltip>
                                 <TooltipTrigger asChild>
-                                    <Button variant="link" className="text-sm hover:text-foreground/80 text-muted-foreground">
-                                        {lang === "de" ? "Verbleibende Versuche" : "Remaining Attempts"}
+                                    <Button
+                                        variant="link"
+                                        className="text-sm hover:text-foreground/80 text-muted-foreground"
+                                    >
+                                        {lang === "de"
+                                            ? "Verbleibende Versuche"
+                                            : "Remaining Attempts"}
                                     </Button>
                                 </TooltipTrigger>
                                 <TooltipContent>
@@ -124,7 +138,10 @@ export default function BanditResults({ running, iterations, totalPulls, totalRe
                         <div>
                             <Tooltip>
                                 <TooltipTrigger asChild>
-                                    <Button variant="link" className="text-sm hover:text-foreground/80 text-muted-foreground">
+                                    <Button
+                                        variant="link"
+                                        className="text-sm hover:text-foreground/80 text-muted-foreground"
+                                    >
                                         {lang === "de" ? "Gesamtgewinn" : "Total Reward"}
                                     </Button>
                                 </TooltipTrigger>
@@ -170,16 +187,19 @@ export default function BanditResults({ running, iterations, totalPulls, totalRe
                         >
                             {open ? (
                                 <>
-                                    {lang === "de" ? "Weniger anzeigen" : "Show less"} <ChevronUp size={16} />
+                                    {lang === "de" ? "Weniger anzeigen" : "Show less"}{" "}
+                                    <ChevronUp size={16} />
                                 </>
                             ) : (
                                 <>
-                                    {lang === "de" ? "Mehr anzeigen" : "Show more"} <ChevronDown size={16} />
+                                    {lang === "de" ? "Mehr anzeigen" : "Show more"}{" "}
+                                    <ChevronDown size={16} />
                                 </>
                             )}
                         </Button>
                     </div>
 
+                    {/* Full log table */}
                     <Collapsible open={open}>
                         <div className="overflow-hidden transition-all duration-300">
                             <Table className="w-full">
@@ -199,7 +219,10 @@ export default function BanditResults({ running, iterations, totalPulls, totalRe
                                 <TableBody>
                                     {logs.length === 0 ? (
                                         <TableRow>
-                                            <TableCell colSpan={3} className="text-center text-muted-foreground py-3">
+                                            <TableCell
+                                                colSpan={3}
+                                                className="text-center text-muted-foreground py-3"
+                                            >
                                                 {lang === "de"
                                                     ? "Noch keine Phishing-Kampagnenaktivität"
                                                     : "No phishing campaign activity yet"}
@@ -207,15 +230,17 @@ export default function BanditResults({ running, iterations, totalPulls, totalRe
                                         </TableRow>
                                     ) : (
                                         <>
-                                            {renderLogRow(logs[0])}
-                                            {open && logs.slice(1).map((log) => renderLogRow(log))}
+                                            {renderLogTableRow(logs[0])}
+                                            {open && logs.slice(1).map((log) => renderLogTableRow(log))}
                                         </>
                                     )}
                                 </TableBody>
                             </Table>
                         </div>
                     </Collapsible>
+
                 </div>
+
             </CardContent>
         </Card>
     );
