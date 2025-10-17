@@ -180,36 +180,34 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
         // algo simulations for history tracking
         const table = newGame.tableOfRewards;
         if (newGame.chosenDistribution === "Gaussian") {
-            for (let t = 0; t < iterations * NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM; t++) {
+            for (let t = 0; t < iterations; t++) {
+                // === Greedy ===
                 const gArm = greedyAlgo.selectArm();
-                let gReward;
                 for (let i = 0; i < NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM; i++) {
-                    gReward = table[gArm][t + i];
-                    greedyAlgo.update({arm: gArm, observedReward: gReward});
+                    const gReward = table[gArm][t * NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM + i];
+                    greedyAlgo.update({ arm: gArm, observedReward: gReward });
                 }
 
+                // === Epsilon-Greedy ===
                 const eArm = epsAlgo.selectArm();
-                let eReward;
                 for (let i = 0; i < NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM; i++) {
-                    eReward = table[eArm][t + 1];
-                    epsAlgo.update({arm: eArm, observedReward: eReward});
+                    const eReward = table[eArm][t * NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM + i];
+                    epsAlgo.update({ arm: eArm, observedReward: eReward });
                 }
 
+                // === Gradient Bandit ===
                 const gbArm = gbAlgo.selectArm();
-                let gbReward;
                 for (let i = 0; i < NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM; i++) {
-                    gbReward = table[gbArm][t + 1];
-                    gbAlgo.update({arm: gbArm, observedReward: gbReward});
+                    const gbReward = table[gbArm][t * NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM + i];
+                    gbAlgo.update({ arm: gbArm, observedReward: gbReward });
                 }
 
+                // === UCB ===
                 const ucbArm = ucbAlgo.selectArm();
-                let ucbReward;
                 for (let i = 0; i < NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM; i++) {
-                    ucbReward = table[ucbArm][t + 1];
-                    ucbAlgo.update({arm: ucbArm, observedReward: ucbReward});
+                    const ucbReward = table[ucbArm][t * NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM + i];
+                    ucbAlgo.update({ arm: ucbArm, observedReward: ucbReward });
                 }
-
-                t += NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM - 1;
             }
         }
         else if (newGame.chosenDistribution === "Bernoulli") {
@@ -262,23 +260,48 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
         if (!running || !gameRef.current || rewardTable.length === 0) return;
         if (totalPulls >= iterations || arms[idx].pulls >= iterations) return;
 
-        const reward = rewardTable[idx][arms[idx].pulls];
-        const timestep = safeUpdateAlgorithm(algorithmsRef.current.manual, idx, reward) || totalPulls + 1;
+        const isGaussian = gameRef.current.chosenDistribution === "Gaussian";
 
-        // --- State Updates ---
-        updateArm(idx, reward);
-        setTotalReward(prev => prev + reward);
-        setTotalPulls(prev => prev + 1);
-        addLog(timestep, idx, reward);
+        if (isGaussian) {
+            let totalReward = 0;
+            const startIndex = arms[idx].pulls * NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM;
 
-        // save observed reward for history tracking
-        manualObservedRewardsRef.current.push(reward);
+            for (let i = 0; i < NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM; i++) {
+                const rewardIndex = startIndex + i;
+                const reward = rewardTable[idx][rewardIndex];
 
-        // sync history
-        historyRef.current.addReward(historyRef.current.manualRewards, {
-            observedRewards: manualObservedRewardsRef.current
-        });
+                totalReward += reward;
+                safeUpdateAlgorithm(algorithmsRef.current.manual, idx, reward);
+                manualObservedRewardsRef.current.push(reward);
+            }
+
+            const avgReward = totalReward / NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM;
+
+            updateArm(idx, avgReward);
+            setTotalReward(prev => prev + totalReward); // sum = total impact
+            setTotalPulls(prev => prev + 1); // one "click" counts as one pull
+            addLog(totalPulls + 1, idx, avgReward);
+
+            historyRef.current.addReward(historyRef.current.manualRewards, {
+                observedRewards: manualObservedRewardsRef.current
+            });
+        }
+        else {
+            const reward = rewardTable[idx][arms[idx].pulls];
+            const timestep = safeUpdateAlgorithm(algorithmsRef.current.manual, idx, reward) || totalPulls + 1;
+
+            updateArm(idx, reward);
+            setTotalReward(prev => prev + reward);
+            setTotalPulls(prev => prev + 1);
+            addLog(timestep, idx, reward);
+
+            manualObservedRewardsRef.current.push(reward);
+            historyRef.current.addReward(historyRef.current.manualRewards, {
+                observedRewards: manualObservedRewardsRef.current
+            });
+        }
     };
+
 
 
     /**
