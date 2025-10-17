@@ -1,5 +1,3 @@
-// Provides exploration coefficient `c` for the UCB1 algorithm.
-// Currently constant, but can be extended (e.g., adaptive or time-dependent c).
 import { UCB_C } from "@/constants.js";
 
 /**
