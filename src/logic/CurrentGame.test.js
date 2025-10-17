@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { DistributionTyp } from '@/logic/enumeration/DistributionTyp.js';
 import { AlgorithmTyp } from '@/logic/enumeration/AlgorithmTyp.js';
+import { NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM } from "@/constants.js";
 import CurrentGame from './CurrentGame.js';
 
 describe('CurrentGame (updated tests for Gaussian generation)', () => {
@@ -82,7 +83,8 @@ describe('CurrentGame (updated tests for Gaussian generation)', () => {
 
         // table shape
         expect(game.tableOfRewards.length).toBe(arms);
-        expect(game.tableOfRewards[0].length).toBe(tries);
+        // each arm has numberOfTries * NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM rewards
+        expect(game.tableOfRewards[0].length).toBe(tries * NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM);
 
         // gaussianMeans must exist, have correct length and be finite numbers
         expect(Array.isArray(game.gaussianMeans)).toBe(true);
@@ -97,7 +99,6 @@ describe('CurrentGame (updated tests for Gaussian generation)', () => {
         const flat = game.tableOfRewards.flat();
         expect(flat.every(v => typeof v === 'number' && Number.isFinite(v))).toBe(true);
     });
-
 
     it('throws error if properties are missing before table creation', () => {
         expect(() => game.createTable()).toThrow();
