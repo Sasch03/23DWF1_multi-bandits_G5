@@ -44,7 +44,7 @@ export default class ValueBasedAlgorithm extends Algorithm {
      * @param {number[]} expectedRewards - New expected rewards array, length = numberOfArms.
      */
     setExpectedRewards(expectedRewards) {
-        if (!Array.isArray(expectedRewards) || expectedRewards.length !== this.numberOfArms) throw new Error('bad expectedRewards');
+        if (!Array.isArray(expectedRewards) || expectedRewards.length !== this.numberOfArms) throw new Error('Expected an array of numbers with length equal to numberOfArms.');
         this.expectedRewards = expectedRewards.map(Number);
     }
 
