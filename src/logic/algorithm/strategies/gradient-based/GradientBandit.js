@@ -64,7 +64,6 @@ export default class GradientBandit extends Algorithm {
         const exps = pref.map(p => Math.exp(p - max));
         const sum = exps.reduce((s, v) => s + v, 0);
         const probs = exps.map(e => e / sum);
-        console.log(`GrandientBandit: Softmax probabilities: ${probs.map(p => p.toFixed(3)).join(", ")}`);
         return probs;
     }
 
@@ -79,12 +78,10 @@ export default class GradientBandit extends Algorithm {
         for (let i = 0; i < probs.length; i++) {
             cum += probs[i];
             if (r < cum) {
-                console.log(`GradientBandit: Selected arm: ${i} (random=${r.toFixed(3)})`);
                 return i;
             }
         }
         const lastArm = this.numberOfArms - 1;
-        console.log(`GradientBandit: Edge case - returning last arm ${lastArm}`);
         return lastArm;
     }
 
@@ -103,8 +100,6 @@ export default class GradientBandit extends Algorithm {
         const baseline = this.averageReward;
         const diff = observedReward - baseline;
 
-        console.log(`GradientBandit: Updating preferences for arm ${arm} with reward ${observedReward.toFixed(3)}, baseline=${baseline.toFixed(3)}, diff=${diff.toFixed(3)}`);
-
         // Update preferences: chosen arm increases, others decrease
         for (let a = 0; a < this.numberOfArms; a++) {
             if (a === arm) {
@@ -114,8 +109,6 @@ export default class GradientBandit extends Algorithm {
             }
         }
 
-        console.log(`GradientBandit: Updated preferences: ${this.preferences.map(p => p.toFixed(3)).join(", ")}`);
-
         // Store selection and reward via base class (advances step, increments numberOfPulls)
         super.update({ arm, observedReward });
 
@@ -123,7 +116,6 @@ export default class GradientBandit extends Algorithm {
         // so step is now the new number of observed rewards) guard against divide-by-zero should be unnecessary
         // because super.update() will have advanced step to >= 1
         this.averageReward += (observedReward - this.averageReward) / this.step;
-        console.log(`GradientBandit: New average reward - ${this.averageReward.toFixed(3)}, step=${this.step}`);
     }
 
     /**
@@ -133,7 +125,7 @@ export default class GradientBandit extends Algorithm {
         super.reset();
         this.preferences.fill(0);
         this.averageReward = 0;
-        console.log(`GradientBandit: Reset algorithm state`);
+        console.log("GradientBandit: Reset algorithm state");
     }
 
     /**
@@ -143,7 +135,6 @@ export default class GradientBandit extends Algorithm {
      */
     getActionProbabilities() {
         const probs = this.#softmax(this.preferences);
-        console.log(`:GradientBandit: getActionProbabilities - ${probs.map(p => p.toFixed(3)).join(", ")}`);
         return probs;
     }
 
@@ -153,7 +144,6 @@ export default class GradientBandit extends Algorithm {
      * @returns {number[]} Copy of preferences array.
      */
     getPreferences() {
-        console.log(`GradientBandit: getPreferences - ${this.preferences.map(p => p.toFixed(3)).join(", ")}`);
         return [...this.preferences];
     }
 }
