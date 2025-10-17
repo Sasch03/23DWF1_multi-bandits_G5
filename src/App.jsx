@@ -10,6 +10,15 @@ import BanditResults from './components/BanditResults.jsx';
 import { useBanditGame } from "./hooks/useBanditSimulation.js";
 import BanditResultsChart from "@/components/BanditResultsChart.jsx";
 
+/**
+ * Main App component for the Multi-Armed Bandit Simulation.
+ *
+ * Handles layout, configuration, playground, and result charts.
+ *
+ * @component
+ *
+ * @returns {JSX.Element} The rendered App component.
+ */
 export default function App() {
 
     const {

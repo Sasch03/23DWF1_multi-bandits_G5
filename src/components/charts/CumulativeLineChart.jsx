@@ -5,10 +5,34 @@ import { LineChart, Line, XAxis, CartesianGrid } from "recharts"
 import { ChartContainer, ChartTooltip } from "@/components/ui/chart"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.jsx";
 
-function makeLineData({ manualRewards = [], greedyRewards = [], epsilonGreedyRewards = [],
-                          UpperConfidenceBoundRewards = [], GradientBanditRewards = [] }) {
-    const data = [{ try: 0, manual: 0, greedy: 0, epsilonGreedy: 0, upperConfidenceBound: 0, gradientBandit: 0 }];
-    const maxLength = Math.max(manualRewards.length, greedyRewards.length, epsilonGreedyRewards.length, UpperConfidenceBoundRewards.length, GradientBanditRewards.length);
+/**
+ * Converts raw cumulative reward arrays into chart-ready data.
+ *
+ * @param {Object} rewards - Object containing reward arrays for each algorithm.
+ * @param {number[]} [rewards.manualRewards] - Rewards from manual actions
+ * @param {number[]} [rewards.greedyRewards] - Rewards from greedy algorithm
+ * @param {number[]} [rewards.epsilonGreedyRewards] - Rewards from epsilon-greedy algorithm
+ * @param {number[]} [rewards.UpperConfidenceBoundRewards] - Rewards from UCB algorithm
+ * @param {number[]} [rewards.GradientBanditRewards] - Rewards from gradient bandit algorithm
+ * @returns {Array<Object>} Array of objects with cumulative rewards per try
+ */
+function makeLineData({
+                          manualRewards = [],
+                          greedyRewards = [],
+                          epsilonGreedyRewards = [],
+                          UpperConfidenceBoundRewards = [],
+                          GradientBanditRewards = []
+                      }) {
+
+    const data =
+        [{ try: 0, manual: 0, greedy: 0, epsilonGreedy: 0, upperConfidenceBound: 0, gradientBandit: 0 }];
+
+    const maxLength = Math.max(
+        manualRewards.length,
+        greedyRewards.length,
+        epsilonGreedyRewards.length,
+        UpperConfidenceBoundRewards.length,
+        GradientBanditRewards.length);
 
     for (let i = 0; i < maxLength; i++) {
         const entry = { try: i + 1 };
@@ -25,15 +49,35 @@ function makeLineData({ manualRewards = [], greedyRewards = [], epsilonGreedyRew
     return data;
 }
 
-export default function CumulativeLineChart({ cumulativeRewards, chosenDistribution, lang }) {
+const chartConfig = {
+    manual: { label: { de: "Du", en: "You" }, color: "var(--chart-1)" },
+    greedy: { label: { de: "Greedy", en: "Greedy" }, color: "var(--chart-2)" },
+    epsilonGreedy: { label: { de: "Epsilon-Greedy", en: "Epsilon-Greedy" }, color: "var(--chart-3)" },
+    upperConfidenceBound: { label: { de: "UCB", en: "UCB" }, color: "var(--chart-4)" },
+    gradientBandit: { label: { de: "Gradient Bandit", en: "Gradient Bandit" }, color: "var(--chart-5)" },
+};
 
-    const chartConfig = {
-        manual: { label: { de: "Du", en: "You" }, color: "var(--chart-1)" },
-        greedy: { label: { de: "Greedy", en: "Greedy" }, color: "var(--chart-2)" },
-        epsilonGreedy: { label: { de: "Epsilon-Greedy", en: "Epsilon-Greedy" }, color: "var(--chart-3)" },
-        upperConfidenceBound: { label: { de: "UCB", en: "UCB" }, color: "var(--chart-4)" },
-        gradientBandit: { label: { de: "Gradient Bandit", en: "Gradient Bandit" }, color: "var(--chart-5)" },
-    };
+/**
+ * CumulativeLineChart Component
+ *
+ * Renders a line chart showing cumulative rewards for multiple algorithms over time.
+ * Supports toggling individual algorithm lines on and off.
+ *
+ * @component
+ *
+ * @param {object} props
+ * @param {Object} props.cumulativeRewards - Object containing reward arrays per algorithm
+ * @param {"Bernoulli"|"Gaussian"} props.chosenDistribution - Type of reward distribution
+ * @param {"de"|"en"} props.lang - Language code for labels
+ * @returns {JSX.Element} Rendered cumulative rewards chart
+ */
+export default function CumulativeLineChart({
+                                                cumulativeRewards,
+                                                chosenDistribution,
+                                                lang
+                                            }) {
+
+
 
     const [hidden, setHidden] = useState({})
 

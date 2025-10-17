@@ -10,16 +10,19 @@ import StrategyRewardHistory from "@/logic/StrategyRewardHistory.js";
 import { DEFAULT_ARMS, DEFAULT_ITERATIONS, ALPHA_DEFAULT, NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM } from "@/constants.js";
 
 /**
- * Custom hook to manage a multi-armed bandit simulation.
- * Handles game state, arm pulls, total reward, logs, and algorithm updates.
+ * Custom React hook to manage a multi-armed bandit simulation.
+ *
+ * Provides state management, algorithm initialization, arm pulls,
+ * reward tracking, logging, and winner calculation.
  *
  * @param {number} [initialArms=DEFAULT_ARMS] - Initial number of arms in the bandit.
  * @param {number} [initialIterations=DEFAULT_ITERATIONS] - Maximum number of iterations/pulls.
- * @returns {object} - Returns the current state and actions to control the simulation.
+ *
+ * @returns {object} Simulation state and control functions.
  */
 export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DEFAULT_ITERATIONS) {
 
-    // States
+    // ================= States =================
     const [arms, setArms] = useState(Array.from({ length: initialArms }, (_, i) =>
         ({ id: i, pulls: 0, lastReward: 0 })));
     const [iterations, setIterations] = useState(initialIterations);
@@ -34,13 +37,15 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
     const [winner, setWinner] = useState(null);
     const [lang, setLang] = useState("de");
 
-    // Refs
+
+    // ================= Refs =================
     const gameRef = useRef(null);
     const historyRef = useRef(new StrategyRewardHistory());
     const manualObservedRewardsRef = useRef([]);
     const algorithmsRef = useRef({});
 
-    // Effects
+
+    // ================= Effects =================
     useEffect(() => {
         if (totalPulls >= iterations && running) setShowPlot(true);
     }, [totalPulls, iterations, running]);
@@ -50,8 +55,16 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
         updateWinner();
     }, [totalPulls, running]);
 
+
     // ================= Helper Functions =================
 
+    /**
+     * Safely update an algorithm instance with a new observed reward.
+     * @param {object} algo - Algorithm instance with update/getStep methods.
+     * @param {number} armIndex - Index of pulled arm.
+     * @param {number} reward - Observed reward for the arm.
+     * @returns {object|null} Step info or error object.
+     */
     const safeUpdateAlgorithm = (algo, armIndex, reward) => {
         if (!algo || typeof algo.update !== "function") return null;
         try {
@@ -63,17 +76,35 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
         }
     };
 
+    /**
+     * Adds a log entry for a timestep and reward.
+     *
+     * @param {number} timestep - Current timestep / pull count.
+     * @param {number} armIndex - Index of the arm that was pulled.
+     * @param {number} reward - Observed reward for that arm.
+     */
     const addLog = (timestep, armIndex, reward) => {
         const roundedReward = game?.chosenDistribution === "Gaussian" ? reward.toFixed(2) : reward;
         setLogs(prev => [`Timestep: ${timestep}, Arm: ${armIndex + 1}, Reward: ${roundedReward}`, ...prev]);
     };
 
+    /**
+     * Updates the state of a single arm after a pull.
+     *
+     * @param {number} index - Index of the arm to update.
+     * @param {number} reward - Observed reward to record.
+     */
     const updateArm = (index, reward) => {
         setArms(prev => prev.map((a, i) =>
             i === index ? { ...a, pulls: a.pulls + 1, lastReward: reward } : a
         ));
     };
 
+    /**
+     * Records a reward from manual pulls into the history.
+     *
+     * @param {number} reward - Reward obtained manually.
+     */
     const recordManualReward = (reward) => {
         manualObservedRewardsRef.current.push(reward);
         historyRef.current.addReward(
@@ -81,6 +112,9 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
         );
     };
 
+    /**
+     * Calculates which algorithm(s) currently have the highest cumulative reward.
+     */
     const updateWinner = () => {
         const cumulativeRewards = {
             Manual: manualObservedRewardsRef.current.reduce((a, b) => a + b, 0),
@@ -100,6 +134,9 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
 
     // ================= Game Control Functions =================
 
+    /**
+     * Initializes all algorithm instances for the current game.
+     */
     const initializeAlgorithms = () => {
         const manualAlgo = new ManualAlgorithm({ numberOfArms: arms.length, numberOfTries: iterations });
         manualAlgo.reset();
@@ -119,6 +156,11 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
         algorithmsRef.current = { manual: manualAlgo, greedy: greedyAlgo, epsilon: epsAlgo, gradientBandit: gradientAlgo, ucb: ucbAlgo };
     };
 
+    /**
+     * Simulates a full run of each algorithm based on the game table.
+     *
+     * @param {CurrentGame} gameInstance - The current game object with reward table.
+     */
     const simulateAlgorithmHistory = (gameInstance) => {
         const table = gameInstance.tableOfRewards;
 
@@ -149,6 +191,9 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
         historyRef.current.addReward(historyRef.current.UpperConfidenceBoundRewards, { observedRewards: algorithmsRef.current.ucb.getObservedRewards() });
     };
 
+    /**
+     * Resets the state of arms, pulls, rewards, and logs.
+     */
     const resetState = () => {
         setArms(prev => prev.map(a => ({ ...a, pulls: 0, lastReward: 0 })));
         setTotalPulls(0);
@@ -184,8 +229,7 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
     };
 
     /**
-     * Handle a single pull of a given arm.
-     * Updates arm state, total reward, total pulls, and logs.
+     * Handles a pull of a Gaussian-distributed arm.
      *
      * @param {number} armIndex - Index of the arm to pull.
      */
@@ -207,6 +251,11 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
         addLog(totalPulls + 1, armIndex, totalRewardForArm);
     };
 
+    /**
+     * Handles a pull of a Bernoulli-distributed arm.
+     *
+     * @param {number} armIndex - Index of the arm to pull.
+     */
     const handleBernoulliPull = (armIndex) => {
         const reward = rewardTable[armIndex][arms[armIndex].pulls];
         const timestep = safeUpdateAlgorithm(algorithmsRef.current.manual, armIndex, reward) || totalPulls + 1;
@@ -218,6 +267,11 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
         recordManualReward(reward);
     };
 
+    /**
+     * Handles a pull depending on the current distribution type.
+     *
+     * @param {number} armIndex - Index of the arm to pull.
+     */
     const handlePull = (armIndex) => {
         if (!running || !gameRef.current || rewardTable.length === 0) return;
         if (totalPulls >= iterations || arms[armIndex].pulls >= iterations) return;
@@ -229,6 +283,11 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
         }
     };
 
+    /**
+     * Sets the number of arms dynamically.
+     *
+     * @param {number} count - New number of arms.
+     */
     const setArmCount = (count) => {
         const current = arms.length;
         const newArms = count > current
@@ -237,6 +296,9 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
         setArms(newArms);
     };
 
+    /**
+     * Resets the entire simulation including algorithms, rewards, and logs.
+     */
     const resetAll = () => {
         if (algorithmsRef.current.manual?.reset) algorithmsRef.current.manual.reset();
         setArms(Array.from({ length: initialArms }, (_, i) => ({ id: i, pulls: 0, lastReward: 0 })));
@@ -255,6 +317,11 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
         console.log("Simulation stopped and reset.");
     };
 
+    /**
+     * Returns cumulative rewards of all algorithms.
+     *
+     * @returns {object} Object containing arrays of cumulative rewards per algorithm.
+     */
     const getCumulativeRewards = () => ({
         manualRewards: [...historyRef.current.manualRewards],
         greedyRewards: [...historyRef.current.greedyRewards],

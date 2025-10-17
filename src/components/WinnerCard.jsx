@@ -1,5 +1,19 @@
 import {Card, CardHeader, CardTitle} from "@/components/ui/card.jsx";
 
+/**
+ * WinnerCard Component
+ *
+ * Displays the winner(s) of the simulation.
+ * If the user (manual) won, it shows a congratulatory message.
+ * Otherwise, it lists the algorithmic winner(s) in a readable format.
+ *
+ * @component
+ *
+ * @param {object} props
+ * @param {"de"|"en"} props.lang - Language code for displayed text
+ * @param {string|string[]} winner - Name or array of names of the winner(s)
+ * @returns {JSX.Element} Rendered card showing the winner(s)
+ */
 export default function WinnerCard({  lang, winner }) {
 
     const winnerNamesMap = {

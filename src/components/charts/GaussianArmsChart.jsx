@@ -14,12 +14,29 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { GAUSSIAN_STD_DEV } from "@/constants"
 
+/**
+ * Computes the value of a Gaussian probability density function at x.
+ *
+ * @param {number} x - The point to evaluate
+ * @param {number} mean - The mean (μ) of the Gaussian
+ * @param {number} sd - The standard deviation (σ) of the Gaussian
+ * @returns {number} The probability density at x
+ */
 function gaussianPDF(x, mean, sd) {
     const a = 1 / (sd * Math.sqrt(2 * Math.PI))
     const diff = (x - mean) / sd
     return a * Math.exp(-0.5 * diff * diff)
 }
 
+/**
+ * Generates chart-ready data for multiple Gaussian arms.
+ *
+ * @param {number[]} means - Array of mean values for each arm
+ * @param {number} [sd=50] - Standard deviation for the Gaussian curves
+ * @param {number} [points=200] - Number of points to sample per curve
+ * @param {boolean} [normalize=true] - Whether to normalize values so max = 1
+ * @returns {{ data: Array<Object>, keys: string[] }} Object containing the line data and keys for each arm
+ */
 function makeGaussianLineData(means = [], sd = 50, points = 200, normalize = true) {
     if (!means || means.length === 0) return { data: [], keys: [] }
 
@@ -55,6 +72,12 @@ function makeGaussianLineData(means = [], sd = 50, points = 200, normalize = tru
     return { data, keys }
 }
 
+/**
+ * Picks a color from a predefined palette based on index.
+ *
+ * @param {number} i - Index of the color
+ * @returns {string} CSS color string
+ */
 function pickColor(i) {
     const palette = [
         "var(--chart-1)",
@@ -66,7 +89,30 @@ function pickColor(i) {
     return palette[i % palette.length]
 }
 
-export default function GaussianArmsChart({ game = {}, points = 300, normalize = true, sd = GAUSSIAN_STD_DEV, lang }) {
+/**
+ * GaussianArmsChart Component
+ *
+ * Displays a line chart of Gaussian arms for a multi-armed bandit game.
+ * Shows relative probability density curves for each arm and allows hiding/showing lines via a legend.
+ *
+ * @component
+ *
+ * @param {Object} props
+ * @param {Object} [props.game={}] - Game object containing Gaussian arm means
+ * @param {number} [props.points=300] - Number of points to sample per curve
+ * @param {boolean} [props.normalize=true] - Whether to normalize curves
+ * @param {number} [props.sd=GAUSSIAN_STD_DEV] - Standard deviation for the curves
+ * @param {"de"|"en"} props.lang - Language code for labels
+ * @returns {JSX.Element} Rendered Gaussian arms chart
+ */
+export default function GaussianArmsChart({
+                                              game = {},
+                                              points = 300,
+                                              normalize = true,
+                                              sd = GAUSSIAN_STD_DEV,
+                                              lang
+                                          }) {
+
     const means = game?.gaussianMeans ?? []
     const { data, keys } = makeGaussianLineData(means, sd, points, normalize)
 

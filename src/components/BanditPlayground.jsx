@@ -3,15 +3,21 @@ import React from "react";
 /**
  * BanditPlayground Component
  *
- * Renders a grid of buttons representing each arm of a multi-armed bandit.
- * Users can "pull" an arm by clicking a button, triggering the `onPull` callback.
+ * This component renders a responsive grid of buttons representing each arm (campaign)
+ * in the multi-armed bandit simulation. Users can "pull" an arm by clicking
+ * its button, which triggers the `onPull` callback with the arm's ID.
+ *
+ * Each button displays the campaign number and the number of pulls it has received.
+ * Buttons are disabled when the `disabled` prop is true, and the UI adapts accordingly.
  *
  * @component
- * @param {Object} props - The component props.
- * @param {Array<{id: number, pulls: number}>} props.arms - Array of arms with unique IDs and pull counts.
- * @param {function} props.onPull - Callback function called with the ID of the arm that is pulled.
- * @param {boolean} props.disabled - If true, disables all arm buttons.
- * @returns {JSX.Element} The rendered grid of bandit arms.
+ *
+ * @param {object} props
+ * @param {Array<{id: number, pulls: number}>} props.arms - Array of arms, each with a unique `id` and current `pulls` count.
+ * @param {function(number): void} props.onPull - Callback function called with the ID of the arm when a button is clicked.
+ * @param {boolean} props.disabled - Disables all arm buttons when true.
+ * @param {"en"|"de"} props.lang - Language code to determine button labels.
+ * @returns {JSX.Element} A grid of buttons representing the bandit arms.
  */
 export default function BanditPlayground({ arms, onPull, disabled, lang }) {
     return (
