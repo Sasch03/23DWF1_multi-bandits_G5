@@ -7,7 +7,8 @@ import Algorithm from "@/logic/algorithm/Algorithm.js";
  */
 export default class ManualAlgorithm extends Algorithm {
     /**
-     * @private @type {?number} arm chosen manually for next step.
+     * Arm chosen manually for next step.
+     * @type {?number}
      */
     #nextArm = null;
 
