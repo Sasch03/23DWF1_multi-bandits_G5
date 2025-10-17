@@ -67,7 +67,6 @@ describe("Greedy with generated tables", () => {
 
         logTable(game.tableOfRewards);
 
-        // --- Option 1: slice the table so it matches k × T ---
         const tableForRun = game.tableOfRewards.map(rewards => rewards.slice(0, T));
 
         const out = runOnTable({ table: tableForRun, policy: greedy });
