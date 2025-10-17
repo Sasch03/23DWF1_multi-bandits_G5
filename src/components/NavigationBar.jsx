@@ -18,11 +18,11 @@ import { ArrowUpRightIcon } from "lucide-react";
  * @component
  *
  * @param {object} props
- * @param {"Bernoulli"|"Gaussian"} props.type - Currently selected distribution type
- * @param {function(string): void} props.setType - Function to update the distribution type
- * @param {boolean} props.running - Indicates whether the simulation is currently running
- * @param {"de"|"en"} props.lang - Language code for displayed labels and explanations
- * @returns {JSX.Element} Rendered navigation menu with distribution explanation
+ * @param {"Bernoulli"|"Gaussian"} props.type - Currently selected distribution type.
+ * @param {function(string): void} props.setType - Function to update the distribution type.
+ * @param {boolean} props.running - Indicates whether the simulation is currently running.
+ * @param {"de"|"en"} props.lang - Language code for displayed labels and explanations.
+ * @returns {JSX.Element} Rendered navigation menu with distribution explanation.
  */
 export default function NavigationBar({ type, setType, running, lang }) {
 

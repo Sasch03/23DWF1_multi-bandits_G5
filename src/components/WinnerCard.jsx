@@ -10,9 +10,9 @@ import {Card, CardHeader, CardTitle} from "@/components/ui/card.jsx";
  * @component
  *
  * @param {object} props
- * @param {"de"|"en"} props.lang - Language code for displayed text
- * @param {string|string[]} winner - Name or array of names of the winner(s)
- * @returns {JSX.Element} Rendered card showing the winner(s)
+ * @param {"de"|"en"} props.lang - Language code for displayed text.
+ * @param {string|string[]} winner - Name or array of names of the winner(s).
+ * @returns {JSX.Element} Rendered card showing the winner(s).
  */
 export default function WinnerCard({  lang, winner }) {
 

@@ -9,12 +9,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.j
  * Converts raw cumulative reward arrays into chart-ready data.
  *
  * @param {Object} rewards - Object containing reward arrays for each algorithm.
- * @param {number[]} [rewards.manualRewards] - Rewards from manual actions
- * @param {number[]} [rewards.greedyRewards] - Rewards from greedy algorithm
- * @param {number[]} [rewards.epsilonGreedyRewards] - Rewards from epsilon-greedy algorithm
- * @param {number[]} [rewards.UpperConfidenceBoundRewards] - Rewards from UCB algorithm
- * @param {number[]} [rewards.GradientBanditRewards] - Rewards from gradient bandit algorithm
- * @returns {Array<Object>} Array of objects with cumulative rewards per try
+ * @param {number[]} [rewards.manualRewards] - Rewards from manual actions.
+ * @param {number[]} [rewards.greedyRewards] - Rewards from greedy algorithm.
+ * @param {number[]} [rewards.epsilonGreedyRewards] - Rewards from epsilon-greedy algorithm.
+ * @param {number[]} [rewards.UpperConfidenceBoundRewards] - Rewards from UCB algorithm.
+ * @param {number[]} [rewards.GradientBanditRewards] - Rewards from gradient bandit algorithm.
+ * @returns {Array<Object>} Array of objects with cumulative rewards per try.
  */
 function makeLineData({
                           manualRewards = [],
@@ -66,10 +66,10 @@ const chartConfig = {
  * @component
  *
  * @param {object} props
- * @param {Object} props.cumulativeRewards - Object containing reward arrays per algorithm
- * @param {"Bernoulli"|"Gaussian"} props.chosenDistribution - Type of reward distribution
- * @param {"de"|"en"} props.lang - Language code for labels
- * @returns {JSX.Element} Rendered cumulative rewards chart
+ * @param {Object} props.cumulativeRewards - Object containing reward arrays per algorithm.
+ * @param {"Bernoulli"|"Gaussian"} props.chosenDistribution - Type of reward distribution.
+ * @param {"de"|"en"} props.lang - Language code for labels.
+ * @returns {JSX.Element} Rendered cumulative rewards chart.
  */
 export default function CumulativeLineChart({
                                                 cumulativeRewards,

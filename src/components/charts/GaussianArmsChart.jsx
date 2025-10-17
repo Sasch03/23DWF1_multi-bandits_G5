@@ -17,10 +17,10 @@ import { GAUSSIAN_STD_DEV } from "@/constants"
 /**
  * Computes the value of a Gaussian probability density function at x.
  *
- * @param {number} x - The point to evaluate
- * @param {number} mean - The mean (μ) of the Gaussian
- * @param {number} sd - The standard deviation (σ) of the Gaussian
- * @returns {number} The probability density at x
+ * @param {number} x - The point to evaluate.
+ * @param {number} mean - The mean (μ) of the Gaussian.
+ * @param {number} sd - The standard deviation (σ) of the Gaussian.
+ * @returns {number} The probability density at x.
  */
 function gaussianPDF(x, mean, sd) {
     const a = 1 / (sd * Math.sqrt(2 * Math.PI))
@@ -31,11 +31,11 @@ function gaussianPDF(x, mean, sd) {
 /**
  * Generates chart-ready data for multiple Gaussian arms.
  *
- * @param {number[]} means - Array of mean values for each arm
- * @param {number} [sd=50] - Standard deviation for the Gaussian curves
- * @param {number} [points=200] - Number of points to sample per curve
- * @param {boolean} [normalize=true] - Whether to normalize values so max = 1
- * @returns {{ data: Array<Object>, keys: string[] }} Object containing the line data and keys for each arm
+ * @param {number[]} means - Array of mean values for each arm.
+ * @param {number} [sd=50] - Standard deviation for the Gaussian curves.
+ * @param {number} [points=200] - Number of points to sample per curve.
+ * @param {boolean} [normalize=true] - Whether to normalize values so max = 1.
+ * @returns {{ data: Array<Object>, keys: string[] }} Object containing the line data and keys for each arm.
  */
 function makeGaussianLineData(means = [], sd = 50, points = 200, normalize = true) {
     if (!means || means.length === 0) return { data: [], keys: [] }
@@ -75,10 +75,10 @@ function makeGaussianLineData(means = [], sd = 50, points = 200, normalize = tru
 /**
  * Picks a color from a predefined palette based on index.
  *
- * @param {number} i - Index of the color
- * @returns {string} CSS color string
+ * @param {number} colorIndex - Index of the color.
+ * @returns {string} CSS color string.
  */
-function pickColor(i) {
+function pickColor(colorIndex) {
     const palette = [
         "var(--chart-1)",
         "var(--chart-2)",
@@ -86,7 +86,7 @@ function pickColor(i) {
         "var(--chart-4)",
         "var(--chart-5)",
     ]
-    return palette[i % palette.length]
+    return palette[colorIndex % palette.length]
 }
 
 /**
@@ -98,12 +98,12 @@ function pickColor(i) {
  * @component
  *
  * @param {Object} props
- * @param {Object} [props.game={}] - Game object containing Gaussian arm means
- * @param {number} [props.points=300] - Number of points to sample per curve
- * @param {boolean} [props.normalize=true] - Whether to normalize curves
- * @param {number} [props.sd=GAUSSIAN_STD_DEV] - Standard deviation for the curves
- * @param {"de"|"en"} props.lang - Language code for labels
- * @returns {JSX.Element} Rendered Gaussian arms chart
+ * @param {Object} [props.game={}] - Game object containing Gaussian arm means.
+ * @param {number} [props.points=300] - Number of points to sample per curve.
+ * @param {boolean} [props.normalize=true] - Whether to normalize curves.
+ * @param {number} [props.sd=GAUSSIAN_STD_DEV] - Standard deviation for the curves.
+ * @param {"de"|"en"} props.lang - Language code for labels.
+ * @returns {JSX.Element} Rendered Gaussian arms chart.
  */
 export default function GaussianArmsChart({
                                               game = {},

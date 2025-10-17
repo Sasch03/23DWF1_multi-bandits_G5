@@ -10,9 +10,9 @@ import { Button } from "@/components/ui/button";
  * @component
  *
  * @param {object} props
- * @param {"de"|"en"} props.lang - Current language code
- * @param {function(string): void} props.setLang - Function to update the current language
- * @returns {JSX.Element} Rendered toggle button
+ * @param {"de"|"en"} props.lang - Current language code.
+ * @param {function(string): void} props.setLang - Function to update the current language.
+ * @returns {JSX.Element} Rendered toggle button.
  */
 export default function LanguageToggle({ lang, setLang }) {
     const toggleLang = () => {

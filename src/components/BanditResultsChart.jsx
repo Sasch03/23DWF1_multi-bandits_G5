@@ -8,7 +8,7 @@ import WinnerCard from "@/components/WinnerCard.jsx";
  *
  * Displays visualizations of a multi-armed bandit simulation, including:
  * - Winner summary card
- * - Per-arm performance chart (Bernoulli or Gaussian)
+ * - Per-arm performance chart
  * - Cumulative reward line chart
  *
  * The component dynamically selects the appropriate arm chart based on the

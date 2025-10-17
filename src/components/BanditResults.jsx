@@ -32,14 +32,14 @@ import {
  * @component
  *
  * @param {object} props
- * @param {boolean} props.running - Whether the simulation is currently running
- * @param {number} props.iterations - Total number of iterations configured
- * @param {number} props.totalPulls - Total number of pulls made so far
- * @param {number} props.totalReward - Cumulative reward obtained
- * @param {string[]} props.logs - Array of log strings formatted as `"Timestep: X, Arm: Y, Reward: Z"`
- * @param {"Bernoulli"|"Gaussian"} props.type - Type of reward distribution
- * @param {"en"|"de"} props.lang - Language code for display labels
- * @returns {JSX.Element} Rendered results dashboard
+ * @param {boolean} props.running - Whether the simulation is currently running.
+ * @param {number} props.iterations - Total number of iterations configured.
+ * @param {number} props.totalPulls - Total number of pulls made so far.
+ * @param {number} props.totalReward - Cumulative reward obtained.
+ * @param {string[]} props.logs - Array of log strings formatted as `"Timestep: X, Arm: Y, Reward: Z"`.
+ * @param {"Bernoulli"|"Gaussian"} props.type - Type of reward distribution.
+ * @param {"en"|"de"} props.lang - Language code for display labels.
+ * @returns {JSX.Element} Rendered results dashboard.
  */
 export default function BanditResults({
                                           running,
