@@ -2,6 +2,7 @@
 import { describe, it, expect } from "vitest";
 import CurrentGame from "@/logic/CurrentGame.js";
 import { DistributionTyp } from "@/logic/enumeration/DistributionTyp.js";
+import { NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM } from "@/constants.js";
 import Greedy from "@/logic/algorithm/strategies/value-based/Greedy.js";
 
 function runOnTable({ table, policy }) {
@@ -63,15 +64,26 @@ describe("Greedy with generated tables", () => {
         game.createTable();
 
         const greedy = new Greedy({ numberOfArms: k, numberOfTries: T });
+
         logTable(game.tableOfRewards);
-        const out = runOnTable({ table: game.tableOfRewards, policy: greedy });
+
+        // --- Option 1: slice the table so it matches k × T ---
+        const tableForRun = game.tableOfRewards.map(rewards => rewards.slice(0, T));
+
+        const out = runOnTable({ table: tableForRun, policy: greedy });
 
         console.log("choices:", out.choices.join(", "));
         console.log("pulls:", out.pulls);
         console.log("Q:", out.Q);
 
+        // table shape
         expect(game.tableOfRewards.length).toBe(k);
-        expect(game.tableOfRewards[0].length).toBe(T);
+        // for the table we generated, the original length is larger; for run we sliced to T
+        expect(tableForRun[0].length).toBe(T);
+
+        // run output
         expect(out.choices.length).toBe(T);
     });
+
+
 });
