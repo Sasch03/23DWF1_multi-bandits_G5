@@ -31,10 +31,12 @@ export default function WinnerCard({  lang, winner }) {
                 ) : (
                     lang === "de" ? (
                         <>Du hast verloren! Der
-                            Gewinner{Array.isArray(winner) && winner.length > 1 ? " sind " : " ist "}{formatWinners(winner, lang)}.</>
+                            Gewinner{Array.isArray(winner) && winner.length > 1 ? " sind " : " ist "}
+                            {formatWinners(winner, lang)}.</>
                     ) : (
                         <>You lost! The
-                            winner{Array.isArray(winner) && winner.length > 1 ? "s are " : " is "}{formatWinners(winner, lang)}.</>
+                            winner{Array.isArray(winner) && winner.length > 1 ? "s are " : " is "}
+                            {formatWinners(winner, lang)}.</>
                     )
                 )}
             </CardTitle>

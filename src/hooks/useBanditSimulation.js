@@ -33,6 +33,8 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
     const [game, setGame] = useState(null);
     const [type, setType] = useState(DistributionTyp.BERNOULLI);
     const [winner, setWinner] = useState(null);
+    const [lang, setLang] = useState("de");
+
     const gameRef = useRef(null);
     const historyRef = useRef(new StrategyRewardHistory());
     const manualObservedRewardsRef = useRef([]);
@@ -282,6 +284,8 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
         setGame(null);
         historyRef.current.reset();
         manualObservedRewardsRef.current = [];
+
+        console.log("Simulation stopped and reset.");
     };
 
     return {
@@ -297,6 +301,8 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
         setShowPlot,
         game,
         winner,
+        lang,
+        setLang,
         getCumulativeRewards,
         startGame,
         handlePull,
