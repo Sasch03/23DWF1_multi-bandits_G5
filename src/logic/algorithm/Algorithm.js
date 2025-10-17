@@ -3,7 +3,6 @@
  * Used as a foundation for Greedy, Epsilon-Greedy, UCB, Manual, etc.
  * Purpose: stores common state (arms, pulls, rewards, step history).
  */
-
 export default class Algorithm {
     /**
      * @param {number} numberOfArms - Number of arms (k), valid indices: 0..k-1.
@@ -25,15 +24,14 @@ export default class Algorithm {
      * @returns {number} arm index in [0, numberOfArms).
      */
     selectArm()
-    { throw new Error('abstract'); }
+    { throw new Error("Calling a method of an abstract class"); }
 
     /**
      * Record selected arm and observed reward for current step,
      * then advance t.
      * Validates arm range and prevents double write.
-     * @param {Object} p.
-     * @param {number} p.arm - Arm index in [0, numberOfArms).
-     * @param {number} p.observedReward - Observed reward.
+     * @param {number} arm - Arm index in [0, numberOfArms).
+     * @param {number} observedReward - Observed reward.
      */
     update({ arm, observedReward }) {
         if (arm < 0 || arm >= this.numberOfArms) throw new Error('bad arm');
@@ -46,7 +44,9 @@ export default class Algorithm {
         this.step += 1;
     }
 
-    /** Reset all logs and step counter for new run. */
+    /**
+     * Reset all logs and step counter for new run.
+     * */
     reset() {
         this.step = 0;
         this.selectedArms.fill(null);
