@@ -2,6 +2,18 @@ import React, { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+/**
+ * ThemeToggle Component
+ *
+ * Renders a button to switch between light and dark themes.
+ * The current theme is stored in `localStorage` and applied to the document root.
+ *
+ * @component
+ *
+ * @param {object} props
+ * @param {"de"|"en"} props.lang - Language code for the button label
+ * @returns {JSX.Element} Rendered theme toggle button
+ */
 export default function ThemeToggle({ lang }) {
 
     const [isDark, setIsDark] = useState(false);

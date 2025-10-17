@@ -23,19 +23,23 @@ import {
 } from "@/components/ui/tooltip";
 
 /**
- * Renders a results dashboard for a multi-armed bandit simulation.
+ * BanditResults Component
  *
- * Displays total attempts, total reward, and a collapsible log of recent activities.
- * Supports both Bernoulli and Gaussian bandit reward types.
+ * Renders a dashboard for a multi-armed bandit simulation. It displays key statistics
+ * such as remaining attempts, total reward, and a collapsible log of recent activity.
+ * Supports both Bernoulli (0/1 success) and Gaussian (continuous) reward types.
  *
  * @component
- * @param {Object} props - Component props.
- * @param {number} props.totalPulls - Total number of attempts (pulls) made by the bandit.
- * @param {number} props.totalReward - The cumulative reward across all attempts.
- * @param {string[]} props.logs - Array of log strings, each formatted as `"Timestep: X, Arm: Y, Reward: Z"`.
- * @param {"Bernoulli" | "Gaussian"} props.type - The type of reward distribution used in the simulation.
  *
- * @returns {JSX.Element} The rendered BanditResults component.
+ * @param {object} props
+ * @param {boolean} props.running - Whether the simulation is currently running.
+ * @param {number} props.iterations - Total number of iterations configured.
+ * @param {number} props.totalPulls - Total number of pulls made so far.
+ * @param {number} props.totalReward - Cumulative reward obtained.
+ * @param {string[]} props.logs - Array of log strings formatted as `"Timestep: X, Arm: Y, Reward: Z"`.
+ * @param {"Bernoulli"|"Gaussian"} props.type - Type of reward distribution.
+ * @param {"en"|"de"} props.lang - Language code for display labels.
+ * @returns {JSX.Element} Rendered results dashboard.
  */
 export default function BanditResults({
                                           running,
@@ -51,6 +55,12 @@ export default function BanditResults({
 
     const remainingPulls = running ? Math.max(0, iterations - totalPulls) : 0;
 
+    /**
+     * Render a single log entry as a table row.
+     *
+     * @param {string} log - Log entry string.
+     * @returns {JSX.Element|null} TableRow or null if log is invalid.
+     */
     const renderLogTableRow = (log) => {
         const match = log.match(/Timestep: (\d+), Arm: (\d+), Reward: ([\d.-]+)/);
         if (!match) return null;

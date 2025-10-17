@@ -3,6 +3,21 @@ import { Badge } from "@/components/ui/badge";
 import { HoverCard, HoverCardTrigger, HoverCardContent } from "@/components/ui/hover-card";
 import { ArrowUpRightIcon, UserIcon } from "lucide-react";
 
+/**
+ * Header Component
+ *
+ * Renders the main header for the Multi-Armed Mafia application, including:
+ * - Title and descriptive text about the multi-armed bandit problem
+ * - Introduction paragraph explaining the gamified scenario
+ * - Badges for different bandit algorithms with hoverable cards showing
+ *   algorithm information, hints, and links for further reading
+ *
+ * @component
+ *
+ * @param {object} props
+ * @param {"en"|"de"} props.lang - Language code to render content in English or German
+ * @returns {JSX.Element} Rendered header with title, description, and algorithm badges
+ */
 export default function Header({ lang }) {
 
     const algos = [

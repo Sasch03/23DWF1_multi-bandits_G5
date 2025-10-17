@@ -19,6 +19,29 @@ import { HelpCircle } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner.jsx";
 import SliderWithButtons from "@/components/shared/SliderWithButtons.jsx";
 
+/**
+ * BanditConfig Component
+ *
+ * This component renders a configuration panel for a Multi-Armed Bandit simulation.
+ * It allows users to set the number of campaigns (arms), the number of attempts (iterations),
+ * and control the simulation process (start, reset, show results).
+ *
+ * The UI adjusts dynamically based on the simulation state (`running`).
+ *
+ * @component
+ *
+ * @param {Object[]} arms - Array of current bandit arms representing campaigns.
+ * @param {Function} setArmCount - Callback to update the number of arms (campaigns).
+ * @param {number} iterations - Number of total simulation iterations representing attempts.
+ * @param {Function} setIterations - Callback to update the number of iterations (attempts).
+ * @param {Function} startSimulation - Function to start the bandit simulation.
+ * @param {Function} resetAll - Function to reset the entire simulation state.
+ * @param {boolean} running - Indicates whether the simulation is currently running.
+ * @param {boolean} showPlot - Whether the result plot is currently visible.
+ * @param {Function} setShowPlot - Function to toggle result plot visibility.
+ * @param {"en"|"de"} lang - Language code for displayed text.
+ * @returns {JSX.Element} Rendered configuration UI for the Bandit simulation.
+ */
 export default function BanditConfig({
                                          arms,
                                          setArmCount,

@@ -2,6 +2,24 @@ import { Button } from "@/components/ui/button.jsx";
 import { Slider } from "@/components/ui/slider";
 import { Plus, Minus } from "lucide-react";
 
+/**
+ * SliderWithButtons
+ *
+ * A UI component combining a slider and two buttons to increase or decrease the value.
+ *
+ * @param {Object} props - Component properties.
+ * @param {number} props.value - The current value of the slider.
+ * @param {function(number): void} props.onChange - Callback function triggered when the value changes.
+ * @param {number} props.min - Minimum allowed value.
+ * @param {number} props.max - Maximum allowed value.
+ * @param {number} [props.step=1] - Step size for slider and buttons.
+ * @param {boolean} [props.disabled=false] - Disables slider and buttons when true.
+ * @param {string} props.label - Label for accessibility (aria-label).
+ *
+ * @returns {JSX.Element} The rendered slider and button combination.
+ */
+
+
 export default function SliderWithButtons({
                                               value,
                                               onChange,
