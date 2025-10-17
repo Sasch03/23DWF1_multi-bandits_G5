@@ -43,7 +43,6 @@ export default class StrategyRewardHistory {
      * @param {Object} obj - Object containing an observedRewards array.
      */
     addReward(arrRef, obj) {
-        console.log(`Starting addReward for ${arrRef} from object ${obj}.`);
 
         // Validate target array.
         if (arrRef !== this.manualRewards && arrRef !== this.greedyRewards && arrRef !== this.epsilonGreedyRewards
@@ -60,7 +59,6 @@ export default class StrategyRewardHistory {
         const dest = arrRef;
 
         if (dest.length === src.length) {
-            console.info("The arrays are already synchronized. No action required.");
             return;
         }
 
@@ -80,7 +78,6 @@ export default class StrategyRewardHistory {
             }
 
             runningTotal += reward;
-            console.log(`Successfully added ${runningTotal} as a new reward.`);
             dest.push(runningTotal);
         }
     }
