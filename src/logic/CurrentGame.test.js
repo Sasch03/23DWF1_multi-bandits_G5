@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { DistributionTyp } from '@/logic/enumeration/DistributionTyp.js';
 import { AlgorithmTyp } from '@/logic/enumeration/AlgorithmTyp.js';
 import { NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM } from "@/constants.js";
-import CurrentGame from './CurrentGame.js';
+import CurrentGame from '@/logic/CurrentGame.js';
 
 describe('CurrentGame (updated tests for Gaussian generation)', () => {
     let game;
@@ -59,14 +59,11 @@ describe('CurrentGame (updated tests for Gaussian generation)', () => {
 
         game.createTable();
 
-        // table shape
         expect(game.tableOfRewards.length).toBe(3);
         expect(game.tableOfRewards[0].length).toBe(7);
 
-        // rewards are 0 or 1
         expect(game.tableOfRewards.flat().every(r => r === 0 || r === 1)).toBe(true);
 
-        // bernoulliProbabilities were stored and have correct length & range
         expect(Array.isArray(game.bernoulliProbabilities)).toBe(true);
         expect(game.bernoulliProbabilities.length).toBe(3);
         expect(game.bernoulliProbabilities.every(p => typeof p === 'number' && p >= 0 && p <= 1)).toBe(true);
@@ -81,21 +78,18 @@ describe('CurrentGame (updated tests for Gaussian generation)', () => {
 
         game.createTable();
 
-        // table shape
         expect(game.tableOfRewards.length).toBe(arms);
+
         // each arm has numberOfTries * NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM rewards
         expect(game.tableOfRewards[0].length).toBe(tries * NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM);
 
-        // gaussianMeans must exist, have correct length and be finite numbers
         expect(Array.isArray(game.gaussianMeans)).toBe(true);
         expect(game.gaussianMeans.length).toBe(arms);
         expect(game.gaussianMeans.every(m => typeof m === 'number' && Number.isFinite(m))).toBe(true);
 
-        // Variation check instead of sorting check
         const distinctMeans = new Set(game.gaussianMeans.map(m => m.toFixed(10)));
         expect(distinctMeans.size).toBeGreaterThan(1); // not all means equal
 
-        // rewards are numbers and finite
         const flat = game.tableOfRewards.flat();
         expect(flat.every(v => typeof v === 'number' && Number.isFinite(v))).toBe(true);
     });
