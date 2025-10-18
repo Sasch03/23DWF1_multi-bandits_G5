@@ -35,6 +35,11 @@ export default class StrategyRewardHistory {
      */
     GradientBanditRewards = [];
 
+    /**
+     * Stores cumulative rewards for a custom strategy.
+     * Each index represents the running total up to that point.
+     * @type {number[]}
+     */
     customAlgorithmRewards = [];
 
     /**
