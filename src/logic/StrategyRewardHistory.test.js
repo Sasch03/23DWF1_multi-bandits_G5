@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import StrategyRewardHistory from './StrategyRewardHistory.js';
+import StrategyRewardHistory from '@/logic/StrategyRewardHistory.js';
 
 describe('StrategyRewardHistory', () => {
     let history;
