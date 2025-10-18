@@ -13,6 +13,8 @@ export default class EpsGreedy extends ValueBasedAlgorithm {
     constructor(opts, provider = epsilonProvider) {
         super(opts);
         this.epsSvc = provider;
+
+        console.log(`Epsilon greedy Initialized with ${this.numberOfArms} arms, epsSvc=${this.epsSvc}`);
     }
 
     /**

@@ -15,7 +15,9 @@ export default class UCB extends ValueBasedAlgorithm {
      */
     constructor(opts, provider = UCBProvider) {
         super(opts);
-        this.explorationCoefficientProvider = provider; // exploration coefficient provider (c)
+        this.explorationCoefficientProvider = provider;
+
+        console.log(`UBC Initialized with ${this.numberOfArms} arms, explorationCoefficientProvider=${this.explorationCoefficientProvider}`);
     }
 
     /**
