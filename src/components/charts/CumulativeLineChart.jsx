@@ -21,18 +21,20 @@ function makeLineData({
                           greedyRewards = [],
                           epsilonGreedyRewards = [],
                           UpperConfidenceBoundRewards = [],
-                          GradientBanditRewards = []
+                          GradientBanditRewards = [],
+                            customAlgorithmRewards = []
                       }) {
 
     const data =
-        [{ try: 0, manual: 0, greedy: 0, epsilonGreedy: 0, upperConfidenceBound: 0, gradientBandit: 0 }];
+        [{ try: 0, manual: 0, greedy: 0, epsilonGreedy: 0, upperConfidenceBound: 0, gradientBandit: 0, custom: 0 }];
 
     const maxLength = Math.max(
         manualRewards.length,
         greedyRewards.length,
         epsilonGreedyRewards.length,
         UpperConfidenceBoundRewards.length,
-        GradientBanditRewards.length);
+        GradientBanditRewards.length,
+        customAlgorithmRewards.length);
 
     for (let i = 0; i < maxLength; i++) {
         const entry = { try: i + 1 };
@@ -42,6 +44,7 @@ function makeLineData({
         if (i < epsilonGreedyRewards.length) entry.epsilonGreedy = epsilonGreedyRewards[i];
         if (i < UpperConfidenceBoundRewards.length) entry.upperConfidenceBound = UpperConfidenceBoundRewards[i];
         if (i < GradientBanditRewards.length) entry.gradientBandit = GradientBanditRewards[i];
+        if (i < customAlgorithmRewards.length) entry.custom = customAlgorithmRewards[i];
 
         data.push(entry);
     }
@@ -55,6 +58,7 @@ const chartConfig = {
     epsilonGreedy: { label: { de: "Epsilon-Greedy", en: "Epsilon-Greedy" }, color: "var(--chart-3)" },
     upperConfidenceBound: { label: { de: "UCB", en: "UCB" }, color: "var(--chart-4)" },
     gradientBandit: { label: { de: "Gradient Bandit", en: "Gradient Bandit" }, color: "var(--chart-5)" },
+    custom: { label: { de: "Benutzerdefinierter Algorithmus", en: "Custom Algorithm" }, color: "var(--chart-1)" },
 };
 
 /**
