@@ -76,10 +76,6 @@ describe('StrategyRewardHistory', () => {
         expect(history.epsilonGreedyRewards).toEqual([]);
     });
 
-    // -------------
-    // Tests for the newly added arrays' behavior with edge cases
-    // -------------
-
     it('throws if adding non-number reward into UCB array', () => {
         const obj = { observedRewards: [1, 'bad', 2] };
         expect(() => history.addReward(history.UpperConfidenceBoundRewards, obj)).toThrow();
