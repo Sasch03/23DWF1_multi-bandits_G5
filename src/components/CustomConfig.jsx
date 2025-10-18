@@ -6,7 +6,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { AlgorithmTyp } from "@/logic/enumeration/AlgorithmTyp.js";
 import SliderWithButtons from "@/components/shared/SliderWithButtons.jsx";
 
-export default function CustomConfig({ running, createCustomAlgorithm }) {
+export default function CustomConfig({ running, createCustomAlgorithm, algorithmAdded, setAlgorithmAdded, lang }) {
     const [open, setOpen] = useState(false);
     const [algorithm, setAlgorithm] = useState(AlgorithmTyp.GRADIENT_BANDIT);
 
@@ -28,50 +28,59 @@ export default function CustomConfig({ running, createCustomAlgorithm }) {
         }
     })();
 
+    const handleAddAlgorithm = () => {
+        createCustomAlgorithm(algorithm, customParams);
+        setAlgorithmAdded(true);
+    };
+
     return (
         <Popover open={open} onOpenChange={setOpen}>
-            {/* --- Trigger Button --- */}
             <div className="flex justify-between items-center mt-4">
-                <span className="text-sm font-medium">Erweiterte Einstellungen</span>
+                <span className="text-sm font-medium">
+                    {lang === "de" ? "Erweiterte Einstellungen" : "Advanced Settings"}
+                </span>
                 <PopoverTrigger asChild>
                     <Button
                         variant="outline"
                         size="sm"
                         onClick={() => setOpen(!open)}
                     >
-                        {open ? "Verbergen" : "Anzeigen"}
+                        {open ? (lang === "de" ? "Verbergen" : "Hide") : (lang === "de" ? "Anzeigen" : "Show")}
                     </Button>
                 </PopoverTrigger>
             </div>
 
-            {/* --- Popover Content --- */}
             <PopoverContent
                 className="w-80 mb-2 space-y-4"
                 side="top"
                 align="end"
-                avoidCollisions={false} // verhindert automatisches Flippen
+                avoidCollisions={false}
             >
-                {/* --- Algorithm Selection --- */}
                 <div className="flex flex-col gap-2">
-                    <Label className="text-sm font-semibold text-foreground">Algorithmus</Label>
+                    <Label className="text-sm font-semibold text-foreground">
+                        {lang === "de" ? "Algorithmus" : "Algorithm"}
+                    </Label>
                     <Select
                         value={algorithm}
                         onValueChange={setAlgorithm}
                         disabled={running}
                     >
                         <SelectTrigger className="bg-background border border-border">
-                            <SelectValue placeholder="Wähle einen Algorithmus" />
+                            <SelectValue placeholder={lang === "de" ? "Wähle einen Algorithmus" : "Select an algorithm"} />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value={AlgorithmTyp.GRADIENT_BANDIT}>Gradient Bandit</SelectItem>
+                            <SelectItem value={AlgorithmTyp.GRADIENT_BANDIT}>
+                                {lang === "de" ? "Gradient Bandit" : "Gradient Bandit"}
+                            </SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
 
-                {/* --- Algorithm-specific UI --- */}
                 {algorithm === AlgorithmTyp.GRADIENT_BANDIT && (
                     <div className="space-y-2">
-                        <Label className="text-sm font-semibold">Learning Rate (α)</Label>
+                        <Label className="text-sm font-semibold">
+                            {lang === "de" ? "Lernrate (α)" : "Learning Rate (α)"}
+                        </Label>
                         <div className="flex flex-col gap-1">
                             <SliderWithButtons
                                 value={alpha}
@@ -79,24 +88,24 @@ export default function CustomConfig({ running, createCustomAlgorithm }) {
                                 min={0.1}
                                 max={1}
                                 step={0.01}
-                                disabled={running}
+                                disabled={algorithmAdded}
                                 label="alpha"
                             />
-                            <span className="text-xs text-muted-foreground text-center">
-                                {alpha.toFixed(2)}
-                            </span>
+                            <span className="text-xs text-muted-foreground text-center">{alpha.toFixed(2)}</span>
                         </div>
                     </div>
                 )}
 
-                {/* --- Save/Apply Button --- */}
                 <div className="flex justify-end pt-2">
                     <Button
+                        variant="outline"
                         size="sm"
-                        disabled={running}
-                        onClick={() => createCustomAlgorithm(algorithm, customParams)}
+                        disabled={algorithmAdded}
+                        onClick={handleAddAlgorithm}
                     >
-                        Add
+                        {algorithmAdded
+                            ? (lang === "de" ? "Custom Hinzugefügt" : "Custom added")
+                            : (lang === "de" ? "Custom Hinzufügen" : "Add Custom")}
                     </Button>
                 </div>
             </PopoverContent>

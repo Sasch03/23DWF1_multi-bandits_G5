@@ -39,6 +39,7 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
     const [lang, setLang] = useState("de");
     const [customAlgo, setCustomAlgo] = useState(null);
     const [customParams, setCustomParams] = useState({});
+    const [algorithmAdded, setAlgorithmAdded] = useState(false);
 
 
     // ================= Refs =================
@@ -397,6 +398,7 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
         setGame(null);
         historyRef.current.reset();
         manualObservedRewardsRef.current = [];
+        setAlgorithmAdded(false);
 
         console.log("Simulation stopped and reset.");
     };
@@ -438,6 +440,8 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
         winner,
         lang,
         setLang,
+        algorithmAdded,
+        setAlgorithmAdded,
         getCumulativeRewards,
         startGame,
         handlePull,

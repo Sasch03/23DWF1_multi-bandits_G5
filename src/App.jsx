@@ -37,6 +37,7 @@ export default function App() {
         lang,
         setLang,
         winner,
+        algorithmAdded, setAlgorithmAdded,
         createCustomAlgorithm,
         getCumulativeRewards,
     } = useBanditGame();
@@ -74,6 +75,7 @@ export default function App() {
                         startSimulation={startGame}
                         lang={lang}
                         createCustomAlgorithm={createCustomAlgorithm}
+                        algorithmAdded={algorithmAdded} setAlgorithmAdded={setAlgorithmAdded}
                     />
 
                     {/* Playground and Results */}

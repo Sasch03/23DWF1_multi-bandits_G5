@@ -55,7 +55,9 @@ export default function BanditConfig({
                                          showPlot,
                                          setShowPlot,
                                          lang,
-                                            createCustomAlgorithm
+                                         createCustomAlgorithm,
+                                         setAlgorithmAdded, algorithmAdded,
+
                                      }) {
     return (
         <Card className="w-1/3 flex flex-col bg-muted/30 gap-4 p-4">
@@ -152,6 +154,9 @@ export default function BanditConfig({
                     createCustomAlgorithm={createCustomAlgorithm} // muss aus deinem Hook kommen
                     arms={arms}
                     iterations={iterations}
+                    setAlgorithmAdded={setAlgorithmAdded}
+                    algorithmAdded={algorithmAdded}
+                    lang={lang}
                 />
             </CardContent>
 
@@ -182,9 +187,14 @@ export default function BanditConfig({
                     </Button>
                 )}
 
-                <Button onClick={resetAll} variant="secondary" className="w-full">
+                <Button
+                    onClick={resetAll}
+                    variant={running ? "" : "secondary"}
+                    className="w-full"
+                >
                     {lang === "de" ? "Zurücksetzen" : "Reset"}
                 </Button>
+
             </CardFooter>
         </Card>
     );
