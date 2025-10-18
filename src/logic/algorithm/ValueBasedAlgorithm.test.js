@@ -1,9 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import ValueBasedAlgorithm from '@/logic/algorithm/ValueBasedAlgorithm.js';
 
-// KORREKTUR: Der Dummy muss selectArm NICHT überschreiben,
-// da ValueBasedAlgorithm dies bereits tut.
-// Die Klasse ist nicht mehr "abstrakt" in dem Sinne.
 class DummyERB extends ValueBasedAlgorithm {}
 
 describe('ValueBasedAlgorithm', () => {
@@ -21,12 +18,11 @@ describe('ValueBasedAlgorithm', () => {
         expect(b.getExpectedRewards()).toEqual([1, 2, 3]);
     });
 
-    // --- NEUER TESTBLOCK: Testet die geerbte 'selectArm' (Greedy) Logik ---
     it('selectArm: chooses the arm with the highest Q-value', () => {
         const b = new DummyERB({
             numberOfArms: 4,
             numberOfTries: 5,
-            expectedRewardsBegin: [10, 40, 5, 20], // Bester Arm ist Index 1
+            expectedRewardsBegin: [10, 40, 5, 20],
         });
         expect(b.selectArm()).toBe(1);
     });
@@ -35,25 +31,21 @@ describe('ValueBasedAlgorithm', () => {
         const b = new DummyERB({
             numberOfArms: 4,
             numberOfTries: 5,
-            expectedRewardsBegin: [10, 40, 5, 40], // Gleichstand: 1 und 3
+            expectedRewardsBegin: [10, 40, 5, 40],
         });
-        // .indexOf() findet den ersten Treffer
         expect(b.selectArm()).toBe(1);
     });
-    // --- ENDE NEUER TESTBLOCK ---
 
     it('setExpectedRewards: throws on wrong length', () => {
         const b = new DummyERB({ numberOfArms: 3, numberOfTries: 5 });
         expect(() => b.setExpectedRewards([1, 2])).toThrow('bad expectedRewards');
     });
 
-    // --- NEUER TESTBLOCK: Testet die Typ-Konvertierung in setExpectedRewards ---
     it('setExpectedRewards: coerces values to numbers', () => {
         const b = new DummyERB({ numberOfArms: 3, numberOfTries: 5 });
-        b.setExpectedRewards(["1.5", "2", "0"]); // Übergibt Strings
-        expect(b.getExpectedRewards()).toEqual([1.5, 2, 0]); // Erwartet Zahlen
+        b.setExpectedRewards(["1.5", "2", "0"]);
+        expect(b.getExpectedRewards()).toEqual([1.5, 2, 0]);
     });
-    // --- ENDE NEUER TESTBLOCK ---
 
 
     it('update: sample-average updates Q', () => {
@@ -73,16 +65,14 @@ describe('ValueBasedAlgorithm', () => {
         const b = new DummyERB({ numberOfArms: 2, numberOfTries: 2, expectedRewardsBegin: [5, 5] });
         b.update({ arm: 0, observedReward: 7 });
 
-        // Zustand vor Reset
         expect(b.step).toBe(1);
         expect(b.getExpectedRewards()).not.toEqual([0, 0]);
 
         b.reset();
 
-        // Zustand nach Reset
         expect(b.step).toBe(0);
         expect(b.selectedArms).toEqual([null, null]);
-        expect(b.getExpectedRewards()).toEqual([0, 0]); // Q-Werte müssen auch zurückgesetzt werden
+        expect(b.getExpectedRewards()).toEqual([0, 0]);
     });
 
     it('inherits Algorithm validations (bad arm)', () => {
