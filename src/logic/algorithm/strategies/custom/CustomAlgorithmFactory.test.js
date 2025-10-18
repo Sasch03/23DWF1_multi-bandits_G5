@@ -1,8 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import CustomAlgorithmFactory from "./CustomAlgorithmFactory.js";
 import { AlgorithmTyp } from "@/logic/enumeration/AlgorithmTyp.js";
-
-// Import existing algorithms
 import Greedy from "@/logic/algorithm/strategies/value-based/Greedy.js";
 import EpsGreedy from "@/logic/algorithm/strategies/value-based/EpsGreedy.js";
 import GradientBandit from "@/logic/algorithm/strategies/gradient-based/GradientBandit.js";
