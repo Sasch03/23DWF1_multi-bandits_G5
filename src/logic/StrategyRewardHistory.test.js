@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import StrategyRewardHistory from './StrategyRewardHistory.js';
+import StrategyRewardHistory from '@/logic/StrategyRewardHistory.js';
 
 describe('StrategyRewardHistory', () => {
     let history;
@@ -75,10 +75,6 @@ describe('StrategyRewardHistory', () => {
         expect(history.greedyRewards).toEqual([]);
         expect(history.epsilonGreedyRewards).toEqual([]);
     });
-
-    // -------------
-    // Tests for the newly added arrays' behavior with edge cases
-    // -------------
 
     it('throws if adding non-number reward into UCB array', () => {
         const obj = { observedRewards: [1, 'bad', 2] };

@@ -5,7 +5,6 @@ describe('GradientBandit', () => {
     let gb;
 
     beforeEach(() => {
-        // create with 3 arms for simple arithmetic
         gb = new GradientBandit({ numberOfArms: 3, numberOfTries: 100, alpha: 0.1 });
     });
 
@@ -18,7 +17,6 @@ describe('GradientBandit', () => {
     });
 
     it('softmax probabilities sum to 1 and are non-negative', () => {
-        // all zeros -> uniform distribution
         const probs = gb.getActionProbabilities();
         expect(probs.length).toBe(3);
         const sum = probs.reduce((s, v) => s + v, 0);
@@ -40,7 +38,6 @@ describe('GradientBandit', () => {
         const alpha = 0.1;
         gb.alpha = alpha;
 
-        // call update for arm = 1 with observedReward = 1
         gb.update({ arm: 1, observedReward: r });
 
         // expected change from formula:
@@ -54,8 +51,6 @@ describe('GradientBandit', () => {
         expect(gb.preferences[0]).toBeCloseTo(expectedOther, 6);
         expect(gb.preferences[2]).toBeCloseTo(expectedOther, 6);
 
-        // baseline should have been updated to a sensible number (for first step: equal to r)
-        // we check it is finite and between 0 and r (inclusive)
         expect(Number.isFinite(gb.averageReward)).toBe(true);
         expect(gb.averageReward).toBeGreaterThanOrEqual(0);
         expect(gb.averageReward).toBeLessThanOrEqual(r + 1e-9);
@@ -69,7 +64,6 @@ describe('GradientBandit', () => {
         gb.update({ arm: 2, observedReward: 0 });
         const prefsAfter2 = gb.getPreferences();
 
-        // prefsAfter2 should not equal prefsAfter1
         const same = prefsAfter1.every((v, i) => Math.abs(v - prefsAfter2[i]) < 1e-12);
         expect(same).toBe(false);
     });
