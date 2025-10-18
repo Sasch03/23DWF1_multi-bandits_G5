@@ -6,21 +6,32 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { AlgorithmTyp } from "@/logic/enumeration/AlgorithmTyp.js";
 import SliderWithButtons from "@/components/shared/SliderWithButtons.jsx";
 
+
+/**
+ * Component for configuring a custom bandit algorithm.
+ * Displays a popover to select algorithm type and parameters.
+ *
+ * @param {Object} props - Component props.
+ * @param {boolean} props.running - Whether the simulation is currently running.
+ * @param {function} props.createCustomAlgorithm - Callback to create a custom algorithm with parameters.
+ * @param {boolean} props.algorithmAdded - Flag if a custom algorithm has already been added.
+ * @param {function} props.setAlgorithmAdded - Setter to update `algorithmAdded` state.
+ * @param {string} props.lang - Current language ('de' or 'en').
+ *
+ * @returns {JSX.Element} The custom configuration UI.
+ */
 export default function CustomConfig({ running, createCustomAlgorithm, algorithmAdded, setAlgorithmAdded, lang }) {
     const [open, setOpen] = useState(false);
     const [algorithm, setAlgorithm] = useState(AlgorithmTyp.GRADIENT_BANDIT);
 
-    const [epsilon, setEpsilon] = useState(0.1);
-    const [decayMode, setDecayMode] = useState("constant");
-    const [ucbC, setUcbC] = useState(2.0);
     const [alpha, setAlpha] = useState(0.1);
 
     const customParams = (() => {
         switch (algorithm) {
             case AlgorithmTyp.EPSILON_GREEDY:
-                return { epsilon, decayMode };
+                return {};
             case AlgorithmTyp.UPPER_CONFIDENCE_BOUND:
-                return { c: ucbC };
+                return {};
             case AlgorithmTyp.GRADIENT_BANDIT:
                 return { alpha };
             default:
@@ -98,6 +109,7 @@ export default function CustomConfig({ running, createCustomAlgorithm, algorithm
 
                 <div className="flex justify-end pt-2">
                     <Button
+                        aria-label="Add Custom Algorithm"
                         variant="outline"
                         size="sm"
                         disabled={algorithmAdded || running}

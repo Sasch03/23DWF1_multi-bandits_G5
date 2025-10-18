@@ -14,6 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.j
  * @param {number[]} [rewards.epsilonGreedyRewards] - Rewards from epsilon-greedy algorithm.
  * @param {number[]} [rewards.UpperConfidenceBoundRewards] - Rewards from UCB algorithm.
  * @param {number[]} [rewards.GradientBanditRewards] - Rewards from gradient bandit algorithm.
+ * @param {number[]} [rewards.customAlgorithmRewards] - Rewards from a custom algorithm.
  * @returns {Array<Object>} Array of objects with cumulative rewards per try.
  */
 function makeLineData({
@@ -58,6 +59,20 @@ const chartConfig = {
     custom: { label: { de: "Custom", en: "Custom" }, color: "var(--chart-1)" },
 }
 
+/**
+ * CumulativeLineChart Component
+ *
+ * Renders a line chart showing cumulative rewards for multiple algorithms over time.
+ * Supports toggling individual algorithm lines on and off.
+ *
+ * @component
+ *
+ * @param {object} props
+ * @param {Object} props.cumulativeRewards - Object containing reward arrays per algorithm.
+ * @param {"Bernoulli"|"Gaussian"} props.chosenDistribution - Type of reward distribution.
+ * @param {"de"|"en"} props.lang - Language code for labels.
+ * @returns {JSX.Element} Rendered cumulative rewards chart.
+ */
 export default function CumulativeLineChart({ cumulativeRewards, chosenDistribution, lang }) {
     const [hidden, setHidden] = useState({})
 

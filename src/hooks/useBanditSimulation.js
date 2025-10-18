@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import {useState, useRef, useEffect, useCallback} from "react";
 import CurrentGame from "@/logic/CurrentGame.js";
 import { DistributionTyp } from "@/logic/enumeration/DistributionTyp.js";
 import ManualAlgorithm from "@/logic/algorithm/strategies/rule-based/Manual.js";
@@ -51,6 +51,32 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
 
 
     // ================= Effects =================
+
+    /**
+     * Calculates which algorithm(s) currently have the highest cumulative reward.
+     */
+    const updateWinner = useCallback(() => {
+        const cumulativeRewards = {
+            Manual: manualObservedRewardsRef.current.reduce((a, b) => a + b, 0),
+            Greedy: algorithmsRef.current.greedy.getObservedRewards().reduce((a, b) => a + b, 0),
+            "Epsilon-Greedy": algorithmsRef.current.epsilon.getObservedRewards().reduce((a, b) => a + b, 0),
+            "Gradient Bandit": algorithmsRef.current.gradientBandit.getObservedRewards().reduce((a, b) => a + b, 0),
+            UCB: algorithmsRef.current.ucb.getObservedRewards().reduce((a, b) => a + b, 0),
+        };
+
+        if (customAlgorithmInstanceRef.current) {
+            const customName = `${customAlgo} (Custom)`;
+            cumulativeRewards[customName] = algorithmsRef.current.custom.getObservedRewards().reduce((a, b) => a + b, 0);
+        }
+
+        const maxReward = Math.max(...Object.values(cumulativeRewards));
+        const winners = Object.entries(cumulativeRewards)
+            .filter(([, reward]) => reward === maxReward)
+            .map(([name]) => name);
+
+        setWinner(winners);
+    }, [customAlgo]);
+
     useEffect(() => {
         if (totalPulls >= iterations && running) setShowPlot(true);
     }, [totalPulls, iterations, running]);
@@ -58,7 +84,8 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
     useEffect(() => {
         if (!running) return;
         updateWinner();
-    }, [totalPulls, running]);
+    }, [totalPulls, running, updateWinner]);
+
 
 
     // ================= Helper Functions =================
@@ -133,30 +160,7 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
         );
     };
 
-    /**
-     * Calculates which algorithm(s) currently have the highest cumulative reward.
-     */
-    const updateWinner = () => {
-        const cumulativeRewards = {
-            Manual: manualObservedRewardsRef.current.reduce((a, b) => a + b, 0),
-            Greedy: algorithmsRef.current.greedy.getObservedRewards().reduce((a, b) => a + b, 0),
-            "Epsilon-Greedy": algorithmsRef.current.epsilon.getObservedRewards().reduce((a, b) => a + b, 0),
-            "Gradient Bandit": algorithmsRef.current.gradientBandit.getObservedRewards().reduce((a, b) => a + b, 0),
-            UCB: algorithmsRef.current.ucb.getObservedRewards().reduce((a, b) => a + b, 0),
-        };
 
-        if (customAlgorithmInstanceRef.current) {
-            const customName = `${customAlgo} (Custom)`;
-            cumulativeRewards[customName] = algorithmsRef.current.custom.getObservedRewards().reduce((a, b) => a + b, 0);
-        }
-
-        const maxReward = Math.max(...Object.values(cumulativeRewards));
-        const winners = Object.entries(cumulativeRewards)
-            .filter(([, reward]) => reward === maxReward)
-            .map(([name]) => name);
-
-        setWinner(winners);
-    };
 
     // ================= Game Control Functions =================
 
@@ -209,7 +213,7 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
                 const customInstance = new CustomAlgoClass(customOptions);
                 customInstance.reset();
                 customAlgorithmInstanceRef.current = customInstance;
-                algorithmsRef.current.custom = customInstance; // Füge ihn der algorithmsRef hinzu
+                algorithmsRef.current.custom = customInstance;
             }
         } else {
             customAlgorithmInstanceRef.current = null;
