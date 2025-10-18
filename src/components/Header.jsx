@@ -2,28 +2,37 @@ import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { HoverCard, HoverCardTrigger, HoverCardContent } from "@/components/ui/hover-card";
 import { ArrowUpRightIcon, UserIcon } from "lucide-react";
+import greedyIcon from "/public/assets/GuidoGreedy.png";
+import gradientIcon from "/public/assets/GiovanniGradient.png";
+import epsilonIcon from "/public/assets/EmilioEpsilonGreedy.png";
+import ucbIcon from "/public/assets/UmbertoUCB.png";
+
+// Static logo import
+import staticLogo from "/public/assets/MultiArmedMafia.png";
 
 /**
- * Header Component
- *
- * Renders the main header for the Multi-Armed Mafia application, including:
- * - Title and descriptive text about the multi-armed bandit problem
- * - Introduction paragraph explaining the gamified scenario
- * - Badges for different bandit algorithms with hoverable cards showing
- *   algorithm information, hints, and links for further reading
- *
- * @component
- *
- * @param {object} props
- * @param {"en"|"de"} props.lang - Language code to render content in English or German
- * @returns {JSX.Element} Rendered header with title, description, and algorithm badges
- */
+* Header Component
+*
+* Renders the main header for the Multi-Armed Mafia application, including:
+* - Title and descriptive text about the multi-armed bandit problem
+* - Introduction paragraph explaining the gamified scenario
+* - Badges for different bandit algorithms with hoverable cards showing
+*   algorithm information, hints, and links for further reading
+*
+* @component
+*
+* @param {object} props
+* @param {"en"|"de"} props.lang - Language code to render content in English or German
+* @returns {JSX.Element} Rendered header with title, description, and algorithm badges
+*/
+
 export default function Header({ lang }) {
 
     const algos = [
         {
             key: "greedy",
             title: "Guido",
+            icon: greedyIcon,
             algoName: "Greedy",
             link: "https://en.wikipedia.org/wiki/Greedy_algorithm",
             hint_de:
@@ -34,6 +43,7 @@ export default function Header({ lang }) {
         {
             key: "e-greedy",
             title: "Emilio",
+            icon: epsilonIcon,
             algoName: "Epsilon-Greedy",
             link: "https://www.geeksforgeeks.org/machine-learning/epsilon-greedy-algorithm-in-reinforcement-learning/",
             hint_de:
@@ -44,6 +54,7 @@ export default function Header({ lang }) {
         {
             key: "gradient",
             title: "Giovanni",
+            icon: gradientIcon,
             algoName: "Gradient Bandit",
             link: "https://medium.com/@numsmt2/reinforcement-learning-chapter-2-multi-armed-bandits-part-5-gradient-bandit-algorithms-1af59d4c544c",
             hint_de:
@@ -54,6 +65,7 @@ export default function Header({ lang }) {
         {
             key: "ucb",
             title: "Umberto",
+            icon: ucbIcon,
             algoName: "Upper Confidence Bound",
             link: "https://medium.com/@numsmt2/reinforcement-learning-chapter-2-multi-armed-bandits-part-4-upper-confidence-bound-action-589213a8a722",
             hint_de:
@@ -65,6 +77,20 @@ export default function Header({ lang }) {
 
     return (
         <div className="mb-6 text-center">
+            {/* Static logo placed inside the header, centered */}
+            <div className="flex justify-center items-center mb-4">
+                <img
+                    src={staticLogo}
+                    alt="Multi-Armed Mafia Logo"
+                    className="h-80 w-auto object-contain"
+                    loading="eager"
+                    onError={(e) => {
+                        // Fallback in case the image fails to load
+                        e.target.src = staticLogo;
+                    }}
+                />
+            </div>
+
             <h1 className="text-4xl font-bold text-foreground">
                 Multi-Armed Mafia
             </h1>
@@ -85,7 +111,6 @@ export default function Header({ lang }) {
                     : "Imagine you're a mafioso on the hunt for profit and want to rake in as much money as possible with email phishing campaigns.\n Each campaign yields different returns. But other mafiosi are also reaching out for the profits:"}
             </p>
 
-            {/* Algorithm Badges with HoverCards */}
             <div className="mt-4 flex justify-center gap-3 flex-wrap">
                 {algos.map((a) => (
                     <HoverCard openDelay={300} key={a.key}>
@@ -97,8 +122,17 @@ export default function Header({ lang }) {
                         <HoverCardContent className="w-80 text-left">
                             <div className="flex justify-between gap-4">
                                 <div className="flex items-start">
-                                    <div className="bg-muted p-2 rounded-full">
-                                        <UserIcon className="w-5 h-5 text-muted-foreground" />
+                                    <div className="bg-muted rounded-full w-full h-14 overflow-hidden">
+                                        {a.icon ? (
+                                            <img
+                                                src={a.icon}
+                                                alt={a.title}
+                                                className="w-full h-full object-cover"
+                                                loading="eager"
+                                            />
+                                        ) : (
+                                            <UserIcon className="w-12 h-12 text-muted-foreground" />
+                                        )}
                                     </div>
                                 </div>
                                 <div className="space-y-1 flex-1">
@@ -119,7 +153,6 @@ export default function Header({ lang }) {
                                             <ArrowUpRightIcon className="w-3 h-3" />
                                         </a>
                                     </div>
-
                                 </div>
                             </div>
                         </HoverCardContent>
