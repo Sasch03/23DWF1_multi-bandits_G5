@@ -1,4 +1,3 @@
-// Ucb.test.js (Vitest)
 import { describe, test, expect, vi } from "vitest";
 import UCB from "@/logic/algorithm/strategies/value-based/UCB.js";
 
