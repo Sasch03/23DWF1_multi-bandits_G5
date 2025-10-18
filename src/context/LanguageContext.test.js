@@ -8,7 +8,6 @@ describe("LanguageContext", () => {
     });
 
     it("should have a Provider property", () => {
-        // Use React.createElement instead of JSX
         const element = React.createElement(LanguageContext.Provider);
         expect(React.isValidElement(element)).toBe(true);
     });

@@ -27,6 +27,7 @@ export default function BanditPlayground({ arms, onPull, disabled, lang }) {
             {arms.map(arm => (
                 <button
                     key={arm.id}
+                    aria-label={`campaign-${arm.id}`}
                     className={`p-4 rounded-xl w-full text-left transition border
                     ${disabled
                         ? "bg-muted text-muted-foreground border-muted cursor-not-allowed opacity-60"
