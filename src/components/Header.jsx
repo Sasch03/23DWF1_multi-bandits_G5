@@ -2,13 +2,13 @@ import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { HoverCard, HoverCardTrigger, HoverCardContent } from "@/components/ui/hover-card";
 import { ArrowUpRightIcon, UserIcon } from "lucide-react";
-import greedyIcon from "@/assets/GuidoGreedy.png";
-import gradientIcon from "@/assets/GiovanniGradient.png";
-import epsilonIcon from "@/assets/EmilioEpsilonGreedy.png";
-import ucbIcon from "@/assets/UmbertoUCB.png";
+import greedyIcon from "/public/assets/GuidoGreedy.png";
+import gradientIcon from "/public/assets/GiovanniGradient.png";
+import epsilonIcon from "/public/assets/EmilioEpsilonGreedy.png";
+import ucbIcon from "/public/assets/UmbertoUCB.png";
 
 // Static logo import
-import staticLogo from "@/assets/MultiArmedMafia.png";
+import staticLogo from "/public/assets/MultiArmedMafia.png";
 
 export default function Header({ lang }) {
 
