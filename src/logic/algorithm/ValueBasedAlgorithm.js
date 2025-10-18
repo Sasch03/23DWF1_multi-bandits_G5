@@ -1,11 +1,15 @@
 import Algorithm from "@/logic/algorithm/Algorithm.js";
-// ExpectedRewardsBased — intermediate (abstract) class between Algorithm and concrete strategies.
-// It extends the base Algorithm by computing and storing "expected rewards" (expectedRewards) for each arm.
-// Algorithms that select an arm based on these expectations (e.g., ε-Greedy, UCB, etc.)
-// should inherit from this class to avoid duplicating the logic for handling expectedRewards.
 
-
+/**
+ * Base class for value-based bandit algorithms.
+ * Manages expected rewards (Q-values) for each arm.
+ */
 export default class ValueBasedAlgorithm extends Algorithm {
+    /**
+     * @param {number} numberOfArms - Total number of arms in the bandit problem.
+     * @param {number} numberOfTries - Total number of steps (T) for the simulation.
+     * @param {?number[]} [expectedRewardsBegin=null] - Optional initial Q-values (optimistic start or UI input).
+     */
     constructor({numberOfArms, numberOfTries, expectedRewardsBegin = null}) {
         super({numberOfArms, numberOfTries});
         this.expectedRewards = Array(this.numberOfArms).fill(0);
@@ -15,33 +19,53 @@ export default class ValueBasedAlgorithm extends Algorithm {
         if (expectedRewardsBegin!= null) this.setExpectedRewards(expectedRewardsBegin);
     }
 
-
-    //validate the length of array
-    // Coerce to numbers in case values come as strings (e.g., from UI/JSON form inputs).
-    // Example: ["1", "2.5"] -> [1, 2.5]
+    /**
+     * Replace current expected rewards.
+     * Validates array length and coerces values to numbers.
+     * @param {number[]} expectedRewards - New expected rewards array, length = numberOfArms.
+     */
     setExpectedRewards(expectedRewards) {
         if (!Array.isArray(expectedRewards) || expectedRewards.length !== this.numberOfArms) throw new Error('bad expectedRewards');
         this.expectedRewards = expectedRewards.map(Number);
     }
 
-
+    /**
+     * Returns a copy of the current expected rewards Q(a) for all arms.
+     * Each value represents the current estimate of the expected reward for the corresponding arm.
+     *
+     * @returns {number[]} Array of expected rewards for each arm.
+     */
     getExpectedRewards() {
         return this.expectedRewards.slice();
     }
 
-    // By default, returns the first arm with the maximum expected reward.
-    // (Optional) This could be extended to break ties randomly among arms
-    // that share the same maximum value, to avoid systematic bias.
+    /**
+     * Select the arm with the maximum expected reward (greedy choice).
+     * Can be overridden for tie-breaking or stochastic selection.
+     *
+     * @returns {number} index of chosen arm.
+     */
     selectArm() {
         return this.expectedRewards.indexOf(Math.max(...this.expectedRewards));
     }
-    //....
 
+    /**
+     * Resets the internal state of the algorithm for a new run.
+     * - Calls the base class reset to clear steps, selected arms, observed rewards, and pull counts.
+     * - Resets all expected rewards Q(a) to 0.
+     */
     reset() {
         super.reset();
         this.expectedRewards.fill(0);
     }
 
+    /**
+     * Update internal state after observing reward.
+     * Applies incremental mean update:
+     * Q(a) ← Q(a) + (R - Q(a)) / N(a).
+     * @param {number} arm - Selected arm index.
+     * @param {number} observedReward - Observed reward.
+     */
     update({arm, observedReward}) {
         super.update({arm, observedReward});
         this.expectedRewards[arm] += (observedReward - this.expectedRewards[arm]) / this.numberOfPulls[arm];

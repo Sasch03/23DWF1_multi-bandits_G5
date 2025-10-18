@@ -1,19 +1,32 @@
-// EpsGreedy.js
-// ε-greedy algorithm that retrieves epsilon values from the global EpsilonService.
-// At the moment, exploration probability is constant, but the service can be extended later.
-
 import ValueBasedAlgorithm from "@/logic/algorithm/ValueBasedAlgorithm.js";
 import epsilonProvider from "@/logic/algorithm/strategies/value-based/EpsilonProvider.js";
 
-
+/**
+ * Balances exploration (random choice with prob. epsilon) and exploitation (best arm).
+ * Uses EpsilonProvider to obtain epsilon per step.
+ */
 export default class EpsGreedy extends ValueBasedAlgorithm {
+    /**
+     * @param {Object} opts - Algorithm parameters (numberOfArms, numberOfTries, etc.).
+     * @param {EpsilonProvider} [provider=epsilonProvider] - Source of epsilon values.
+     */
     constructor(opts, provider = epsilonProvider) {
         super(opts);
-        /** @type {EpsilonProvider} - Shared epsilon provider. */
         this.epsSvc = provider;
+
+        console.log(`Epsilon greedy Initialized with ${this.numberOfArms} arms, epsSvc=${this.epsSvc}`);
     }
 
-    /** Selects an arm according to ε-greedy strategy. */
+    /**
+     * Shared epsilon provider.
+     * @type {EpsilonProvider}
+     */
+    epsSvc;
+
+    /**
+     * Choose arm according to epsilon-greedy rule.
+     * @returns {number} selected arm index.
+     */
     selectArm() {
         const eps = this.epsSvc.getEpsilon(this.step, this.numberOfTries);
         if (Math.random() < eps) {

@@ -87,9 +87,8 @@ export default class GradientBandit extends Algorithm {
 
     /**
      * Update method called by the environment with the observed reward for the chosen arm.
-     * @param {Object} params - The update information.
-     * @param {number} params.arm - Index of the chosen arm (0-based).
-     * @param {number} params.observedReward - Observed reward value for the chosen arm.
+     * @param {number} arm - Index of the chosen arm.
+     * @param {number} observedReward - Observed reward value for the chosen arm.
      */
     update({ arm, observedReward }) {
         if (typeof observedReward !== 'number') {
