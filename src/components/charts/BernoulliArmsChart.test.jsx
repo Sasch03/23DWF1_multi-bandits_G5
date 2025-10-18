@@ -1,14 +1,7 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import BernoulliArmsChart from "./BernoulliArmsChart.jsx";
 
-vi.mock("recharts", async () => {
-    const actual = await vi.importActual("recharts");
-    return {
-        ...actual,
-        ResponsiveContainer: ({ children }) => <div>{children}</div>,
-    };
-});
 
 const mockProbabilities = [0.2, 0.5, 0.8];
 

@@ -21,6 +21,7 @@ describe('BanditPlayground', () => {
         arms.forEach(a => {
             expect(screen.getByText(`Campaign #${a.id + 1}`)).toBeInTheDocument();
             expect(screen.getByText(`Attempts: ${a.pulls}`)).toBeInTheDocument();
+            expect(screen.getByLabelText(`campaign-${a.id}`)).toBeInTheDocument();
         });
     });
 
@@ -28,7 +29,7 @@ describe('BanditPlayground', () => {
         const onPull = vi.fn();
         render(<BanditPlayground arms={arms} onPull={onPull} disabled={false} />);
 
-        const firstButton = screen.getByText('Campaign #1').closest('button');
+        const firstButton = screen.getByLabelText('campaign-0');
         fireEvent.click(firstButton);
 
         expect(onPull).toHaveBeenCalledTimes(1);
@@ -39,7 +40,7 @@ describe('BanditPlayground', () => {
         render(<BanditPlayground arms={arms} onPull={() => {}} disabled={true} />);
 
         arms.forEach(a => {
-            const btn = screen.getByText(`Campaign #${a.id + 1}`).closest('button');
+            const btn = screen.getByLabelText(`campaign-${a.id}`);
             expect(btn).toBeDisabled();
         });
     });
@@ -50,6 +51,7 @@ describe('BanditPlayground', () => {
         arms.forEach(a => {
             expect(screen.getByText(`Kampagne #${a.id + 1}`)).toBeInTheDocument();
             expect(screen.getByText(`Versuche: ${a.pulls}`)).toBeInTheDocument();
+            expect(screen.getByLabelText(`campaign-${a.id}`)).toBeInTheDocument();
         });
     });
 });
