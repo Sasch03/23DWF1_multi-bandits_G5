@@ -1,9 +1,8 @@
 import Algorithm from "@/logic/algorithm/Algorithm.js";
 
 /**
- * Abstract subclass of Algorithm that maintains estimated (expected) rewards Q(a).
- * Serves as a base for value-based strategies.
- * Handles initialization and incremental update of expected rewards.
+ * Base class for value-based bandit algorithms.
+ * Manages expected rewards (Q-values) for each arm.
  */
 export default class ValueBasedAlgorithm extends Algorithm {
     /**
@@ -21,30 +20,12 @@ export default class ValueBasedAlgorithm extends Algorithm {
     }
 
     /**
-     * Total number of arms in the bandit problem.
-     * @type {number}
-     */
-    numberOfArms;
-
-    /**
-     * Total number of steps (T) for the simulation.
-     * @type {number}
-     */
-    numberOfTries;
-
-    /**
-     * Current estimates of expected rewards Q(a) for each arm.
-     * @type {number[]}
-     */
-    expectedRewards;
-
-    /**
      * Replace current expected rewards.
      * Validates array length and coerces values to numbers.
      * @param {number[]} expectedRewards - New expected rewards array, length = numberOfArms.
      */
     setExpectedRewards(expectedRewards) {
-        if (!Array.isArray(expectedRewards) || expectedRewards.length !== this.numberOfArms) throw new Error('Expected an array of numbers with length equal to numberOfArms.');
+        if (!Array.isArray(expectedRewards) || expectedRewards.length !== this.numberOfArms) throw new Error('bad expectedRewards');
         this.expectedRewards = expectedRewards.map(Number);
     }
 
