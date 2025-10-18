@@ -47,10 +47,10 @@ export default class StrategyRewardHistory {
      */
     addReward(arrRef, obj) {
 
-        // Validate target array. customAlgorithmRewards HINZUGEFÜGT
+        // Validate target array
         if (arrRef !== this.manualRewards && arrRef !== this.greedyRewards && arrRef !== this.epsilonGreedyRewards
             && arrRef !== this.UpperConfidenceBoundRewards && arrRef !== this.GradientBanditRewards
-            && arrRef !== this.customAlgorithmRewards) { // <--- HIER ERWEITERT
+            && arrRef !== this.customAlgorithmRewards) {
             throw new Error("Provided array is not managed by StrategyRewardHistory.");
         }
 
@@ -95,7 +95,7 @@ export default class StrategyRewardHistory {
         this.epsilonGreedyRewards.length = 0;
         this.UpperConfidenceBoundRewards.length = 0;
         this.GradientBanditRewards.length = 0;
-        this.customAlgorithmRewards.length = 0; // <--- HIER ERWEITERT
+        this.customAlgorithmRewards.length = 0;
         console.log("The arrays have been reset.");
     }
 }
