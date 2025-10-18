@@ -35,7 +35,6 @@ export default class StrategyRewardHistory {
      */
     GradientBanditRewards = [];
 
-    // NEU: Array für den benutzerdefinierten Algorithmus
     customAlgorithmRewards = [];
 
     /**
