@@ -1,98 +1,61 @@
-// src/logic/algorithm/strategies/value-based/EpsGreedy.test.js
-import { describe, it, expect } from "vitest";
-import CurrentGame from "@/logic/CurrentGame.js";
-import { DistributionTyp } from "@/logic/enumeration/DistributionTyp.js";
-import EpsGreedy from "@/logic/algorithm/strategies/value-based/EpsGreedy.js";
-import epsilonProvider from "@/logic/algorithm/strategies/value-based/EpsilonProvider.js";
-import { EPSILON_DEFAULT } from "@/constants.js";
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import EpsGreedy from '@/logic/algorithm/strategies/value-based/EpsGreedy.js';
+import epsilonProvider from '@/logic/algorithm/strategies/value-based/EpsilonProvider.js';
+import { EPSILON_DEFAULT } from '@/constants.js';
 
-const r2 = x => Math.round(x * 100) / 100;
+afterEach(() => {
+    epsilonProvider.setEpsilon(EPSILON_DEFAULT);
+    vi.restoreAllMocks();
+});
 
-function logTable(table, round=false) {
-    const rows = table.map((row, i) => {
-        const o = { arm: i };
-        row.forEach((v, t) => (o["t"+t] = round && Number.isFinite(v) ? r2(v) : v));
-        return o;
-    });
-    console.table(rows);
-}
+describe('EpsGreedy', () => {
+    let algo;
 
-function runOnTable(table, policy) {
-    const T = table[0].length;
-    policy.reset();
-    const choices = [], rewards = [];
-    for (let t = 0; t < T; t++) {
-        const a = policy.selectArm();
-        const r = table[a][t];
-        policy.update({ arm: a, observedReward: r });
-        choices.push(a);
-        rewards.push(r);
-    }
-    return { choices, rewards, pulls: policy.getNumberOfPulls?.(), Q: policy.getExpectedRewards?.() };
-}
-
-describe("EpsGreedy eyeball logs", () => {
-    it("Bernoulli (rounded logs)", () => {
-        const k = 3, T = 12;
-        const game = new CurrentGame();
-        game.setNumberOfArms(k);
-        game.setNumberOfTries(T);
-        game.setChosenDistribution(DistributionTyp.BERNOULLI);
-        game.setChosenAlgorithms([]);
-        game.createTable();
-
-        // slice table to exact T trials per arm
-        const tableForRun = game.tableOfRewards.map(rewards => rewards.slice(0, T));
-
-        epsilonProvider.setEpsilon(0.2);
-        const algo = new EpsGreedy({ numberOfArms: k, numberOfTries: T });
-
-        console.log("=== Bernoulli table ===");
-        logTable(tableForRun);
-        const out = runOnTable(tableForRun, algo);
-
-        let s = 0;
-        const cum = out.rewards.map(r => (s += r, s));
-
-        console.log("epsilon:", epsilonProvider.getEpsilon(0, T));
-        console.log("choices:", out.choices.join(", "));
-        console.log("rewards:", out.rewards.join(", "));
-        console.log("cumulative:", cum.join(", "));
-        console.log("pulls:", JSON.stringify(out.pulls));
-        console.log("Q:", JSON.stringify(out.Q));
-
-        expect(out.choices.length).toBe(T);
+    beforeEach(() => {
+        algo = new EpsGreedy({ numberOfArms: 3, numberOfTries: 100 });
     });
 
-    it("Gaussian (rounded logs)", () => {
-        const k = 3, T = 12;
-        const game = new CurrentGame();
-        game.setNumberOfArms(k);
-        game.setNumberOfTries(T);
-        game.setChosenDistribution(DistributionTyp.GAUSSIAN);
-        game.setChosenAlgorithms([]);
-        game.createTable();
+    it('should always exploit (pick best arm) when epsilon is 0', () => {
+        epsilonProvider.setEpsilon(0);
 
-        // slice table to exact T trials per arm
-        const tableForRun = game.tableOfRewards.map(rewards => rewards.slice(0, T));
+        algo.expectedRewards = [10, 50, 20];
 
-        epsilonProvider.setEpsilon(0.2);
-        const algo = new EpsGreedy({ numberOfArms: k, numberOfTries: T });
+        for (let i = 0; i < 10; i++) {
+            // 4. Prüfung:
+            expect(algo.selectArm()).toBe(1);
+        }
+    });
 
-        console.log("=== Gaussian table (rounded) ===");
-        logTable(tableForRun, true);
-        const out = runOnTable(tableForRun, algo);
+    it('should always explore (pick random arm) when epsilon is 1', () => {
+        epsilonProvider.setEpsilon(1);
+        algo.expectedRewards = [10, 50, 20];
 
-        let s = 0;
-        const cum = out.rewards.map(r => (s += r, s)).map(r2);
+        vi.spyOn(Math, 'random')
+            .mockReturnValueOnce(0.5)
+            .mockReturnValueOnce(0.7);
 
-        console.log("epsilon:", epsilonProvider.getEpsilon(0, T));
-        console.log("choices:", out.choices.join(", "));
-        console.log("rewards (r2):", out.rewards.map(r2).join(", "));
-        console.log("cumulative (r2):", cum.join(", "));
-        console.log("pulls:", JSON.stringify(out.pulls));
-        console.log("Q (r2):", JSON.stringify(out.Q?.map(r2)));
+        expect(algo.selectArm()).toBe(2);
 
-        expect(out.choices.length).toBe(T);
+        vi.spyOn(Math, 'random')
+            .mockReturnValueOnce(0.9)
+            .mockReturnValueOnce(0.1);
+
+        expect(algo.selectArm()).toBe(0);
+    });
+
+    it('should correctly switch between exploring and exploiting', () => {
+        epsilonProvider.setEpsilon(0.5);
+        algo.expectedRewards = [10, 50, 20];
+
+        vi.spyOn(Math, 'random').mockReturnValueOnce(0.6);
+
+        expect(algo.selectArm()).toBe(1);
+
+
+        vi.spyOn(Math, 'random')
+            .mockReturnValueOnce(0.4)
+            .mockReturnValueOnce(0.8);
+
+        expect(algo.selectArm()).toBe(2);
     });
 });
