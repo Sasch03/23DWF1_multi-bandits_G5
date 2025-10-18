@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { useBanditGame } from "./useBanditSimulation.js";
+import { AlgorithmTyp } from "@/logic/enumeration/AlgorithmTyp.js";
 
 describe("useBanditGame Hook", () => {
     it("initializes with default values", () => {
@@ -110,6 +111,16 @@ describe("useBanditGame Hook", () => {
         expect(rewards.manualRewards.length).toBe(2);
         expect(rewards.manualRewards[0]).toBeGreaterThanOrEqual(0);
         expect(rewards.manualRewards[1]).toBeGreaterThanOrEqual(rewards.manualRewards[0]);
+    });
+
+    it("can set a custom algorithm", () => {
+        const { result } = renderHook(() => useBanditGame());
+        act(() => {
+            result.current.createCustomAlgorithm(AlgorithmTyp.GRADIENT_BANDIT, { alpha: 0.5 });
+        });
+
+        expect(result.current.algorithmAdded).toBe(false);
+        expect(result.current.createCustomAlgorithm).toBeInstanceOf(Function);
     });
 
 });

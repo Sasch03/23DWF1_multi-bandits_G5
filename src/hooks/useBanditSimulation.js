@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import {useState, useRef, useEffect, useCallback} from "react";
 import CurrentGame from "@/logic/CurrentGame.js";
 import { DistributionTyp } from "@/logic/enumeration/DistributionTyp.js";
 import ManualAlgorithm from "@/logic/algorithm/strategies/rule-based/Manual.js";
@@ -8,6 +8,7 @@ import UCB from "@/logic/algorithm/strategies/value-based/UCB.js";
 import GradientBandit from "@/logic/algorithm/strategies/gradient-based/GradientBandit.js";
 import StrategyRewardHistory from "@/logic/StrategyRewardHistory.js";
 import { DEFAULT_ARMS, DEFAULT_ITERATIONS, ALPHA_DEFAULT, NUMBER_OF_GAUSSIAN_DRAWS_PER_ARM } from "@/constants.js";
+import {AlgorithmTyp} from "@/logic/enumeration/AlgorithmTyp.js";
 
 /**
  * Custom React hook to manage a multi-armed bandit simulation.
@@ -36,6 +37,9 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
     const [type, setType] = useState(DistributionTyp.BERNOULLI);
     const [winner, setWinner] = useState(null);
     const [lang, setLang] = useState("de");
+    const [customAlgo, setCustomAlgo] = useState(null);
+    const [customParams, setCustomParams] = useState({});
+    const [algorithmAdded, setAlgorithmAdded] = useState(false);
 
 
     // ================= Refs =================
@@ -43,9 +47,36 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
     const historyRef = useRef(new StrategyRewardHistory());
     const manualObservedRewardsRef = useRef([]);
     const algorithmsRef = useRef({});
+    const customAlgorithmInstanceRef = useRef(null);
 
 
     // ================= Effects =================
+
+    /**
+     * Calculates which algorithm(s) currently have the highest cumulative reward.
+     */
+    const updateWinner = useCallback(() => {
+        const cumulativeRewards = {
+            Manual: manualObservedRewardsRef.current.reduce((a, b) => a + b, 0),
+            Greedy: algorithmsRef.current.greedy.getObservedRewards().reduce((a, b) => a + b, 0),
+            "Epsilon-Greedy": algorithmsRef.current.epsilon.getObservedRewards().reduce((a, b) => a + b, 0),
+            "Gradient Bandit": algorithmsRef.current.gradientBandit.getObservedRewards().reduce((a, b) => a + b, 0),
+            UCB: algorithmsRef.current.ucb.getObservedRewards().reduce((a, b) => a + b, 0),
+        };
+
+        if (customAlgorithmInstanceRef.current) {
+            const customName = `${customAlgo} (Custom)`;
+            cumulativeRewards[customName] = algorithmsRef.current.custom.getObservedRewards().reduce((a, b) => a + b, 0);
+        }
+
+        const maxReward = Math.max(...Object.values(cumulativeRewards));
+        const winners = Object.entries(cumulativeRewards)
+            .filter(([, reward]) => reward === maxReward)
+            .map(([name]) => name);
+
+        setWinner(winners);
+    }, [customAlgo]);
+
     useEffect(() => {
         if (totalPulls >= iterations && running) setShowPlot(true);
     }, [totalPulls, iterations, running]);
@@ -53,10 +84,27 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
     useEffect(() => {
         if (!running) return;
         updateWinner();
-    }, [totalPulls, running]);
+    }, [totalPulls, running, updateWinner]);
+
 
 
     // ================= Helper Functions =================
+
+    /**
+     * Erstellt die Konfiguration für den benutzerdefinierten Algorithmus.
+     * @param {string} type - Der Algorithmus-Typ (z.B. 'EpsGreedy').
+     * @param {object} params - Die Parameter für diesen Algorithmus (z.B. {epsilon: 0.1}).
+     */
+    const createCustomAlgorithm = (type, params) => {
+        if (running) {
+            console.warn("Cannot configure custom algorithm while simulation is running.");
+            return;
+        }
+
+        setCustomAlgo(type);
+        setCustomParams(params);
+        console.log(`Custom Algorithm set to ${type} with parameters:`, params);
+    };
 
     /**
      * Safely update an algorithm instance with a new observed reward.
@@ -112,25 +160,7 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
         );
     };
 
-    /**
-     * Calculates which algorithm(s) currently have the highest cumulative reward.
-     */
-    const updateWinner = () => {
-        const cumulativeRewards = {
-            Manual: manualObservedRewardsRef.current.reduce((a, b) => a + b, 0),
-            Greedy: algorithmsRef.current.greedy.getObservedRewards().reduce((a, b) => a + b, 0),
-            "Epsilon-Greedy": algorithmsRef.current.epsilon.getObservedRewards().reduce((a, b) => a + b, 0),
-            "Gradient Bandit": algorithmsRef.current.gradientBandit.getObservedRewards().reduce((a, b) => a + b, 0),
-            UCB: algorithmsRef.current.ucb.getObservedRewards().reduce((a, b) => a + b, 0),
-        };
 
-        const maxReward = Math.max(...Object.values(cumulativeRewards));
-        const winners = Object.entries(cumulativeRewards)
-            .filter(([, reward]) => reward === maxReward)
-            .map(([name]) => name);
-
-        setWinner(winners);
-    };
 
     // ================= Game Control Functions =================
 
@@ -153,7 +183,51 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
         const ucbAlgo = new UCB({ numberOfArms: arms.length, numberOfTries: iterations });
         ucbAlgo.reset();
 
-        algorithmsRef.current = { manual: manualAlgo, greedy: greedyAlgo, epsilon: epsAlgo, gradientBandit: gradientAlgo, ucb: ucbAlgo };
+        if (customAlgo) {
+            let CustomAlgoClass;
+            let customOptions = { numberOfArms: arms.length, numberOfTries: iterations };
+
+            switch (customAlgo) {
+                case AlgorithmTyp.EPSILON_GREEDY:
+                    CustomAlgoClass = EpsGreedy;
+                    customOptions.epsilon = customParams.epsilon;
+                    customOptions.decayMode = customParams.decayMode;
+                    break;
+                case AlgorithmTyp.UPPER_CONFIDENCE_BOUND:
+                    CustomAlgoClass = UCB;
+                    customOptions.c = customParams.c;
+                    break;
+                case AlgorithmTyp.GRADIENT_BANDIT:
+                    CustomAlgoClass = GradientBandit;
+                    customOptions.alpha = customParams.alpha;
+                    break;
+                default:
+                    console.error(`Unknown custom algorithm type: ${customAlgo}`);
+
+                    customAlgorithmInstanceRef.current = null;
+                    delete algorithmsRef.current.custom;
+                    break;
+            }
+
+            if (CustomAlgoClass) {
+                const customInstance = new CustomAlgoClass(customOptions);
+                customInstance.reset();
+                customAlgorithmInstanceRef.current = customInstance;
+                algorithmsRef.current.custom = customInstance;
+            }
+        } else {
+            customAlgorithmInstanceRef.current = null;
+            delete algorithmsRef.current.custom;
+        }
+
+        algorithmsRef.current = {
+            manual: manualAlgo,
+            greedy: greedyAlgo,
+            epsilon: epsAlgo,
+            gradientBandit: gradientAlgo,
+            ucb: ucbAlgo,
+            ...(algorithmsRef.current.custom && { custom: algorithmsRef.current.custom })
+        };
     };
 
     /**
@@ -184,11 +258,21 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
         simulateSingleAlgorithm(algorithmsRef.current.gradientBandit, () => algorithmsRef.current.gradientBandit.selectArm());
         simulateSingleAlgorithm(algorithmsRef.current.ucb, () => algorithmsRef.current.ucb.selectArm());
 
+        if (customAlgorithmInstanceRef.current) {
+            if (algorithmsRef.current.custom) {
+                simulateSingleAlgorithm(algorithmsRef.current.custom, () => algorithmsRef.current.custom.selectArm());
+            }
+        }
+
         // sync history
         historyRef.current.addReward(historyRef.current.greedyRewards, { observedRewards: algorithmsRef.current.greedy.getObservedRewards() });
         historyRef.current.addReward(historyRef.current.epsilonGreedyRewards, { observedRewards: algorithmsRef.current.epsilon.getObservedRewards() });
         historyRef.current.addReward(historyRef.current.GradientBanditRewards, { observedRewards: algorithmsRef.current.gradientBandit.getObservedRewards() });
         historyRef.current.addReward(historyRef.current.UpperConfidenceBoundRewards, { observedRewards: algorithmsRef.current.ucb.getObservedRewards() });
+
+        if (customAlgorithmInstanceRef.current) {
+            historyRef.current.addReward(historyRef.current.customAlgorithmRewards, { observedRewards: algorithmsRef.current.custom.getObservedRewards() });
+        }
     };
 
     /**
@@ -301,6 +385,14 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
      */
     const resetAll = () => {
         if (algorithmsRef.current.manual?.reset) algorithmsRef.current.manual.reset();
+
+        historyRef.current.customAlgorithmRewards = [];
+        customAlgorithmInstanceRef.current = null;
+        delete algorithmsRef.current.custom;
+
+        setCustomAlgo(null);
+        setCustomParams({});
+
         setArms(Array.from({ length: initialArms }, (_, i) => ({ id: i, pulls: 0, lastReward: 0 })));
         setIterations(initialIterations);
         setTotalPulls(0);
@@ -313,6 +405,7 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
         setGame(null);
         historyRef.current.reset();
         manualObservedRewardsRef.current = [];
+        setAlgorithmAdded(false);
 
         console.log("Simulation stopped and reset.");
     };
@@ -322,13 +415,22 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
      *
      * @returns {object} Object containing arrays of cumulative rewards per algorithm.
      */
-    const getCumulativeRewards = () => ({
-        manualRewards: [...historyRef.current.manualRewards],
-        greedyRewards: [...historyRef.current.greedyRewards],
-        epsilonGreedyRewards: [...historyRef.current.epsilonGreedyRewards],
-        UpperConfidenceBoundRewards: [...historyRef.current.UpperConfidenceBoundRewards],
-        GradientBanditRewards: [...historyRef.current.GradientBanditRewards],
-    });
+    const getCumulativeRewards = () => {
+        const rewards = {
+            manualRewards: [...historyRef.current.manualRewards],
+            greedyRewards: [...historyRef.current.greedyRewards],
+            epsilonGreedyRewards: [...historyRef.current.epsilonGreedyRewards],
+            UpperConfidenceBoundRewards: [...historyRef.current.UpperConfidenceBoundRewards],
+            GradientBanditRewards: [...historyRef.current.GradientBanditRewards],
+        };
+
+        if (customAlgorithmInstanceRef.current) {
+            rewards.customAlgorithmRewards = [...historyRef.current.customAlgorithmRewards];
+            rewards.customAlgorithmName = `${customAlgo} (Custom)`;
+        }
+
+        return rewards;
+    };
 
     return {
         type, setType,
@@ -345,10 +447,13 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
         winner,
         lang,
         setLang,
+        algorithmAdded,
+        setAlgorithmAdded,
         getCumulativeRewards,
         startGame,
         handlePull,
         setArmCount,
         resetAll,
+        createCustomAlgorithm,
     };
 }

@@ -24,6 +24,7 @@ import WinnerCard from "@/components/WinnerCard.jsx";
  * @returns {JSX.Element} Rendered charts and winner summary for the bandit simulation
  */
 export default function BanditResultsCharts({ game, cumulativeRewards, lang, winner }) {
+    console.log(cumulativeRewards);
     return (
         <div className="p-6 rounded-2xl bg-card text-card-foreground shadow-2xl flex flex-col gap-6">
             <WinnerCard

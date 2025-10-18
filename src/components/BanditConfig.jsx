@@ -18,6 +18,7 @@ import {
 import { HelpCircle } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner.jsx";
 import SliderWithButtons from "@/components/shared/SliderWithButtons.jsx";
+import CustomConfig from "@/components/CustomConfig.jsx";
 
 /**
  * BanditConfig Component
@@ -40,6 +41,9 @@ import SliderWithButtons from "@/components/shared/SliderWithButtons.jsx";
  * @param {boolean} showPlot - Whether the result plot is currently visible.
  * @param {Function} setShowPlot - Function to toggle result plot visibility.
  * @param {"en"|"de"} lang - Language code for displayed text.
+ * @param createCustomAlgorithm - Function to create a custom bandit algorithm.
+ * @param setAlgorithmAdded - Setter to update `algorithmAdded` state.
+ * @param algorithmAdded - Flag if a custom algorithm has already been added.
  * @returns {JSX.Element} Rendered configuration UI for the Bandit simulation.
  */
 export default function BanditConfig({
@@ -53,6 +57,9 @@ export default function BanditConfig({
                                          showPlot,
                                          setShowPlot,
                                          lang,
+                                         createCustomAlgorithm,
+                                         setAlgorithmAdded, algorithmAdded,
+
                                      }) {
     return (
         <Card className="w-1/3 flex flex-col bg-muted/30 gap-4 p-4">
@@ -142,6 +149,17 @@ export default function BanditConfig({
 
                     <div className="text-center text-sm text-muted-foreground">{iterations}</div>
                 </div>
+
+                {/* Custom Config*/}
+                <CustomConfig
+                    running={running}
+                    createCustomAlgorithm={createCustomAlgorithm}
+                    arms={arms}
+                    iterations={iterations}
+                    setAlgorithmAdded={setAlgorithmAdded}
+                    algorithmAdded={algorithmAdded}
+                    lang={lang}
+                />
             </CardContent>
 
             {/* Footer with buttons */}
@@ -171,9 +189,14 @@ export default function BanditConfig({
                     </Button>
                 )}
 
-                <Button onClick={resetAll} variant="secondary" className="w-full">
+                <Button
+                    onClick={resetAll}
+                    variant={running ? "" : "secondary"}
+                    className="w-full"
+                >
                     {lang === "de" ? "Zurücksetzen" : "Reset"}
                 </Button>
+
             </CardFooter>
         </Card>
     );

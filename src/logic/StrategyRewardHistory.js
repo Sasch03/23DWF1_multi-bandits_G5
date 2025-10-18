@@ -35,6 +35,9 @@ export default class StrategyRewardHistory {
      */
     GradientBanditRewards = [];
 
+    // NEU: Array für den benutzerdefinierten Algorithmus
+    customAlgorithmRewards = [];
+
     /**
      * Synchronizes one of the cumulative reward arrays with the observedRewards of a given object.
      * The arrRef must be exactly one of the instance arrays.
@@ -44,9 +47,10 @@ export default class StrategyRewardHistory {
      */
     addReward(arrRef, obj) {
 
-        // Validate target array.
+        // Validate target array
         if (arrRef !== this.manualRewards && arrRef !== this.greedyRewards && arrRef !== this.epsilonGreedyRewards
-        && arrRef !== this.UpperConfidenceBoundRewards && arrRef !== this.GradientBanditRewards) {
+            && arrRef !== this.UpperConfidenceBoundRewards && arrRef !== this.GradientBanditRewards
+            && arrRef !== this.customAlgorithmRewards) {
             throw new Error("Provided array is not managed by StrategyRewardHistory.");
         }
 
@@ -91,6 +95,7 @@ export default class StrategyRewardHistory {
         this.epsilonGreedyRewards.length = 0;
         this.UpperConfidenceBoundRewards.length = 0;
         this.GradientBanditRewards.length = 0;
+        this.customAlgorithmRewards.length = 0;
         console.log("The arrays have been reset.");
     }
 }
