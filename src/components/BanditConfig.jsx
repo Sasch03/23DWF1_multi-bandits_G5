@@ -41,9 +41,9 @@ import CustomConfig from "@/components/CustomConfig.jsx";
  * @param {boolean} showPlot - Whether the result plot is currently visible.
  * @param {Function} setShowPlot - Function to toggle result plot visibility.
  * @param {"en"|"de"} lang - Language code for displayed text.
- * @param createCustomAlgorithm
- * @param setAlgorithmAdded
- * @param algorithmAdded
+ * @param createCustomAlgorithm - Function to create a custom bandit algorithm.
+ * @param setAlgorithmAdded - Setter to update `algorithmAdded` state.
+ * @param algorithmAdded - Flag if a custom algorithm has already been added.
  * @returns {JSX.Element} Rendered configuration UI for the Bandit simulation.
  */
 export default function BanditConfig({
