@@ -382,9 +382,12 @@ export function useBanditGame(initialArms = DEFAULT_ARMS, initialIterations = DE
     const resetAll = () => {
         if (algorithmsRef.current.manual?.reset) algorithmsRef.current.manual.reset();
 
-        if (customAlgorithmInstanceRef.current?.reset) customAlgorithmInstanceRef.current.reset();
+        historyRef.current.customAlgorithmRewards = [];
         customAlgorithmInstanceRef.current = null;
         delete algorithmsRef.current.custom;
+
+        setCustomAlgo(null);
+        setCustomParams({});
 
         setArms(Array.from({ length: initialArms }, (_, i) => ({ id: i, pulls: 0, lastReward: 0 })));
         setIterations(initialIterations);

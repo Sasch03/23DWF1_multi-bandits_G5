@@ -100,7 +100,7 @@ export default function CustomConfig({ running, createCustomAlgorithm, algorithm
                     <Button
                         variant="outline"
                         size="sm"
-                        disabled={algorithmAdded}
+                        disabled={algorithmAdded || running}
                         onClick={handleAddAlgorithm}
                     >
                         {algorithmAdded

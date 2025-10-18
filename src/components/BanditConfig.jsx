@@ -42,6 +42,8 @@ import CustomConfig from "@/components/CustomConfig.jsx";
  * @param {Function} setShowPlot - Function to toggle result plot visibility.
  * @param {"en"|"de"} lang - Language code for displayed text.
  * @param createCustomAlgorithm
+ * @param setAlgorithmAdded
+ * @param algorithmAdded
  * @returns {JSX.Element} Rendered configuration UI for the Bandit simulation.
  */
 export default function BanditConfig({
@@ -151,7 +153,7 @@ export default function BanditConfig({
                 {/* Custom Config*/}
                 <CustomConfig
                     running={running}
-                    createCustomAlgorithm={createCustomAlgorithm} // muss aus deinem Hook kommen
+                    createCustomAlgorithm={createCustomAlgorithm}
                     arms={arms}
                     iterations={iterations}
                     setAlgorithmAdded={setAlgorithmAdded}
