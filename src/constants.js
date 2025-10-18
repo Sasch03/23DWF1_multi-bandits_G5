@@ -33,7 +33,7 @@ export const MEAN_OF_MEANS = 10.0;
  * This controls how different the arms are from each other. 50 creates a significant spread.
  * @type {number}
  */
-export const GAUSSIAN_MEAN_SPREAD_STD_DEV = 50.0;
+export const GAUSSIAN_MEAN_SPREAD_STD_DEV = 100.0;
 /**
  * The standard deviation for the rewards drawn from a single arm (the "noise").
  * This controls the volatility of results. Setting it equal to the signal (50)
@@ -41,7 +41,7 @@ export const GAUSSIAN_MEAN_SPREAD_STD_DEV = 50.0;
  * hide the underlying signal.
  * @type {number}
  */
-export const GAUSSIAN_STD_DEV = 60.0;
+export const GAUSSIAN_STD_DEV = 30.0;
 
 // --- Epsilon ---
 /**
@@ -60,7 +60,7 @@ export const EPSILON_DEFAULT = 0.1;
  * Typical values: 1–3.
  * @type {number}
  */
-export const UCB_C = 2;
+export const UCB_C = 1;
 
 // --- Gradient Bandit ---
 /**
